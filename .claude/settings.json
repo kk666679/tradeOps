@@ -1,40 +1,77 @@
 {
-    "permissions": {
-        "allow": ["npm", "node", "git", "prisma", "redis-cli"],
-        "deny": ["rm -rf /", "sudo"],
-        "hooks": {
-            "PretoolsUse": [
-                {
-                    "matcher": "write",
-                    "hooks": [
-                        {
-                            "type": "command",
-                            "command": ".claude/hooks/check-secrets.sh"
-                        }
-                    ]
-                },
-                {
-                    "matcher": "execute_command",
-                    "hooks": [
-                        {
-                            "type": "command",
-                            "command": "echo 'Running command: $CLAUDE_COMMAND' >> .claude/hooks/command-log.txt"
-                        }
-                    ]
-                }
-            ],
-            "PostToolUse": [
-                {
-                    "matcher": "write",
-                    "hooks": [
-                        {
-                            "type": "command",
-                            "command": "npx prettier --write $CLAUDE_FILE && echo 'Formatted $CLAUDE_FILE' >> .claude/hooks/format-log.txt"
-                        }
-                    ]
-                }
-            ],
-            
-        }
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "model": "claude-opus-4-6",
+  "fallbackModel": "claude-sonnet-4-6",
+  "outputStyle": "tradeops-default",
+  "permissions": {
+    "allow": [
+      "Read",
+      "Glob",
+      "Grep",
+      "Bash(pnpm test:*)",
+      "Bash(pnpm typecheck)",
+      "Bash(pnpm lint)",
+      "Bash(pnpm test:tariff)",
+      "Bash(git status)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)"
+    ],
+    "ask": [
+      "Bash(pnpm prisma migrate deploy)",
+      "Bash(pnpm prisma migrate dev)",
+      "Bash(git push:*)",
+      "Bash(docker compose up:*)",
+      "Bash(kubectl apply:*)"
+    ],
+    "deny": [
+      "Bash(rm -rf /*)",
+      "Bash(curl:* | sh)",
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(**/secrets/**)"
+    ]
+  },
+  "env": {
+    "NODE_ENV": "development",
+    "CLAUDE_PROJECT": "tradeops"
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          { "type": "command", "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/format-changed.sh" }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash(git push:*)",
+        "hooks": [
+          { "type": "command", "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/guard-push.sh" }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          { "type": "command", "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/verify-mcp.sh" },
+          { "type": "command", "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/claude-md-size.sh" }
+        ]
+      }
+    ]
+  },
+  "mcpServers": {
+    "tradeops-core": {
+      "type": "http",
+      "url": "http://localhost:3001/api/mcp",
+      "headers": {
+        "Authorization": "Bearer ${TRADEOPS_JWT}"
+      }
     }
+  },
+  "claudeMdExcludes": [
+    "**/node_modules/**",
+    "**/vendor/**"
+  ]
 }
