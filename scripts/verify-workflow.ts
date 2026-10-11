@@ -229,8 +229,8 @@ check("bridge + close-out notes and agents keep reference positions", () => {
 console.log("\nEdges")
 /* Mirrors the handles each custom node renders (all hidden by CSS). */
 const HANDLES: Record<string, string[]> = {
-  step: ["t", "l", "b", "r"],
-  note: ["t", "l", "b", "r"],
+  step: ["t", "l", "b", "r", "t-in", "l-in", "b-in", "r-in"],
+  note: ["t", "l", "b", "r", "t-in", "l-in", "b-in", "r-in"],
   agent: ["t", "l", "b", "r"],
   lane: [],
 }
