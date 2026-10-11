@@ -1,0 +1,16 @@
+{
+  "name": "tradeops-claude",
+  "displayName": "TradeOps Claude",
+  "version": "0.1.0",
+  "description": "TradeOps agents, commands, skills, and hooks for customs operations.",
+  "author": { "name": "TradeOps Platform", "email": "platform@tradeops.local" },
+  "license": "MIT",
+  "homepage": "https://github.com/tradeops/claude",
+  "repository": "https://github.com/tradeops/claude",
+  "agents":        ["./.claude/agents/"],
+  "commands":      ["./.claude/commands/"],
+  "skills":        ["./.claude/skills/"],
+  "hooks":         ["./.claude/hooks/hooks.json"],
+  "outputStyles":  ["./.claude/output-styles/"],
+  "mcpServers":    ["./.claude/.mcp.json"]
+}

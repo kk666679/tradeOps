@@ -1,0 +1,7 @@
+{
+  "name": "tradeops-marketplace",
+  "owner": { "name": "TradeOps Platform" },
+  "plugins": [
+    { "name": "tradeops-claude", "source": "./" }
+  ]
+}
