@@ -245,7 +245,7 @@ customModes:
       ## What counts as a public-API diff (auto-trigger predicate)
       - `package.json` `contributes.*` (commands, settings, menus).
       - A new/changed `export` in a module that's part of the documented surface.
-      - A new MCP tool in `src/mcp/`.
+      - A new MCP tool in `backend/src/mcp/`.
       - A new skill or a changed skill trigger.
       Internal-only refactors (no exported-surface change) do **not** trigger.
 
@@ -397,7 +397,7 @@ customModes:
 
       This layer builds on existing AutoClaw subsystems rather than duplicating them:
       `src/runners` for session discovery, `src/llm` (cost ledger) for token logging,
-      `src/memory` for memory records, `src/mcp` for retrieval exposure, and the
+      `src/memory` for memory records, `backend/src/mcp` for retrieval exposure, and the
       `autoclaw-kdream` activity-bar container for any UI. Learnings feed the KDream
       dream pipeline.
     groups:
