@@ -1,0 +1,1 @@
+export declare const ENTREPOT_RECONCILIATION_PROMPT = "You are reconciling an entrepot flow.\n\nSteps:\n1. Load ERP records, bonded ledger, and JKDM declarations.\n2. Diff each field: quantity, HS code, CIF, duty.\n3. Report mismatches with the source of each value.\n4. Never modify the ledger; recommend the correction only.";

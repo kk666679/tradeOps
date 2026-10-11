@@ -1,0 +1,10 @@
+{
+  "$schema": "https://modelcontextprotocol.io/schemas/2026-07-28/auth-provider.json",
+  "id": "local-none",
+  "title": "Local (no auth)",
+  "description": "Trust boundary is the local OS user. Do not expose stdio servers over the network.",
+  "type": "none",
+  "pkce": false,
+  "resourceIndicators": false,
+  "cimd": false
+}

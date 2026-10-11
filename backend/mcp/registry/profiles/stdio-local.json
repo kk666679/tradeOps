@@ -1,0 +1,23 @@
+{
+  "$schema": "https://modelcontextprotocol.io/schemas/2026-07-28/profile.json",
+  "profileId": "stdio-local",
+  "title": "Local stdio",
+  "description": "Single-machine setup. All servers run as child processes; no network auth required.",
+  "transport": "stdio",
+  "protocolVersion": "2026-07-28",
+  "auth": { "provider": "local-none" },
+  "servers": [
+    { "name": "io.tradeops.mcp.tradeops-core", "required": true }
+  ],
+  "extensions": {
+    "io.modelcontextprotocol/tasks":  { "enabled": true },
+    "io.modelcontextprotocol/ui":     { "enabled": false },
+    "io.modelcontextprotocol/skills": { "enabled": false }
+  },
+  "governance": {
+    "auditChain": "in-process",
+    "policyEngine": "in-process",
+    "policyBundle": "tradeops-default",
+    "otel": { "enabled": false }
+  }
+}

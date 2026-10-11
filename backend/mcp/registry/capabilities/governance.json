@@ -1,0 +1,30 @@
+{
+  "$schema": "https://modelcontextprotocol.io/schemas/2026-07-28/capability-catalog.json",
+  "id": "governance",
+  "title": "Governance capability catalog",
+  "description": "Audit, licence, and delegation capabilities.",
+  "capabilities": [
+    {
+      "id": "governance.audit",
+      "title": "Audit chain",
+      "servers": ["io.tradeops.mcp.audit-governance"],
+      "tools": ["audit.verify"],
+      "risk": "low",
+      "appendOnly": true
+    },
+    {
+      "id": "governance.licence",
+      "title": "Licence registry",
+      "servers": ["io.tradeops.mcp.audit-governance"],
+      "tools": ["licence.check"],
+      "risk": "low"
+    },
+    {
+      "id": "governance.delegation",
+      "title": "Delegation limits",
+      "servers": ["io.tradeops.mcp.audit-governance"],
+      "tools": ["delegation.limits"],
+      "risk": "medium"
+    }
+  ]
+}

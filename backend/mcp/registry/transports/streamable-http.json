@@ -1,0 +1,11 @@
+{
+  "$schema": "https://modelcontextprotocol.io/schemas/2026-07-28/transport.json",
+  "id": "streamable-http",
+  "title": "Streamable HTTP",
+  "description": "Authenticated Streamable HTTP endpoint hosted by the NestJS backend.",
+  "sessions": "mcp-session-id",
+  "stateless": false,
+  "headerMirroring": "SEP-2243",
+  "resourceIndicatorHeader": "X-MCP-Resource",
+  "notes": "The backend binds tenant and actor context from the authenticated JWT for every request."
+}

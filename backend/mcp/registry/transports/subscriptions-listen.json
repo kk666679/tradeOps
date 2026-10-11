@@ -1,0 +1,8 @@
+{
+  "$schema": "https://modelcontextprotocol.io/schemas/2026-07-28/transport.json",
+  "id": "subscriptions-listen",
+  "title": "subscriptions/listen",
+  "description": "Single long-lived POST-response stream for opted-in notifications. Replaces resources/subscribe and the GET SSE endpoint.",
+  "kinds": ["toolsListChanged", "resourcesListChanged", "promptsListChanged", "resourceSubscriptions"],
+  "notes": "Request-scoped notifications (progress, MRTR input_required) continue to flow on the triggering request's own response stream."
+}

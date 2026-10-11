@@ -1,0 +1,40 @@
+{
+  "$schema": "https://modelcontextprotocol.io/schemas/2026-07-28/profile.json",
+  "profileId": "edge-http",
+  "title": "Edge Streamable HTTP",
+  "description": "Authenticated, session-backed Streamable HTTP deployment for the NestJS backend.",
+  "transport": "streamable-http",
+  "protocolVersion": "2026-07-28",
+  "auth": {
+    "provider": "oidc-generic",
+    "clientRegistration": "cimd",
+    "pkce": "S256",
+    "resourceIndicators": true
+  },
+  "servers": [
+    { "name": "io.tradeops.mcp.tradeops-core",    "required": true,  "resource": "https://tradeops.local/api/mcp" },
+    { "name": "io.tradeops.mcp.jkdm-customs",     "required": false, "resource": "https://tradeops.local/mcp/jkdm-customs" },
+    { "name": "io.tradeops.mcp.trade-compliance", "required": false, "resource": "https://tradeops.local/mcp/trade-compliance" },
+    { "name": "io.tradeops.mcp.iot-gateway",      "required": false, "resource": "https://tradeops.local/mcp/iot-gateway" },
+    { "name": "io.tradeops.mcp.audit-governance", "required": false, "resource": "https://tradeops.local/mcp/audit-governance" }
+  ],
+  "extensions": {
+    "io.modelcontextprotocol/tasks":  { "enabled": true },
+    "io.modelcontextprotocol/ui":     { "enabled": true },
+    "io.modelcontextprotocol/skills": { "enabled": true }
+  },
+  "governance": {
+    "auditChain": "external",
+    "policyEngine": "gateway",
+    "policyBundle": "tradeops-default",
+    "otel": { "enabled": true, "exporter": "otlp" }
+  },
+  "routing": {
+    "headerMirroring": true,
+    "requireResourceHeader": true
+  },
+  "subscriptions": {
+    "listen": true,
+    "kinds": ["toolsListChanged", "resourcesListChanged"]
+  }
+}

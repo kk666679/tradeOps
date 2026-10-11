@@ -1,0 +1,9 @@
+{
+  "$schema": "https://modelcontextprotocol.io/schemas/2026-07-28/transport.json",
+  "id": "stdio",
+  "title": "stdio",
+  "description": "Newline-delimited JSON-RPC over stdin/stdout. Server runs as a child process.",
+  "sessions": "none",
+  "stateless": true,
+  "notes": "Ideal for local, trusted environments (Claude Desktop, Cursor). stdout is the JSON-RPC channel; do not write to it after initialization."
+}

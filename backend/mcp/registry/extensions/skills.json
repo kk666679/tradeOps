@@ -1,0 +1,21 @@
+{
+  "$schema": "https://modelcontextprotocol.io/schemas/2026-07-28/extension.json",
+  "id": "io.modelcontextprotocol/skills",
+  "version": "2026-07-28",
+  "title": "Skills",
+  "description": "Discoverable workflow instruction packages served via skill:// URIs. Clients fetch on demand; instructions are not loaded into context until the Skill is invoked.",
+  "methods": [
+    { "name": "skills/list", "description": "List available skills.", "readOnly": true }
+  ],
+  "uriScheme": "skill://{skillId}/{path}",
+  "defaultEntry": "SKILL.md",
+  "usedBy": [
+    "io.tradeops.mcp.jkdm-customs",
+    "io.tradeops.mcp.trade-compliance"
+  ],
+  "bundledSkills": [
+    { "id": "pre-clearance",           "server": "io.tradeops.mcp.jkdm-customs",     "description": "Standard pre-clearance procedure." },
+    { "id": "exception-investigation", "server": "io.tradeops.mcp.jkdm-customs",     "description": "Exception investigation and resolution flow." },
+    { "id": "control-review",          "server": "io.tradeops.mcp.trade-compliance", "description": "Review controls against a declaration." }
+  ]
+}

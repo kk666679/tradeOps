@@ -1,0 +1,19 @@
+{
+  "$schema": "https://modelcontextprotocol.io/schemas/2026-07-28/server.json",
+  "name": "io.tradeops.mcp.tradeops",
+  "title": "TradeOps",
+  "description": "Unified TradeOps MCP server: warehouse operations, bonded ledger, customs intelligence, IoT gateway, and audit governance.",
+  "version": "0.2.0",
+  "protocolVersion": "2026-07-28",
+  "tier": "Verified",
+  "status": "active",
+  "transport": ["stdio", "streamable-http"],
+  "stateless": true,
+  "canonicalResource": "https://tradeops.local/mcp/tradeops",
+  "capabilities": {
+    "io.modelcontextprotocol/tasks": true,
+    "io.modelcontextprotocol/ui": true,
+    "io.modelcontextprotocol/skills": true
+  },
+  "license": "MIT"
+}
