@@ -50,3 +50,8 @@ docs
 TODO/*
 # AutoClaw KDream data
 .autoclaw/
+
+# Claude Code personal overrides
+.claude/settings.local.json
+.claude/logs/
+.claude/cache/
