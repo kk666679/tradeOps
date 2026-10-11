@@ -227,11 +227,11 @@ source is a bug, not a feature. See [CONTRIBUTING.md](./CONTRIBUTING.md#the-gold
 | Layer | Technology |
 | ----- | ---------- |
 | Frontend | Next.js 16 (App Router, Cache Components), React 19, Tailwind CSS |
-| API | tRPC v11, Next.js Route Handlers, MCP servers |
+| API | NestJS + tRPC v11, Next.js Route Handlers, backend-hosted MCP at `/api/mcp` |
 | Database | PostgreSQL 16, Prisma ORM |
 | Cache / queue | Redis 7, BullMQ |
 | Vector store | Weaviate (BM25 + vector hybrid) |
-| AI / ML | LangChain, OpenAI-compatible LLMs, TensorFlow.js, ONNX Runtime, MCP |
+| AI / ML | LangChain, OpenAI-compatible LLMs, TensorFlow.js, ONNX Runtime, backend-hosted MCP |
 | Agent framework | Agent Mesh, contractual task orchestration, FSM routing |
 | Edge | Vercel Edge, Cloudflare Workers, on-prem ONNX inference |
 | Auth | JWT, bcrypt/argon2, WebAuthn passkeys, SSO/SCIM |
