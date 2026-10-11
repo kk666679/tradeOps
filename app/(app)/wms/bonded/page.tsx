@@ -9,16 +9,6 @@ import { BondedGuaranteeCard } from '@/components/wms/bonded/BondedGuaranteeCard
 import { BondedTransferForm } from '@/components/wms/bonded/BondedTransferForm';
 import { BondedWriteOffPanel } from '@/components/wms/bonded/BondedWriteOffPanel';
 
-const handleSubmit = async (values: Record<string, unknown>) => {
-  'use server';
-  console.log('Submit:', values);
-};
-
-const handleCancel = async () => {
-  'use server';
-  console.log('Cancel');
-};
-
 export const metadata: Metadata = { title: 'Bonded Warehouse' };
 
 export default function Page() {
@@ -35,7 +25,7 @@ export default function Page() {
         <BondedGuaranteeCard />
       </div>
       <div className="grid gap-6 lg:grid-cols-2">
-        <BondedTransferForm onSubmit={handleSubmit} onCancel={handleCancel} />
+        <BondedTransferForm />
         <BondedWriteOffPanel />
       </div>
     </div>

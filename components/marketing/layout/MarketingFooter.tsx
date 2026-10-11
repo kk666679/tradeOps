@@ -19,10 +19,10 @@ const COLS: { title: string; links: [string, string][] }[] = [
     ['Freight forwarders', '/solutions/forwarders'],
   ]},
   { title: 'Resources', links: [
-    ['Docs', '/docs'],
+    ['API docs', '/api-docs'],
     ['API', '/api-docs'],
     ['Changelog', '/changelog'],
-    ['Newsletter', '/newsletter'],
+    ['Newsletter', '/newletters'],
     ['Customers', '/customers'],
   ]},
   { title: 'Company', links: [

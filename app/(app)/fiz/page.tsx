@@ -11,16 +11,6 @@ import { FizSubcontractPanel } from '@/components/fiz-fcz/fiz/FizSubcontractPane
 import { FizWastageScrapPanel } from '@/components/fiz-fcz/fiz/FizWastageScrapPanel';
 import { FizApprovalWorkflow } from '@/components/fiz-fcz/fiz/FizApprovalWorkflow';
 
-const handleSubmit = async (values: Record<string, unknown>) => {
-  'use server';
-  console.log('Submit:', values);
-};
-
-const handleCancel = async () => {
-  'use server';
-  console.log('Cancel');
-};
-
 export const metadata: Metadata = { title: 'Free Industrial Zone (FIZ)' };
 
 export default function Page() {
@@ -38,10 +28,10 @@ export default function Page() {
       </div>
       <div className="grid gap-6 lg:grid-cols-2">
         <FizOperatorRegistry />
-        <FizSubcontractPanel onSubmit={handleSubmit} onCancel={handleCancel} />
+        <FizSubcontractPanel />
       </div>
       <div className="grid gap-6 lg:grid-cols-2">
-        <FizWastageScrapPanel onSubmit={handleSubmit} onCancel={handleCancel} />
+        <FizWastageScrapPanel />
         <FizApprovalWorkflow />
       </div>
     </div>

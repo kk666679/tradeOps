@@ -407,14 +407,7 @@ const SECTIONS: readonly Section[] = [
               processing, email delivery, error tracking, and analytics.
               These providers process personal data only on our instructions
               and under written agreements that require them to protect it.
-              A current list of subprocessors is available at{' '}
-              <a
-                href="/legal/subprocessors"
-                className="underline underline-offset-4 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-              >
-                /legal/subprocessors
-              </a>
-              .
+              Contact us to request the current list of subprocessors.{' '}
             </dd>
           </div>
           <div>
@@ -1119,10 +1112,10 @@ function DocumentFooter() {
             Data Processing Agreement
           </a>
           <a
-            href="/legal/subprocessors"
+            href="/contact"
             className="underline underline-offset-4 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
-            Subprocessors
+            Request subprocessors
           </a>
         </nav>
       </div>

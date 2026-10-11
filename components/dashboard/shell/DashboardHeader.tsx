@@ -1,125 +1,100 @@
 'use client';
+
 import * as React from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
+import { Menu, UserRound, LogOut, Settings, LoaderCircle, X } from 'lucide-react';
 import { Breadcrumb } from '@/components/navigation/Breadcrumb';
-import { ZoneSwitcher } from './ZoneSwitcher';
-import { RoleSwitcher } from './RoleSwitcher';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-
-/**
- * Workflow context labels: maps routes to workflow metadata
- * Used by DashboardHeader to show contextual information about
- * bonded operations and other special workflow states
- */
-const WORKFLOW_LABELS: Record<string, { label: string; status: 'live' | 'pending' | 'closed' }> = {
-  '/bonded-workflow': { label: 'Bonded Workflow', status: 'live' },
-  '/bonded': { label: 'Bonded Zone', status: 'live' },
-};
-
-/**
- * Section titles: maps primary routes to display names
- * Complements MarketingNavbar by providing page-level context
- */
-const SECTION_TITLES: Record<string, string> = {
-  '/trade-ops': 'Trade Operations',
-  '/wms': 'Warehouse Management',
-  '/fcz': 'Free Commercial Zone',
-  '/fiz': 'Free Industrial Zone',
-  '/order-management': 'Order Management',
-  '/dashboard': 'Command Center',
-  '/digital-twin': 'Digital Twin',
-  '/custom-agents': 'Custom Agents',
-  '/integration': 'Integrations',
-  '/settings': 'Settings',
-  '/bonded': 'Bonded Zone',
-  '/bonded-workflow': 'Bonded Workflow',
-};
+import { CommandPalette } from '@/components/navigation/CommandPalette';
+import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
+  DropdownMenuSeparator, DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { trpc, setAuthToken } from '@/lib/trpc';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface DashboardHeaderProps {
   isSidebarCollapsed?: boolean;
+  isMobileMenuOpen?: boolean;
+  isMobileViewport?: boolean;
   onToggleSidebar?: () => void;
 }
 
-export function DashboardHeader({ isSidebarCollapsed = false, onToggleSidebar }: DashboardHeaderProps) {
-  const [zone, setZone] = React.useState<'ALL' | 'FIZ' | 'FCZ'>('ALL');
-  const pathname = usePathname();
-  const workflow = WORKFLOW_LABELS[pathname];
-  
-  // Extract the section title from the current route
-  const sectionTitle = React.useMemo(() => {
-    for (const [route, title] of Object.entries(SECTION_TITLES)) {
-      if (pathname === route || (route !== '/' && pathname?.startsWith(route + '/'))) {
-        return title;
-      }
-    }
-    return null;
-  }, [pathname]);
+export function DashboardHeader({ isSidebarCollapsed = false, isMobileMenuOpen = false, isMobileViewport = false, onToggleSidebar }: DashboardHeaderProps) {
+  const [accountOpen, setAccountOpen] = React.useState(false);
+  const account = trpc.auth.me.useQuery(undefined, {
+    enabled: accountOpen,
+    retry: false,
+    refetchOnWindowFocus: false,
+  });
+  const router = useRouter();
+  const queryClient = useQueryClient();
+  const user = account.data;
+  const accountName = user?.email?.trim() || 'Account';
+
+  const signOut = () => {
+    setAuthToken(null);
+    queryClient.clear();
+    router.replace('/login');
+  };
 
   return (
-    <header className="flex flex-col border-b bg-background gap-0">
-      {/* Main header row: Sidebar toggle, page context, and controls */}
-      <div className="flex items-center justify-between px-4 py-2 gap-4">
-        {/* Left section: Sidebar toggle and page context */}
-        <div className="flex items-center gap-4 min-w-0">
-          {onToggleSidebar && (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 shrink-0"
-              onClick={onToggleSidebar}
-              aria-label={isSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-              aria-expanded={!isSidebarCollapsed}
-            >
-              {isSidebarCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
-            </Button>
-          )}
-          
-          {/* Page title and workflow context */}
-          <div className="hidden sm:flex items-center gap-3 min-w-0">
-            {sectionTitle && (
-              <div className="text-sm font-semibold text-foreground truncate">
-                {sectionTitle}
-              </div>
-            )}
-            {workflow && (
-              <div className="flex items-center gap-2">
-                <Badge 
-                  variant={workflow.status === 'live' ? 'default' : 'secondary'} 
-                  className="text-[10px] shrink-0"
-                >
-                  {workflow.status === 'live' ? '● Live' : workflow.status}
-                </Badge>
-                <span className="text-xs text-muted-foreground hidden md:inline">{workflow.label}</span>
-              </div>
-            )}
-          </div>
-        </div>
+    <header className="sticky top-0 z-30 flex h-14 shrink-0 items-center gap-2 border-b bg-background/95 px-2 sm:px-3 sm:gap-3 lg:px-4 overflow-x-hidden">
+      <Button
+        variant="ghost"
+        size="icon"
+        className="size-9 shrink-0"
+        onClick={onToggleSidebar}
+        aria-controls="dashboard-sidebar"
+        aria-label={isMobileViewport ? (isMobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu') : isSidebarCollapsed ? 'Expand navigation sidebar' : 'Collapse navigation sidebar'}
+        aria-expanded={isMobileViewport ? isMobileMenuOpen : !isSidebarCollapsed}
+      >
+        {isMobileViewport && isMobileMenuOpen ? <X className="size-4" aria-hidden="true" /> : <Menu className="size-4" aria-hidden="true" />}
+      </Button>
 
-        {/* Right section: Context-specific controls */}
-        <div className="flex items-center gap-2 shrink-0">
-          {/* Workflow-specific action */}
-          {pathname?.startsWith('/bonded') && !pathname?.includes('/bonded-workflow') ? (
-            <Button asChild variant="outline" size="sm" className="hidden sm:inline-flex">
-              <Link href="/bonded-workflow">Open workflow</Link>
-            </Button>
-          ) : null}
-          
-          {/* Zone context selector */}
-          <ZoneSwitcher value={zone} onChange={setZone} />
-          
-          {/* Role context selector */}
-          <RoleSwitcher />
-        </div>
-      </div>
-
-      {/* Breadcrumb row: Visible on md+ screens */}
-      <div className="hidden md:flex border-t">
+      <div className="hidden min-w-0 flex-1 sm:block">
         <Breadcrumb />
       </div>
+
+      <div className="flex min-w-0 flex-1 justify-start sm:flex-none sm:justify-center">
+        <CommandPalette />
+      </div>
+
+      <DropdownMenu open={accountOpen} onOpenChange={setAccountOpen}>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" size="icon" className="size-9 shrink-0" aria-label="Open account menu" aria-expanded={accountOpen}>
+            <UserRound className="size-4" aria-hidden="true" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-64">
+          <DropdownMenuLabel className="font-normal">
+            {account.isLoading ? (
+              <span className="flex items-center gap-2 text-muted-foreground"><LoaderCircle className="size-4 animate-spin" />Loading account…</span>
+            ) : user ? (
+              <span className="flex min-w-0 flex-col gap-1">
+                <span className="truncate text-sm font-medium text-foreground">{accountName}</span>
+                {user.email && <span className="truncate text-xs text-muted-foreground">{user.email}</span>}
+                {user.role && <span className="text-xs text-muted-foreground">{user.role}</span>}
+              </span>
+            ) : account.isError ? (
+              <span className="block whitespace-normal text-xs text-muted-foreground">Account details are unavailable. Your session may have expired.</span>
+            ) : (
+              <span className="text-xs text-muted-foreground">Account information unavailable.</span>
+            )}
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onSelect={() => router.push('/settings')}>
+            <Settings className="size-4" aria-hidden="true" />
+            Settings
+          </DropdownMenuItem>
+          <DropdownMenuItem onSelect={signOut}>
+            <LogOut className="size-4" aria-hidden="true" />
+            Sign out
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </header>
   );
 }
+
 export default DashboardHeader;

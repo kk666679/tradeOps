@@ -10,7 +10,7 @@ export interface CargoListProps { rows?: CargoListRow[]; empty?: string; onSelec
 export function CargoList({ rows = [], empty = 'No records', onSelect, onDelete, deletingId }: CargoListProps) {
   if (!rows.length) return <div className="p-6 text-sm text-muted-foreground">{empty}</div>;
   return (
-    <ScrollArea className="max-h-[32rem]">
+    <ScrollArea className="max-h-[32rem] min-w-0">
       <table className="w-full text-sm">
         <thead className="bg-muted/40 text-xs uppercase">
           <tr><th className="p-2 text-left">Reference</th><th className="p-2 text-left">Zone</th><th className="p-2 text-left">Status</th><th className="p-2 text-left">Description</th><th className="p-2 text-right">Actions</th></tr>

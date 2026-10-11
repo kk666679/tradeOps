@@ -24,7 +24,7 @@ export function Sidebar() {
   const pathname = usePathname()
 
   return (
-    <aside className="w-64 border-r bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 h-screen fixed left-0 top-0 z-50 hidden md:block">
+    <aside className="w-64 border-r bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 h-dvh fixed left-0 top-0 z-50 hidden md:block">
       <ScrollArea className="h-full">
         <div className="p-4">
           <Link href="/dashboard" aria-label="TradeOps Dashboard" className="inline-flex">

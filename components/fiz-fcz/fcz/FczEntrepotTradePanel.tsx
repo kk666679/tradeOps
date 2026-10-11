@@ -14,7 +14,7 @@ export type FczEntrepotTradePanelValues = Record<string, unknown>;
 export interface FczEntrepotTradePanelProps {
   initial?: FczEntrepotTradePanelValues;
   submitting?: boolean;
-  onSubmit: (v: FczEntrepotTradePanelValues) => void | Promise<void>;
+  onSubmit?: (v: FczEntrepotTradePanelValues) => void | Promise<void>;
   onCancel?: () => void;
 }
 
@@ -22,13 +22,14 @@ export function FczEntrepotTradePanel({ initial = {}, submitting, onSubmit, onCa
   const [values, setValues] = React.useState<FczEntrepotTradePanelValues>(initial);
   const set = (k: string) => (e: React.ChangeEvent<HTMLInputElement>) => setValues((v) => ({ ...v, [k]: e.target.value }));
   return (
-    <form className="space-y-4 p-4" onSubmit={(e) => { e.preventDefault(); void onSubmit(values); }}>
+    <form className="space-y-4 p-4" onSubmit={(e) => { e.preventDefault(); if (onSubmit) void onSubmit(values); }}>
       <div className="space-y-1">
         <Label htmlFor="ref">Reference</Label>
         <Input id="ref" value={String(values.ref ?? '')} onChange={set('ref')} />
       </div>
       <div className="flex gap-2">
-        <Button type="submit" disabled={submitting}>{submitting ? 'Saving…' : 'Save'}</Button>
+        <Button type="submit" disabled={submitting || !onSubmit}>{submitting ? 'Saving…' : onSubmit ? 'Save' : 'Not connected'}</Button>
+        {!onSubmit ? <p role="status" className="text-xs text-muted-foreground">This form is not connected to a save service. No changes will be stored.</p> : null}
         {onCancel ? <Button type="button" variant="outline" onClick={onCancel}>Cancel</Button> : null}
       </div>
     </form>

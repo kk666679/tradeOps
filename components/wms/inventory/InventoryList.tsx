@@ -10,7 +10,7 @@ export interface InventoryListProps { rows?: InventoryListRow[]; empty?: string;
 export function InventoryList({ rows = [], empty = 'No records', onSelect, onDelete, deletingId }: InventoryListProps) {
   if (!rows.length) return <div className="p-6 text-sm text-muted-foreground">{empty}</div>;
   return (
-    <ScrollArea className="max-h-[32rem]">
+    <ScrollArea className="max-h-[32rem] min-w-0">
       <table className="w-full text-sm">
         <thead className="bg-muted/40 text-xs uppercase">
           <tr><th className="p-2 text-left">SKU</th><th className="p-2 text-left">Zone</th><th className="p-2 text-left">Status</th><th className="p-2 text-left">Stock</th><th className="p-2 text-right">Actions</th></tr>

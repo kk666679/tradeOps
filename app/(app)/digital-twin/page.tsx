@@ -15,7 +15,7 @@ export const metadata: Metadata = { title: 'Digital Twin' };
 export default function Page() {
   return (
     <div className="space-y-6">
-      <PageHeader title="Digital Twin" description="Real-time warehouse simulation, zone visualization, and operational analytics" />
+      <PageHeader title="Digital Twin" description="Warehouse simulation, zone visualization, and operational analytics. Data availability depends on the configured twin services." />
       <TwinKpiStrip />
       <div className="grid gap-6 lg:grid-cols-2">
         <TwinCanvas />

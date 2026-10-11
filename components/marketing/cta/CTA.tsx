@@ -10,7 +10,7 @@ export function CTA() {
           <p className="mt-1 text-sm text-slate-500">See the platform in 30 minutes. Bring your zone topology and we will map it live.</p>
         </div>
         <div className="flex gap-2">
-          <Link href="/docs" className="rounded-md border px-5 py-2.5 text-sm font-medium hover:bg-slate-50">Read docs</Link>
+          <Link href="/api-docs" className="rounded-md border px-5 py-2.5 text-sm font-medium hover:bg-slate-50">Read API docs</Link>
           <Link href="/demo" className="rounded-md bg-slate-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-slate-800">Book a demo</Link>
         </div>
       </div>

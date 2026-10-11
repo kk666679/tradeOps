@@ -7,7 +7,7 @@ import { BrandLogo } from '@/components/branding/BrandLogo';
 const COLUMNS: [string, [string, string][]][] = [
   ['Product', [['Trade OPS', '/product/trade-ops'], ['WMS FIZ', '/product/wms-fiz'], ['WMS FCZ', '/product/wms-fcz'], ['Order Mgmt', '/product/order-management'], ['Digital Twin', '/product/digital-twin'], ['Custom Agents', '/product/custom-agents']]],
   ['Solutions', [['FIZ Operators', '/solutions/fiz'], ['FCZ Operators', '/solutions/fcz'], ['Customs Brokers', '/solutions/brokers'], ['CFS 3PL', '/solutions/cfs-3pl'], ['Freight Forwarders', '/solutions/forwarders']]],
-  ['Resources', [['Docs', '/docs'], ['API', '/api-docs'], ['Changelog', '/changelog'], ['Blog', '/blog'], ['Case Studies', '/customers']]],
+  ['Resources', [['API docs', '/api-docs'], ['Changelog', '/changelog'], ['Newsletter', '/newletters'], ['Customers', '/customers']]],
   ['Company', [['About', '/about'], ['Careers', '/careers'], ['Security', '/security'], ['Contact', '/contact']]],
   ['Legal', [['Privacy', '/legal/privacy'], ['Terms', '/legal/terms'], ['DPA', '/legal/dpa'], ['SLA', '/legal/sla']]],
 ];

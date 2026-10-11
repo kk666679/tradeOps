@@ -28,10 +28,10 @@ export default function LogisticsDashboard() {
   };
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="max-w-full w-full p-2 sm:p-4 overflow-x-hidden">
       <h1 className="text-2xl font-bold mb-4">AI Logistics Assistant</h1>
-      <div className="flex h-[70vh]">
-        <div className="flex-1 border rounded-lg p-4 overflow-y-auto">
+      <div className="flex flex-col gap-4 lg:flex-row lg:h-[70vh]">
+        <div className="flex-1 border rounded-lg p-4 overflow-y-auto min-w-0">
           <Conversation>
             {messages.map((msg, i) => (
               <Message key={i} from={msg.role as any} role={msg.role as any}>
@@ -43,7 +43,7 @@ export default function LogisticsDashboard() {
             ))}
             {isLoading && <LoadingSpinner />}
           </Conversation>
-          <form onSubmit={handleSubmit} className="mt-4 flex gap-2">
+          <form onSubmit={handleSubmit} className="mt-4 flex flex-col gap-2 sm:flex-row">
             <input
               type="text"
               value={input}
@@ -54,7 +54,7 @@ export default function LogisticsDashboard() {
             <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">Send</button>
           </form>
         </div>
-        <div className="w-80 ml-4 border rounded-lg p-4">
+        <div className="w-full lg:w-80 lg:ml-4 border rounded-lg p-4 min-w-0">
           <Agent />
           <div className="mt-4">
             <h3 className="font-semibold">Quick Actions</h3>

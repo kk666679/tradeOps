@@ -9,16 +9,6 @@ import { OutboundDispatchForm } from '@/components/wms/outbound/OutboundDispatch
 import { OutboundCustomsLink } from '@/components/wms/outbound/OutboundCustomsLink';
 import { OutboundDutyCalculator } from '@/components/wms/outbound/OutboundDutyCalculator';
 
-const handleSubmit = async (values: Record<string, unknown>) => {
-  'use server';
-  console.log('Submit:', values);
-};
-
-const handleCancel = async () => {
-  'use server';
-  console.log('Cancel');
-};
-
 export const metadata: Metadata = { title: 'Outbound Operations' };
 
 export default function Page() {
@@ -32,7 +22,7 @@ export default function Page() {
       </div>
       <div className="grid gap-6 lg:grid-cols-3">
         <OutboundPackPanel />
-        <OutboundDispatchForm onSubmit={handleSubmit} onCancel={handleCancel} />
+        <OutboundDispatchForm />
         <OutboundCustomsLink />
       </div>
       <OutboundDutyCalculator />

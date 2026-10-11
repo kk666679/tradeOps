@@ -41,7 +41,7 @@ export function Header() {
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56" align="end" forceMount>
               <DropdownMenuItem asChild>
-                <Link href="/profile">Profile</Link>
+                <Link href="/settings/profile">Profile</Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link href="/settings">Settings</Link>

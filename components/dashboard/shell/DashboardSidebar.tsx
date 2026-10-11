@@ -148,13 +148,14 @@ const SUBPAGES: Record<string, NavLeaf[]> = {
 
 interface SidebarProps {
   isCollapsed?: boolean;
+  isMobileOpen?: boolean;
 }
 
-export function DashboardSidebar({ isCollapsed: isCollapsedProp }: SidebarProps) {
+export function DashboardSidebar({ isCollapsed: isCollapsedProp, isMobileOpen = false }: SidebarProps) {
   const pathname = usePathname();
   // Internal collapse state so the built-in toggle works even when no prop is passed.
   const [collapsedInternal, setCollapsedInternal] = React.useState(false);
-  const isCollapsed = isCollapsedProp ?? collapsedInternal;
+  const isCollapsed = isMobileOpen ? false : (isCollapsedProp ?? collapsedInternal);
   const [openGroups, setOpenGroups] = React.useState<string[]>(['Operations']);
   // Per-feature dropdown open state, keyed by feature label.
   const [openFeatures, setOpenFeatures] = React.useState<string[]>([]);
@@ -181,14 +182,18 @@ export function DashboardSidebar({ isCollapsed: isCollapsedProp }: SidebarProps)
   }, [pathname]);
 
   return (
-    <aside className={cn('border-r bg-background transition-all duration-300', isCollapsed ? 'w-16' : 'w-60')}>
+    <aside className={cn(
+      'z-50 flex h-full shrink-0 flex-col border-r bg-background transition-[width,transform] duration-200 md:sticky md:top-0 md:z-20 md:h-dvh md:translate-x-0',
+      isMobileOpen ? 'fixed inset-y-0 left-0 w-72 shadow-xl md:relative md:shadow-none' : 'hidden md:flex',
+      isCollapsed ? 'md:w-16' : 'md:w-60',
+    )} id="dashboard-sidebar" aria-label="Application navigation">
       <div className="p-3">
         <Link href="/dashboard" className="flex items-center" aria-label="TradeOps Dashboard">
           {!isCollapsed && <BrandLogo size="md" variant="full" />}
           {isCollapsed && <BrandLogo size="md" variant="compact" />}
         </Link>
       </div>
-      <nav className="space-y-2 p-2 text-sm">
+      <nav className="min-h-0 flex-1 space-y-2 overflow-y-auto p-2 text-sm" aria-label="Primary">
         {GROUPS.map(([group, items]) => {
           const GroupIcon = GROUP_ICONS[group];
           const isOpen = openGroups.includes(group);

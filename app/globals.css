@@ -958,6 +958,20 @@
   }
 }
 
+}
+
+/* Utility: allow horizontal scroll on small screens when needed */
+.scroll-x {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 1024px) {
+  main {
+    max-width: 100%;
+  }
+}
+
 /* Small phones: tighten glass blur for GPU headroom */
 @media (max-width: 480px) {
   :root {

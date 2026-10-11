@@ -10,9 +10,9 @@ export interface CTABandProps {
 
 export function CTABand({
   title = 'Ready to run your FIZ / FCZ on one platform?',
-  subtitle = 'Bring your zone topology, we will map it live in 30 minutes.',
+  subtitle = 'Talk with our team about your zone topology and operating requirements.',
   primary = { label: 'Book a walkthrough', href: '/demo' },
-  secondary = { label: 'Read the docs', href: '/docs' },
+  secondary = { label: 'Read API docs', href: '/api-docs' },
 }: CTABandProps) {
   return (
     <section className="bg-muted/60">

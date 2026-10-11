@@ -9,12 +9,12 @@ import Link from 'next/link';
  *
  * This page lists newsletter issues with a featured issue, topic filter, and
  * a prominent subscribe form. The mock data at the top is illustrative; in
- * production it should be replaced by a call to `@/lib/newsletters`:
+ * production it should be replaced by a call to `@/lib/newletters`:
  *
- *   import { getIssues, getTopics } from '@/lib/newsletters';
+ *   import { getIssues, getTopics } from '@/lib/newletters';
  *
  * The content source is typically one of:
- *   - MDX files in a `content/newsletters/` directory, read with
+ *   - MDX files in a `content/newletters/` directory, read with
  *     `next-mdx-remote` or `@next/mdx`
  *   - A CMS (Contentful, Sanity, Payload) queried at build time
  *   - A markdown collection read with Contentlayer or Velite
@@ -29,7 +29,7 @@ import Link from 'next/link';
  */
 
 // ---------------------------------------------------------------------------
-// Types — these belong in `@/lib/newsletters` in production
+// Types — these belong in `@/lib/newletters` in production
 // ---------------------------------------------------------------------------
 
 type Contributor = {
@@ -62,7 +62,7 @@ type IssueMeta = {
 
 // ---------------------------------------------------------------------------
 // Mock data — replace with `getIssues()` and `getTopics()` from
-// `@/lib/newsletters`
+// `@/lib/newletters`
 // ---------------------------------------------------------------------------
 
 const CONTRIBUTORS: Record<string, Contributor> = {
@@ -111,7 +111,7 @@ const ISSUES: IssueMeta[] = [
     readingTimeMinutes: 8,
     featured: true,
     coverImage: {
-      url: '/newsletters/issue-042/cover.jpg',
+      url: '/newletters/issue-042/cover.jpg',
       alt: 'A customs declaration form with an audit trail overlay',
     },
   },
@@ -158,7 +158,7 @@ const ISSUES: IssueMeta[] = [
 // ---------------------------------------------------------------------------
 
 const BASE_URL = 'https://tradeops.example';
-const PAGE_URL = `${BASE_URL}/newsletters`;
+const PAGE_URL = `${BASE_URL}/newletters`;
 const PAGE_TITLE = 'Newsletters';
 const PAGE_DESCRIPTION =
   'The TradeOps Dispatch — writing on customs compliance, Free Zone ' +
@@ -170,9 +170,6 @@ export const metadata: Metadata = {
   description: PAGE_DESCRIPTION,
   alternates: {
     canonical: PAGE_URL,
-    types: {
-      'application/rss+xml': `${BASE_URL}/newsletters/rss.xml`,
-    },
   },
   openGraph: {
     type: 'website',
@@ -240,14 +237,6 @@ function ArrowRightIcon(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
-function RssIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}>
-      <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.36 20 6.18 20 5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18ZM4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27Zm0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93Z" />
-    </svg>
-  );
-}
-
 // ---------------------------------------------------------------------------
 // Components
 // ---------------------------------------------------------------------------
@@ -269,9 +258,9 @@ function Hero() {
         </h1>
 
         <p className="mt-4 max-w-2xl text-pretty text-lg text-muted-foreground">
-          A two-weekly dispatch on trade compliance, Free Zone operations, and
-          the engineering behind a customs platform. Long-form, no fluff,
-          sourced where it matters.
+          Sample newsletter content on trade compliance, Free Zone operations,
+          and platform engineering. This archive is illustrative and is not
+          connected to a publishing system.
         </p>
 
         <div className="mt-8 flex flex-wrap items-center gap-3">
@@ -282,13 +271,7 @@ function Hero() {
             Subscribe
             <ArrowRightIcon className="h-4 w-4" />
           </Link>
-          <Link
-            href="/newsletters/rss.xml"
-            className="inline-flex items-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-          >
-            <RssIcon className="h-4 w-4" />
-            RSS
-          </Link>
+
         </div>
       </div>
     </header>
@@ -320,7 +303,7 @@ function FeaturedIssue({ issue }: { issue: IssueMeta }) {
             </span>
             <span aria-hidden="true">·</span>
             <Link
-              href={`/newsletters?topic=${issue.topic.id}`}
+              href={`/newletters?topic=${issue.topic.id}`}
               className="inline-flex items-center rounded-md border bg-muted/40 px-2 py-0.5 font-medium transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
               {issue.topic.name}
@@ -329,7 +312,7 @@ function FeaturedIssue({ issue }: { issue: IssueMeta }) {
 
           <h2 className="mt-4 text-2xl font-semibold tracking-tight">
             <Link
-              href={`/newsletters/${issue.slug}`}
+              href={`/newletters/${issue.slug}`}
               className="transition-colors hover:text-foreground/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
               {issue.title}
@@ -354,7 +337,7 @@ function FeaturedIssue({ issue }: { issue: IssueMeta }) {
 
           <div className="mt-4">
             <Link
-              href={`/newsletters/${issue.slug}`}
+              href={`/newletters/${issue.slug}`}
               className="inline-flex items-center gap-1.5 text-sm font-medium transition-colors hover:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
               Read this issue
@@ -380,8 +363,8 @@ function TopicFilter({
         const isActive = topic.id === activeTopic;
         const href =
           topic.id === 'all'
-            ? '/newsletters'
-            : `/newsletters?topic=${topic.id}`;
+            ? '/newletters'
+            : `/newletters?topic=${topic.id}`;
         return (
           <Link
             key={topic.id}
@@ -405,7 +388,7 @@ function IssueCard({ issue }: { issue: IssueMeta }) {
   return (
     <article className="group flex flex-col overflow-hidden rounded-xl border bg-background transition-shadow hover:shadow-md">
       <Link
-        href={`/newsletters/${issue.slug}`}
+        href={`/newletters/${issue.slug}`}
         className="flex flex-1 flex-col p-6 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
       >
         <div className="flex items-center gap-2 text-xs">
@@ -449,7 +432,7 @@ function IssueGrid({ issues }: { issues: IssueMeta[] }) {
           No issues in this topic yet.
         </p>
         <Link
-          href="/newsletters"
+          href="/newletters"
           className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium transition-colors hover:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
           View all issues
@@ -509,16 +492,7 @@ function SubscribeCTA() {
           </button>
         </form>
 
-        <p className="mt-4 text-xs text-muted-foreground">
-          Or subscribe via{' '}
-          <Link
-            href="/newsletters/rss.xml"
-            className="underline underline-offset-4 hover:text-foreground"
-          >
-            RSS
-          </Link>
-          . Past issues are archived below.
-        </p>
+        <p className="mt-4 text-xs text-muted-foreground">Past issues are archived below.</p>
       </div>
     </div>
   );
@@ -544,7 +518,7 @@ function StructuredData({ issues }: { issues: IssueMeta[] }) {
         item: {
           '@type': 'Article',
           headline: issue.title,
-          url: `${BASE_URL}/newsletters/${issue.slug}`,
+          url: `${BASE_URL}/newletters/${issue.slug}`,
           datePublished: issue.publishedAt,
           author: {
             '@type': 'Person',

@@ -77,7 +77,7 @@ export default function WorkflowPage() {
         title="One connected bonded workflow"
         subtitle="FIZ production, bonded transfer, FCZ commercial flows, duty reconciliation, and audit close — every step is an explicit event on the bonded ledger. Click any step for its event id, owning agent, and neighbours."
         primary={{ label: 'Book a walkthrough', href: '/demo' }}
-        secondary={{ label: 'Read the docs', href: '/docs' }}
+        secondary={{ label: 'Read API docs', href: '/api-docs' }}
       />
 
       {/* ───────────────────────────── EXPLORER ───────────────────────────── */}

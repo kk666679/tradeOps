@@ -9,6 +9,10 @@
 export const APP_ROUTES = {
   // Core
   dashboard: '/dashboard',
+  orders: '/order-management',
+  agents: '/custom-agents',
+  integrations: '/integration',
+  profile: '/settings/profile',
   dashboardOperations: '/dashboard/operations',
   dashboardCustoms: '/dashboard/customs',
   dashboardAgents: '/dashboard/agents',
@@ -152,6 +156,7 @@ export type AppRoute = (typeof APP_ROUTES)[keyof typeof APP_ROUTES];
 export const MARKETING_ROUTES = {
   home: '/',
   login: '/login',
+  signIn: '/login',
   register: '/register',
   forgotPassword: '/forgot-password',
   resetPassword: '/reset-password',

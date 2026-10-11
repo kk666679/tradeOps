@@ -3,15 +3,16 @@ import * as React from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { BrandLogo } from '@/components/branding/BrandLogo';
+import { MARKETING_ROUTES } from '@/config/routes';
 
 const LINKS: [string, string][] = [
   ['Product', '/#product'],
-  ['Workflow', '/workflow'],
-  ['FIZ', '/#fiz'],
-  ['FCZ', '/#fcz'],
-  ['Pricing', '/#pricing'],
-  ['Docs', '/docs'],
-  ['Blog', '/blog'],
+  ['Workflow', MARKETING_ROUTES.workflow],
+  ['FIZ', '/solutions/fiz'],
+  ['FCZ', '/solutions/fcz'],
+  ['Pricing', MARKETING_ROUTES.pricing],
+  ['API docs', MARKETING_ROUTES.apiDocs],
+  ['Customers', MARKETING_ROUTES.customers],
 ];
 
 export interface MarketingNavbarProps { ctaHref?: string; ctaLabel?: string; }
@@ -32,10 +33,10 @@ export function MarketingNavbar({ ctaHref = '/demo', ctaLabel = 'Book a demo' }:
           <Button asChild variant="ghost" size="sm"><Link href="/login">Sign in</Link></Button>
           <Button asChild size="sm"><Link href={ctaHref}>{ctaLabel}</Link></Button>
         </div>
-        <button className="md:hidden" aria-label="Menu" onClick={() => setOpen((v) => !v)}>≡</button>
+        <button className="md:hidden" aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} aria-controls="marketing-mobile-menu" onClick={() => setOpen((v) => !v)}>≡</button>
       </nav>
       {open ? (
-        <div className="border-t px-4 py-3 md:hidden">
+        <div id="marketing-mobile-menu" className="border-t px-4 py-3 md:hidden">
           <ul className="space-y-2 text-sm">
             {LINKS.map(([label, href]) => (
               <li key={href}><Link href={href} onClick={() => setOpen(false)}>{label}</Link></li>

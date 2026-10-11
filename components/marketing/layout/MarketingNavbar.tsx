@@ -4,47 +4,37 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { BrandLogo } from '@/components/branding/BrandLogo';
 import { cn } from '@/lib/utils';
-import { CircleUser, LogOut, Settings, UserCircle, Menu, X, Download } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { analyticsTracker } from '@/lib/analytics/navigationAnalytics';
+import { APP_ROUTES, MARKETING_ROUTES } from '@/config/routes';
 
 interface NavChild { label: string; href: string; hint?: string }
 interface NavItem  { label: string; href: string; children?: NavChild[] }
 
-/**
- * User profile type - can be extended with auth provider integration
- * Currently supports mock/placeholder user state
- */
-interface UserProfile {
-  name: string;
-  email: string;
-  avatar?: string;
-  role?: string;
-}
-
 const NAV: NavItem[] = [
   { label: 'Product', href: '/product', children: [
-    { label: 'Trade OPS',        href: '/trade-ops',                hint: 'Customs + agents' },
-    { label: 'WMS · FIZ',        href: '/wms',                      hint: 'Free Industrial Zone' },
-    { label: 'WMS · FCZ',        href: '/fcz',                      hint: 'Free Commercial Zone' },
-    { label: 'Bonded Workflow',  href: '/bonded-workflow',          hint: 'Bonded flow explorer' },
-    { label: 'Order Management', href: '/order-management',         hint: 'Purchase to Fulfilment' },
-    { label: 'Digital Twin',     href: '/digital-twin',             hint: 'Simulate before commit' },
-    { label: 'Custom Agents',    href: '/custom-agents',            hint: '7-agent mesh' },
+    { label: 'Trade OPS',        href: APP_ROUTES.tradeOps,       hint: 'Customs + agents' },
+    { label: 'WMS · FIZ',        href: APP_ROUTES.wms,            hint: 'Free Industrial Zone' },
+    { label: 'WMS · FCZ',        href: APP_ROUTES.fcz,            hint: 'Free Commercial Zone' },
+    { label: 'Bonded Workflow',  href: APP_ROUTES.bondedWorkflow, hint: 'Bonded flow explorer' },
+    { label: 'Order Management', href: APP_ROUTES.orders,         hint: 'Purchase to Fulfilment' },
+    { label: 'Digital Twin',     href: APP_ROUTES.digitalTwin,    hint: 'Simulate before commit' },
+    { label: 'Custom Agents',    href: APP_ROUTES.agents,         hint: 'Agent orchestration' },
   ]},
   { label: 'Solutions', href: '/solutions/fiz', children: [
-    { label: 'FIZ operators',      href: '/fiz',              hint: 'Manufacturing, duty-suspended' },
-    { label: 'FCZ operators',      href: '/fcz',              hint: 'Transhipment, entrepot' },
-    { label: 'Bonded zones',       href: '/bonded',           hint: 'Customs warehousing' },
-    { label: 'Customs brokers',    href: '/trade-ops',        hint: 'File more, prep less' },
-    { label: 'Order Management',   href: '/order-management', hint: 'Multi-customer bonded' },
+    { label: 'FIZ operators',      href: APP_ROUTES.fiz,      hint: 'Manufacturing, duty-suspended' },
+    { label: 'FCZ operators',      href: APP_ROUTES.fcz,      hint: 'Transhipment, entrepot' },
+    { label: 'Bonded zones',       href: APP_ROUTES.bonded,   hint: 'Customs warehousing' },
+    { label: 'Customs brokers',    href: APP_ROUTES.tradeOps, hint: 'File more, prep less' },
+    { label: 'Order Management',   href: APP_ROUTES.orders,   hint: 'Multi-customer bonded' },
   ]},
-  { label: 'Intelligence', href: '/dashboard', children: [
-    { label: 'Dashboard',    href: '/dashboard',      hint: 'Command center' },
-    { label: 'Digital Twin', href: '/digital-twin',   hint: 'Simulation & analytics' },
-    { label: 'Custom Agents', href: '/custom-agents', hint: 'Agent orchestration' },
+  { label: 'Intelligence', href: APP_ROUTES.dashboard, children: [
+    { label: 'Dashboard',     href: APP_ROUTES.dashboard,   hint: 'Command center' },
+    { label: 'Digital Twin',  href: APP_ROUTES.digitalTwin, hint: 'Simulation & analytics' },
+    { label: 'Custom Agents', href: APP_ROUTES.agents,      hint: 'Agent orchestration' },
   ]},
-  { label: 'Integrations', href: '/integration' },
-  { label: 'Settings', href: '/settings' },
+  { label: 'Integrations', href: APP_ROUTES.integrations },
+  { label: 'Settings', href: APP_ROUTES.settings },
 ];
 
 /**
@@ -55,138 +45,6 @@ const NAV: NavItem[] = [
  * lg: 1024px-1279px (Small laptops)
  * xl: ≥ 1280px (Large desktops)
  */
-
-/**
- * UserProfileMenu: User account dropdown component
- * Displays user info and provides access to profile, settings, and logout
- * Responsive: Hidden on mobile, visible on md+
- */
-function UserProfileMenu({ user }: { user: UserProfile | null }) {
-  const [open, setOpen] = React.useState(false);
-  const dropdownRef = React.useRef<HTMLDivElement>(null);
-
-  // Close dropdown when clicking outside
-  React.useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setOpen(false);
-      }
-    };
-
-    if (open) {
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
-    }
-  }, [open]);
-
-  // Handle analytics export
-  const handleExportAnalytics = (): void => {
-    const exportData = analyticsTracker.export();
-    const jsonString = JSON.stringify(exportData, null, 2);
-    const blob = new Blob([jsonString], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `nav-analytics-${exportData.sessionId}.json`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  };
-
-  // Check if user has admin or dev role
-  // NOTE: This check currently uses mock user data. In production, this should read from
-  // a real auth context (NextAuth, Auth0, Clerk, etc.). The canExportAnalytics gate will
-  // remain hidden until the user object is populated with actual role data from auth.
-  const canExportAnalytics: boolean = user?.role ? ['admin', 'dev'].includes(user.role) : false;
-
-  if (!user) return null;
-
-  return (
-    <div className="relative" ref={dropdownRef}>
-      <button
-        onClick={() => setOpen(!open)}
-        className="flex items-center gap-2 rounded-md px-2 sm:px-2.5 py-1.5 text-xs sm:text-sm text-muted-foreground hover:bg-accent transition-colors"
-        aria-label="User menu"
-        aria-expanded={open}
-      >
-        <CircleUser className="h-4 w-4 shrink-0" />
-        <span className="hidden sm:inline truncate max-w-[100px] md:max-w-[120px]">{user.name}</span>
-      </button>
-
-      {open && (
-        <div className="absolute right-0 mt-1 w-52 sm:w-56 rounded-md border bg-popover shadow-lg z-50 animate-in fade-in slide-in-from-top-2">
-          {/* User info section */}
-          <div className="border-b px-3 sm:px-4 py-2.5 sm:py-3">
-            <div className="flex items-center gap-2 sm:gap-3">
-              <div className="h-7 sm:h-8 w-7 sm:w-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                <UserCircle className="h-4 sm:h-5 w-4 sm:w-5 text-primary" />
-              </div>
-              <div className="min-w-0 flex-1">
-                <div className="text-xs sm:text-sm font-medium truncate">{user.name}</div>
-                <div className="text-xs text-muted-foreground truncate">{user.email}</div>
-                {user.role && (
-                  <div className="text-xs text-muted-foreground mt-0.5 truncate">{user.role}</div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Menu items */}
-          <div className="py-1">
-            <Link
-              href="/settings/profile"
-              onClick={() => setOpen(false)}
-              className="flex items-center gap-2 px-3 sm:px-4 py-2 text-xs sm:text-sm text-muted-foreground hover:bg-accent transition-colors"
-            >
-              <UserCircle className="h-4 w-4 shrink-0" />
-              <span>Profile</span>
-            </Link>
-            <Link
-              href="/settings"
-              onClick={() => setOpen(false)}
-              className="flex items-center gap-2 px-3 sm:px-4 py-2 text-xs sm:text-sm text-muted-foreground hover:bg-accent transition-colors"
-            >
-              <Settings className="h-4 w-4 shrink-0" />
-              <span>Settings</span>
-            </Link>
-          </div>
-
-          {/* Analytics export section */}
-          {canExportAnalytics && (
-            <div className="border-t py-1">
-              <button
-                onClick={() => {
-                  handleExportAnalytics();
-                  setOpen(false);
-                }}
-                className="w-full flex items-center gap-2 px-3 sm:px-4 py-2 text-xs sm:text-sm text-muted-foreground hover:bg-accent transition-colors text-left"
-              >
-                <Download className="h-4 w-4 shrink-0" />
-                <span>Export Analytics</span>
-              </button>
-            </div>
-          )}
-
-          {/* Logout section */}
-          <div className="border-t py-1">
-            <button
-              className="w-full flex items-center gap-2 px-3 sm:px-4 py-2 text-xs sm:text-sm text-destructive hover:bg-destructive/10 transition-colors"
-              onClick={() => {
-                setOpen(false);
-                // Connect to auth provider's logout method
-                // window.location.href = '/api/auth/logout';
-              }}
-            >
-              <LogOut className="h-4 w-4 shrink-0" />
-              <span>Sign out</span>
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
 
 export function MarketingNavbar() {
   const pathname = usePathname();
@@ -253,14 +111,6 @@ export function MarketingNavbar() {
     }
   }, [screenSize]);
 
-  // Mock user - replace with actual auth context/hook
-  // TODO: Integrate with auth provider (NextAuth, Auth0, Clerk, etc)
-  const [user, setUser] = React.useState<UserProfile | null>({
-    name: 'Alex Johnson',
-    email: 'alex@tradeops.com',
-    role: 'Operations Manager',
-  });
-
   // Check if a route is active (exact match or starts with path)
   const isActive = (href: string): boolean => {
     if (pathname === href) return true;
@@ -320,35 +170,29 @@ export function MarketingNavbar() {
           })}
         </ul>
 
-        {/* Right Section: User Menu & Auth */}
+        {/* Authentication entry points */}
         <div className="flex items-center gap-1 sm:gap-1.5 md:gap-2 lg:gap-3 shrink-0">
-          {/* User Profile Menu - Visible on md+ (≥ 768px) */}
-          <div className="hidden md:block">
-            <UserProfileMenu user={user} />
-          </div>
-
           {/* Auth Buttons - Desktop only (lg+, ≥ 1024px) */}
-          {!user && (
-            <div className="hidden lg:flex gap-1.5 xl:gap-2">
+          <div className="hidden lg:flex gap-1.5 xl:gap-2">
               <Link 
-                href="/login" 
+                href={MARKETING_ROUTES.signIn}
                 className="rounded-md px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm text-muted-foreground hover:bg-accent transition-colors whitespace-nowrap"
               >
                 Sign in
               </Link>
               <Link 
-                href="/demo" 
+                href={MARKETING_ROUTES.demo}
                 className="rounded-md bg-foreground px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-medium text-background transition-colors hover:bg-foreground/80 whitespace-nowrap"
               >
                 Book demo
               </Link>
-            </div>
-          )}
+          </div>
 
           {/* Mobile Menu Toggle - Visible on md- (< 1024px) */}
           <button
             className="lg:hidden p-1.5 rounded-md hover:bg-accent transition-colors"
-            aria-label="Toggle menu"
+            aria-label={open ? 'Close application menu' : 'Open application menu'}
+            aria-controls="application-mobile-menu"
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
           >
@@ -391,7 +235,7 @@ export function MarketingNavbar() {
 
       {/* Mobile Menu - Visible on md- (< 1024px) */}
       {open ? (
-        <div className="lg:hidden border-t px-2 xs:px-3 sm:px-4 py-2 sm:py-3 bg-background/95 backdrop-blur max-h-[calc(100vh-64px)] overflow-y-auto">
+        <div id="application-mobile-menu" className="lg:hidden border-t px-2 xs:px-3 sm:px-4 py-2 sm:py-3 bg-background/95 backdrop-blur max-h-[calc(100vh-64px)] overflow-y-auto">
           {/* Mobile Navigation Items */}
           <ul className="space-y-0.5 sm:space-y-1 text-sm mb-3 sm:mb-4">
             {NAV.map((item) => {
@@ -463,50 +307,22 @@ export function MarketingNavbar() {
 
           {/* Mobile: User section and auth links */}
           <div className="border-t border-border/50 pt-2 sm:pt-3">
-            {user ? (
-              <div className="space-y-0.5 sm:space-y-1">
-                <Link
-                  href="/settings/profile"
-                  onClick={() => setOpen(false)}
-                  className="flex items-center gap-2 px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm text-muted-foreground hover:bg-accent/50 rounded-md transition-colors"
-                >
-                  <UserCircle className="h-4 w-4 shrink-0" />
-                  <span>{user.name}</span>
-                </Link>
-                <Link
-                  href="/settings"
-                  onClick={() => setOpen(false)}
-                  className="flex items-center gap-2 px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm text-muted-foreground hover:bg-accent/50 rounded-md transition-colors"
-                >
-                  <Settings className="h-4 w-4 shrink-0" />
-                  <span>Settings</span>
-                </Link>
-                <button
-                  onClick={() => setOpen(false)}
-                  className="w-full flex items-center gap-2 px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm text-destructive hover:bg-destructive/10 rounded-md transition-colors text-left"
-                >
-                  <LogOut className="h-4 w-4 shrink-0" />
-                  <span>Sign out</span>
-                </button>
-              </div>
-            ) : (
-              <div className="flex flex-col gap-1.5 sm:gap-2">
+            <div className="flex flex-col gap-1.5 sm:gap-2">
                 <Link 
-                  href="/login" 
+                  href={MARKETING_ROUTES.signIn}
                   onClick={() => setOpen(false)} 
                   className="rounded-md border border-border px-2.5 sm:px-3 py-2 sm:py-2.5 text-center text-xs sm:text-sm text-muted-foreground hover:bg-accent/50 transition-colors"
                 >
                   Sign in
                 </Link>
                 <Link 
-                  href="/demo" 
+                  href={MARKETING_ROUTES.demo}
                   onClick={() => setOpen(false)} 
                   className="rounded-md bg-foreground px-2.5 sm:px-3 py-2 sm:py-2.5 text-center text-xs sm:text-sm font-medium text-background transition-colors hover:bg-foreground/80"
                 >
                   Book demo
                 </Link>
-              </div>
-            )}
+            </div>
           </div>
         </div>
       ) : null}

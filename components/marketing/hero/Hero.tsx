@@ -20,7 +20,7 @@ export function Hero() {
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Button asChild size="lg"><Link href="/demo">Book a demo</Link></Button>
-            <Button asChild size="lg" variant="outline"><Link href="/docs">Read the docs</Link></Button>
+            <Button asChild size="lg" variant="outline"><Link href="/api-docs">Read the API docs</Link></Button>
           </div>
           <HeroStats items={[{ label: 'Zones live', value: '40+' }, { label: 'Declarations/mo', value: '120k' }, { label: 'Agent actions', value: '2.1M' }, { label: 'Uptime', value: '99.98%' }]} />
         </div>

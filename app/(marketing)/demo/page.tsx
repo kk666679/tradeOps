@@ -213,14 +213,14 @@ function Hero() {
 
         <div className="mt-8 flex flex-wrap items-center gap-3">
           <Link
-            href="/demo/tour"
+            href="/workflow"
             className="inline-flex items-center gap-2 rounded-lg bg-foreground px-4 py-2.5 text-sm font-medium text-background transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
-            Take the tour
+            Explore the workflow
             <ArrowRightIcon className="h-4 w-4" />
           </Link>
           <Link
-            href="/docs"
+            href="/api-docs"
             className="inline-flex items-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             Read the docs
@@ -361,7 +361,7 @@ function FinalCTA() {
         </p>
         <div className="mt-7 flex flex-wrap justify-center gap-3">
           <Link
-            href="/demo/tour"
+            href="/workflow"
             className="inline-flex items-center gap-2 rounded-lg bg-foreground px-4 py-2.5 text-sm font-medium text-background transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             Start the walkthrough

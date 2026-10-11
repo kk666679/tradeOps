@@ -77,18 +77,18 @@ export function RecentActivity({ loading = false }: { loading?: boolean }) {
         ) : (
           <div className="space-y-4">
             {items.map((item) => (
-              <div key={item.id} className="flex items-center justify-between border-b border-slate-100 pb-4 last:border-0">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
+              <div key={item.id} className="flex flex-col gap-2 border-b border-slate-100 pb-4 last:border-0 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
                     <p className="font-medium text-slate-950">{item.action}</p>
                     <Badge className={statusColors[item.status]} variant="secondary">
                       {item.status}
                     </Badge>
                   </div>
-                  <p className="text-sm text-slate-600">{item.description}</p>
+                  <p className="text-sm text-slate-600 break-words">{item.description}</p>
                   <p className="text-xs text-slate-500 mt-1">{formatTime(item.timestamp)}</p>
                 </div>
-                <ArrowRight className="ml-4 h-4 w-4 text-slate-400" />
+                <ArrowRight className="ml-auto h-4 w-4 text-slate-400 shrink-0 sm:ml-4" />
               </div>
             ))}
           </div>

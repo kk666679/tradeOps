@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { PageHero } from '@/components/marketing/shared/PageHero';
 import { SectionHeading } from '@/components/marketing/shared/SectionHeading';
 import { FeatureCard } from '@/components/marketing/features/FeatureCard';
-import { StatGrid } from '@/components/marketing/shared/StatGrid';
 import { AgentRoster } from '@/components/marketing/shared/AgentRoster';
 import { TrustGrid } from '@/components/marketing/shared/TrustGrid';
 import { IntegrationGrid } from '@/components/marketing/shared/IntegrationGrid';
@@ -16,7 +15,6 @@ import { FAQ } from '@/components/marketing/faq/FAQ';
 import { CTABand } from '@/components/marketing/shared/CTABand';
 import { LiveAgentDemo } from '@/components/marketing/shared/LiveAgentDemo';
 import { UseCases } from '@/components/marketing/use-cases/UseCases';
-import { Testimonials } from '@/components/marketing/testimonials/Testimonials';
 import { BondedWorkflowExplorer } from '@/components/fiz-fcz/workflow/BondedWorkflowExplorer';
 
 export const metadata: Metadata = {
@@ -67,13 +65,6 @@ const VALUE_PROPS = [
   },
 ];
 
-const QUOTES = [
-  { quote: 'Declaration prep dropped by 70%. The Customs Agent knows our FIZ scheme and our HS history.', author: 'Head of Customs', org: 'FIZ Electronics Park' },
-  { quote: 'Transhipment finally has an end-to-end ledger. Duty-suspension visibility is a game changer.', author: 'COO', org: 'FCZ Transhipment Hub' },
-  { quote: 'The digital twin let us simulate gate congestion before peak season. No surprises.', author: 'Ops Director', org: 'Bonded CFS' },
-  { quote: 'Agent approvals flow into our audit trail. Customs is happy. We are happy.', author: 'Compliance Lead', org: 'Multinational 3PL' },
-];
-
 const FAQ_ITEMS = [
   { q: 'Is this built for FIZ, FCZ, or both?', a: 'Both. FIZ ships with manufacturing semantics — raw material, machinery, BOM, production input, wastage, subcontract. FCZ ships with trading semantics — transhipment, re-export, break-bulk, repacking, entrepot.' },
   { q: 'How does duty suspension work?', a: 'Every inbound, movement, and outbound is checked against the zone scheme. The bonded ledger reconciles, aging reports surface expiring exemptions, and clawback is automated.' },
@@ -103,7 +94,7 @@ function HeroDashboard() {
       <div className="flex items-center justify-between text-xs text-muted-foreground">
         <span className="flex items-center gap-2">
           <span className="h-1.5 w-1.5 rounded-full bg-clear-500" />
-          agent-mesh · live
+          Sample workflow · browser demo
         </span>
         <span className={zoneChip('FIZ')}>FIZ</span>
       </div>
@@ -128,7 +119,7 @@ export default function HomePage() {
     <>
       {/* ───────────────────────────── HERO ───────────────────────────── */}
       <PageHero
-        eyebrow="7 customs agents · live · MY Customs Act 1967 · ATIGA · RCEP"
+        eyebrow="Trade operations for FIZ and FCZ teams"
         title="The autonomous TradeOps layer for FIZ and FCZ."
         subtitle="Automate declarations, HS classification, valuation, origin checks, and screening end-to-end. Powered by an AI agent mesh with human-in-the-loop oversight and a fully immutable audit chain."
         primary={{ label: 'Explore the workflow', href: '/workflow' }}
@@ -139,31 +130,17 @@ export default function HomePage() {
         </div>
       </PageHero>
 
-      {/* ───────────────────────────── HERO STATS ───────────────────────────── */}
-      <section className="border-b bg-card">
-        <div className="mx-auto max-w-7xl px-4 py-10">
-          <StatGrid
-            items={[
-              { label: 'Declarations / mo', value: '120k' },
-              { label: 'Duty recovered',     value: 'MYR 41M', hint: 'Through missed-exemption discovery and HS reclassification' },
-              { label: 'Agent actions',      value: '2.1M' },
-              { label: 'Uptime',             value: '99.98%' },
-            ]}
-          />
-        </div>
-      </section>
-
       {/* ───────────────────────────── LIVE AGENT DEMO ───────────────────────────── */}
       <section id="live-demo" className="border-b bg-muted/60">
         <div className="mx-auto max-w-7xl px-4 py-16">
           <SectionHeading
-            eyebrow="Live"
-            title="Watch a Customs Agent file a declaration"
-            subtitle="Simulated · 7 agents · real-world rule packs (MY Customs Act, ATIGA, RCEP, WCO HS 2022) · nothing leaves your browser."
+            eyebrow="Interactive demonstration"
+            title="Explore a sample customs workflow"
+            subtitle="A browser-side simulation with sample values. It does not connect to customs systems or submit a declaration."
           />
           <LiveAgentDemo zone="FIZ" />
           <p className="mt-6 text-xs text-muted-foreground">
-            The demo is a faithful replay of the production agent loop. Sign in to file on your own data.
+            This demonstration is not connected to a production agent or customer data.
           </p>
           <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-clear-300 bg-clear-500/10 px-3 py-1 text-xs font-medium text-clear-600">
             <span className="h-1.5 w-1.5 rounded-full bg-clear-500" />
@@ -285,19 +262,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ───────────────────────────── TESTIMONIALS ───────────────────────────── */}
-      <Testimonials
-        title="Operators ship more with CFS FIZ/FCZ"
-        subtitle="From single-zone FIZ manufacturers to national operator networks."
-        items={QUOTES.map((quote, index) => ({ ...quote, id: `quote-${index + 1}` }))}
-      >
-        <div className="mt-8">
-          <Link href="/customers" className="text-sm text-primary hover:underline">
-            Read case studies →
-          </Link>
-        </div>
-      </Testimonials>
-
       {/* ───────────────────────────── PRICING ───────────────────────────── */}
       <section className="border-b bg-muted/60">
         <div className="mx-auto max-w-7xl px-4 py-16">
@@ -325,7 +289,7 @@ export default function HomePage() {
       {/* ───────────────────────────── CTA ───────────────────────────── */}
       <CTABand
         title="Ready to run your FIZ / FCZ on one platform?"
-        subtitle="Bring your zone topology — we will map it live in 30 minutes."
+        subtitle="Talk with our team about your zone topology and operating requirements."
         primary={{ label: 'Explore the workflow', href: '/workflow' }}
         secondary={{ label: 'Book a walkthrough', href: '/demo' }}
       />

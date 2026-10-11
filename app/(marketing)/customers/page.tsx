@@ -450,7 +450,7 @@ function CaseStudies() {
             </p>
           </div>
           <Link
-            href="/customers/case-studies"
+            href="/customers"
             className="inline-flex items-center gap-1.5 text-sm font-medium text-foreground transition-colors hover:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             All case studies

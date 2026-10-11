@@ -18,7 +18,7 @@ import { notFound } from 'next/navigation';
  *
  * The mock data at the top is illustrative. In production:
  *
- *   import { getIssue, getIssueSlugs, getRelatedIssues } from '@/lib/newsletters';
+ *   import { getIssue, getIssueSlugs, getRelatedIssues } from '@/lib/newletters';
  *
  * `getIssue(slug)` should return the issue metadata plus `content` (compiled
  * MDX as a React node) and `toc` (headings extracted from the content).
@@ -26,7 +26,7 @@ import { notFound } from 'next/navigation';
  */
 
 // ---------------------------------------------------------------------------
-// Types — these belong in `@/lib/newsletters` in production
+// Types — these belong in `@/lib/newletters` in production
 // ---------------------------------------------------------------------------
 
 type Contributor = {
@@ -68,7 +68,7 @@ type Issue = {
 
 // ---------------------------------------------------------------------------
 // Mock data — replace with `getIssue(slug)`, `getIssueSlugs()`, and
-// `getRelatedIssues(slug)` from `@/lib/newsletters`
+// `getRelatedIssues(slug)` from `@/lib/newletters`
 // ---------------------------------------------------------------------------
 
 const CONTRIBUTORS: Record<string, Contributor> = {
@@ -113,7 +113,7 @@ const ISSUES: Issue[] = [
     tags: ['audit', 'master-data', 'classification'],
     readingTimeMinutes: 8,
     coverImage: {
-      url: '/newsletters/issue-042/cover.jpg',
+      url: '/newletters/issue-042/cover.jpg',
       alt: 'A customs declaration form with an audit trail overlay',
     },
     toc: [
@@ -417,7 +417,7 @@ export async function generateMetadata({
     };
   }
 
-  const url = `${BASE_URL}/newsletters/${issue.slug}`;
+  const url = `${BASE_URL}/newletters/${issue.slug}`;
   const issueLabel = `Issue ${String(issue.issueNumber).padStart(3, '0')}`;
   const fullTitle = `${issue.title} — ${issueLabel}`;
 
@@ -547,7 +547,7 @@ function Breadcrumb({ issue }: { issue: Issue }) {
         </li>
         <li>
           <Link
-            href="/newsletters"
+            href="/newletters"
             className="transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             Newsletters
@@ -558,7 +558,7 @@ function Breadcrumb({ issue }: { issue: Issue }) {
         </li>
         <li>
           <Link
-            href={`/newsletters?topic=${issue.topic.id}`}
+            href={`/newletters?topic=${issue.topic.id}`}
             className="transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             {issue.topic.name}
@@ -578,7 +578,7 @@ function IssueHeader({ issue }: { issue: Issue }) {
         </span>
         <span aria-hidden="true">·</span>
         <Link
-          href={`/newsletters?topic=${issue.topic.id}`}
+          href={`/newletters?topic=${issue.topic.id}`}
           className="inline-flex items-center rounded-md border bg-muted/40 px-2 py-0.5 font-medium transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
           {issue.topic.name}
@@ -710,7 +710,7 @@ function Tags({ tags }: { tags: string[] }) {
       {tags.map((tag) => (
         <Link
           key={tag}
-          href={`/newsletters?tag=${tag}`}
+          href={`/newletters?tag=${tag}`}
           className="inline-flex items-center rounded-full border bg-background px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
           {tag}
@@ -809,16 +809,7 @@ function IssueSubscribeCTA() {
           </button>
         </form>
 
-        <p className="mt-3 text-xs text-muted-foreground">
-          Or subscribe via{' '}
-          <Link
-            href="/newsletters/rss.xml"
-            className="underline underline-offset-4 hover:text-foreground"
-          >
-            RSS
-          </Link>
-          .
-        </p>
+        <p className="mt-3 text-xs text-muted-foreground">Browse past issues in the newsletter archive.</p>
       </div>
     </aside>
   );
@@ -856,7 +847,7 @@ function RelatedIssues({ issues }: { issues: Issue[] }) {
             </div>
             <h3 className="mt-3 text-sm font-semibold leading-snug">
               <Link
-                href={`/newsletters/${issue.slug}`}
+                href={`/newletters/${issue.slug}`}
                 className="transition-colors hover:text-foreground/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 {issue.title}
@@ -891,7 +882,7 @@ function AdjacentNav({
     >
       {prev ? (
         <Link
-          href={`/newsletters/${prev.slug}`}
+          href={`/newletters/${prev.slug}`}
           className="group flex flex-col rounded-xl border bg-background p-5 transition-shadow hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
           <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
@@ -908,7 +899,7 @@ function AdjacentNav({
 
       {next ? (
         <Link
-          href={`/newsletters/${next.slug}`}
+          href={`/newletters/${next.slug}`}
           className="group flex flex-col rounded-xl border bg-background p-5 text-right transition-shadow hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:items-end"
         >
           <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
@@ -927,7 +918,7 @@ function AdjacentNav({
 }
 
 function StructuredData({ issue }: { issue: Issue }) {
-  const url = `${BASE_URL}/newsletters/${issue.slug}`;
+  const url = `${BASE_URL}/newletters/${issue.slug}`;
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Article',

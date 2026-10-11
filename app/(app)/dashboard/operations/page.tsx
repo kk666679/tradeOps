@@ -9,7 +9,7 @@ export default function Page() {
   return (
     <>
       <PageHeader title="Operations" description="Route: /dashboard/operations" />
-      <div className="mt-6 grid gap-4 md:grid-cols-4">
+      <div className="mt-6 grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         {['Open', 'In Progress', 'Awaiting Customs', 'Exceptions'].map((l) => (
           <Card key={l}>
             <CardHeader><CardTitle className="text-sm">{l}</CardTitle></CardHeader>

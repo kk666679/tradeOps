@@ -26,13 +26,13 @@ export function PageHeader({
   // Banner layout — used by app pages (title + description + optional action)
   if (description !== undefined || action !== undefined || children !== undefined) {
     return (
-      <div className={`mb-6 flex items-start justify-between gap-4 ${className ?? ''}`}>
-        <div>
+      <div className={`mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between ${className ?? ''}`}>
+        <div className="min-w-0 flex-1">
           <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
-          {description ? <p className="mt-1 text-sm text-muted-foreground">{description}</p> : null}
+          {description ? <p className="mt-1 text-sm text-muted-foreground break-words">{description}</p> : null}
           {children}
         </div>
-        {action ? <div className="flex gap-2">{action}</div> : null}
+        {action ? <div className="flex flex-wrap gap-2">{action}</div> : null}
       </div>
     );
   }
