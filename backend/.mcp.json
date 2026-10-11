@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "tradeops-core": {
+      "type": "http",
+      "url": "http://localhost:3001/api/mcp",
+      "headers": {
+        "Authorization": "Bearer ${TRADEOPS_JWT}"
+      }
+    }
+  }
+}
