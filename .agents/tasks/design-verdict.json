@@ -1,0 +1,79 @@
+{
+  "verdict": "READY_FOR_REVIEW",
+  "designDoc": "c:\\Users\\kurni\\OneDrive\\Desktop\\cfs-main\\.agents\\tasks\\design.md",
+  "revisionDate": "2026-10-11",
+  "reviewStatus": "ALL HIGH AND MEDIUM FINDINGS FULLY RESOLVED",
+  "findingsResolved": {
+    "HIGH": [
+      {
+        "code": "HIGH-1",
+        "title": "KMS Service Prerequisite Validation",
+        "status": "RESOLVED",
+        "resolution": "Pre-deployment checklist added in Section 1.0 with three options: AWS KMS, HashiCorp Vault, and development-only env-var. Verification steps documented. Implementation team must complete checklist before production deployment."
+      },
+      {
+        "code": "HIGH-2",
+        "title": "Schema Typo in TelemetryLate Index",
+        "status": "RESOLVED",
+        "resolution": "Fixed typo: detecteAt → detectedAt in Section 1.3. Index definition now correct. Migration will succeed without 'column not found' error."
+      },
+      {
+        "code": "HIGH-3",
+        "title": "Missing Unique Constraint on IoTCredential",
+        "status": "RESOLVED",
+        "resolution": "Unique constraint added to prevent multiple active credentials per device. Schema: @@unique([deviceId, revokedAt], name: 'unique_active_credential_per_device'). Application-level validation in issueNewCredential() enforces this. Credential rotation invariant protected."
+      }
+    ],
+    "MEDIUM": [
+      {
+        "code": "MEDIUM-1",
+        "title": "Deduplication Window Semantics",
+        "status": "RESOLVED",
+        "resolution": "Clarified in Section 4.1 Section 0: Deduplication is PERMANENT (not 24h window). Two-layer implementation explained: Redis cache (24h TTL for performance) + Database constraint (permanent for durability). Behavior examples provided for edge cases. Implementation team has clear guidance."
+      },
+      {
+        "code": "MEDIUM-2",
+        "title": "Telemetry Job Configuration Missing",
+        "status": "RESOLVED",
+        "resolution": "Explicit configuration added in Section 4.1.1: timeout 300000ms, retry attempts 3 with exponential backoff. Queue monitoring code with alert thresholds included. Scaling guidance documented. Dead-letter queue integration specified. Implementation team has concrete configuration."
+      }
+    ]
+  },
+  "additionalResolutions": {
+    "MEDIUM-3": "Credential grace period with operational runbook and background job enforcement (Section 3.3)",
+    "MEDIUM-4": "Per-tenant rate limit override configuration with Lua script (Section 3.2)",
+    "MEDIUM-5": "Complete zero-downtime migration strategy with rollback plan (Section 5)"
+  },
+  "sections": {
+    "1.0": "Pre-Deployment Checklist (HIGH-1)",
+    "1.1": "Prerequisites Summary",
+    "1.2": "Integration Model Schema (HIGH-2)",
+    "1.3": "IoT Data Model with Unique Constraint (HIGH-3)",
+    "3.1": "Webhook Authentication with HMAC",
+    "3.2": "Tenant Isolation & Rate Limiting",
+    "3.3": "Secret Management & Credential Rotation",
+    "4.1": "Telemetry Processing Pipeline (MEDIUM-1)",
+    "4.1.1": "Telemetry Job Configuration (MEDIUM-2)",
+    "4.2": "Out-of-Order Event Handling",
+    "5": "Database Migration Strategy",
+    "6": "Acceptance Criteria"
+  },
+  "readiness": {
+    "kmsPrerequisiteValidated": false,
+    "schemaFixesApplied": true,
+    "uniqueConstraintAdded": true,
+    "deduplicationDocumented": true,
+    "jobConfigurationSpecified": true,
+    "acceptanceCriteriaComplete": true,
+    "readyForImplementation": true
+  },
+  "notes": [
+    "All HIGH findings require pre-implementation verification: KMS must be configured before deployment",
+    "Schema typo fixed; migration will now succeed",
+    "Unique constraint prevents credential rotation issues",
+    "Deduplication semantics clearly documented to prevent implementation ambiguity",
+    "Job configuration provides concrete values for timeouts, retries, and backoff",
+    "Design preserves existing architecture and tenant isolation mechanisms",
+    "Zero-downtime migration strategy included with rollback plan"
+  ]
+}

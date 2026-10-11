@@ -1,0 +1,143 @@
+name: Deploy Staging
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Git ref to deploy (branch, tag, or SHA)'
+        required: false
+        default: main
+        type: string
+      image-tag:
+        description: 'Docker image tag to deploy (defaults to the ref)'
+        required: false
+        default: ''
+        type: string
+
+permissions:
+  contents: read
+  id-token: write
+  # Needed so the summary step can post a commit status.
+  statuses: write
+
+concurrency:
+  group: deploy-staging
+  cancel-in-progress: true
+
+env:
+  ENVIRONMENT: staging
+
+jobs:
+  deploy:
+    name: Deploy to staging
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment:
+      name: staging
+      url: https://staging.cfs.example.com
+    steps:
+      # ---------------------------------------------------------------
+      # 1. Resolve inputs (ref + image tag)
+      # ---------------------------------------------------------------
+      - name: Resolve deployment inputs
+        id: inputs
+        run: |
+          REF="${{ github.event.inputs.ref || github.ref_name }}"
+          IMAGE_TAG="${{ github.event.inputs.image-tag || github.event.inputs.ref }}"
+          echo "ref=$REF" >> "$GITHUB_OUTPUT"
+          echo "image-tag=$IMAGE_TAG" >> "$GITHUB_OUTPUT"
+          echo "Deploying ref=$REF image=$IMAGE_TAG to staging"
+
+      # ---------------------------------------------------------------
+      # 2. Checkout the requested ref (SHA-pinned action)
+      # ---------------------------------------------------------------
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4
+        with:
+          ref: ${{ steps.inputs.outputs.ref }}
+
+      # ---------------------------------------------------------------
+      # 3. Download the build artifact (optional; may not exist)
+      # ---------------------------------------------------------------
+      - name: Download release artifact
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093  # v4
+        continue-on-error: true
+        with:
+          name: release-artifacts
+          path: /tmp/artifacts
+
+      # ---------------------------------------------------------------
+      # 4. Run migrations as its own step (was incorrectly merged
+      #    into the download step in the original).
+      # ---------------------------------------------------------------
+      - name: Run migrations (forward-only)
+        # Migrations run as a pre-deploy job. Forward-only by policy.
+        # Requires DATABASE_URL (staging) in the staging environment.
+        run: |
+          echo "Running Prisma migrations against staging database..."
+          # Integration point — replace with your actual migration runner.
+          # Example:
+          #   cd /tmp/artifacts && npm ci --ignore-scripts && npx prisma migrate deploy
+        env:
+          DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
+
+      # ---------------------------------------------------------------
+      # 5. Deploy — this step was entirely missing in the original.
+      # ---------------------------------------------------------------
+      - name: Deploy
+        run: |
+          echo "Deploying image ${{ steps.inputs.outputs.image-tag }} to staging..."
+          # Integration point — replace with your actual deploy command.
+          # Examples:
+          #   - Docker Compose: docker compose -f docker-compose.prod.yml up -d
+          #   - Kubernetes:     kubectl set image deploy/web web=cfs-wms:web-${{ steps.inputs.outputs.image-tag }} -n staging
+          #   - Vercel:         npx vercel deploy
+          echo "Staging deploy integration point configured."
+
+      # ---------------------------------------------------------------
+      # 6. Health check
+      # ---------------------------------------------------------------
+      - name: Health check
+        run: |
+          echo "Waiting for staging deployment to become healthy..."
+          # Integration point — replace with your actual health check.
+          # Example:
+          #   for i in $(seq 1 30); do
+          #     curl -fsS https://staging.cfs.example.com/api/ready && break
+          #     sleep 5
+          #   done
+          curl -fsS "${{ secrets.STAGING_HEALTH_URL }}" || {
+            echo "Health check failed";
+            exit 1;
+          }
+
+      # ---------------------------------------------------------------
+      # 7. Deployment summary — uses context.sha (a real commit SHA),
+      #    not the branch/tag name.
+      # ---------------------------------------------------------------
+      - name: Deployment summary
+        if: always()
+        uses: actions/github-script@10b53a9ec6c222bb4ce97aa6bd2b5f739696b536  # v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const conclusion = '${{ job.status }}';
+            const ref = '${{ steps.inputs.outputs.ref }}';
+            const image = '${{ steps.inputs.outputs.image-tag }}';
+            const body = `## Staging deployment ${conclusion}
+
+            - **Ref:** \`${ref}\`
+            - **Image:** \`${image}\`
+            - **Environment:** staging
+            - **Triggered by:** ${github.actor}
+            - **Run:** ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+
+            await github.rest.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: context.sha,
+              state: conclusion === 'success' ? 'success' : 'failure',
+              context: 'deploy/staging',
+              description: `Staging deploy ${conclusion}`,
+              target_url: `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+            });

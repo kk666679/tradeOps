@@ -1,0 +1,7 @@
+{
+  "task_id": "task-part-b-iot",
+  "task_description": "Implement Part B: IoT Device Registry, Telemetry Processing, Webhook Handler, SSE Broadcasting, MCP Tools/Resources, and Digital Twin UI for Trade OPS MCP server",
+  "status": "pending",
+  "feature_order": ["FEAT-001", "FEAT-002", "FEAT-003"],
+  "blocked_reason": null
+}

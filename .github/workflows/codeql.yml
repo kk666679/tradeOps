@@ -1,0 +1,58 @@
+name: CodeQL
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**.ts'
+      - '**.tsx'
+      - '**.js'
+      - '**.mjs'
+      - 'package.json'
+      - 'backend/package.json'
+      - '.github/workflows/codeql.yml'
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '0 6 * * 0'  # every Sunday 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
+concurrency:
+  group: codeql-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      # ✅ FIX: Use a single combined language instead of a matrix.
+      # TypeScript and JavaScript are analyzed together by CodeQL.
+      matrix:
+        language: [javascript-typescript]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@42947a340483f03ba47bb1a039b2c519aab3df85  # v3.37.8
+        with:
+          languages: ${{ matrix.language }}
+          queries: security-extended
+          tools: latest
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@42947a340483f03ba47bb1a039b2c519aab3df85  # v3.37.8
+
+      - name: Perform CodeQL analysis
+        uses: github/codeql-action/analyze@42947a340483f03ba47bb1a039b2c519aab3df85  # v3.37.8
+        with:
+          category: "security:${{ matrix.language }}"
+          upload: true

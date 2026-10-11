@@ -1,0 +1,53 @@
+name: 'Setup Node Environment'
+description: 'Installs Node, restores the npm cache and node_modules from cache for the cfs-wms monorepo.'
+inputs:
+  node-version:
+    description: 'Node.js version (semver)'
+    required: false
+    default: '20.18.1'
+  enable-backend:
+    description: 'Whether to also install the backend/ workspace'
+    required: false
+    default: 'false'
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Node
+      id: setup-node
+      uses: actions/setup-node@v4.0.0  # 49933ea5288caeca8642d1e84afbd3f7d6820020
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: npm
+
+    - name: Restore npm cache
+      id: cache-npm
+      uses: actions/cache@v4  # 0057852bfaa89a56745cba8c7296529d2fc39830
+      with:
+        path: |
+          ~/.npm
+          ${{ steps.setup-node.outputs.node-cache-dir }}
+        key: npm-cache-${{ runner.os }}-${{ inputs.node-version }}-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          npm-cache-${{ runner.os }}-${{ inputs.node-version }}-
+
+    - name: Install root dependencies
+      shell: bash
+      run: |
+        npm ci
+      env:
+        # Allow postinstall (prisma generate) to run during install.
+        npm_config_ignore_scripts: 'false'
+
+    - name: Install backend dependencies
+      if: ${{ inputs.enable-backend == 'true' }}
+      shell: bash
+      working-directory: backend
+      run: |
+        npm ci
+
+    - name: Generate Prisma client
+      shell: bash
+      run: |
+        npx prisma generate
+      env:
+        DATABASE_URL: 'postgresql://postgres:password@localhost:5432/cfs_wms'

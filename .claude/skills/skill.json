@@ -1,0 +1,51 @@
+{
+  "version": "1.0",
+  "skills": [
+    {
+      "id": "code-review",
+      "name": "Code Review Assistant",
+      "description": "Performs thorough code reviews, checks style, security, and best practices.",
+      "activation": {
+        "paths": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.js"],
+        "fileTypes": [".ts", ".tsx", ".js"],
+        "keywords": ["review", "review this code", "check my code"]
+      },
+      "entry": ".claude/skills/code-review/SKILL.md",
+      "scripts": [".claude/skills/code-review/scripts/run-review.sh"],
+      "references": [".claude/skills/code-review/references/style-guide.md"]
+    },
+    {
+      "id": "text-writer",
+      "name": "Technical Writer",
+      "description": "Helps write, edit, and improve documentation, READMEs, and technical articles.",
+      "activation": {
+        "paths": ["docs/**/*.md", "README.md"],
+        "fileTypes": [".md", ".txt"],
+        "keywords": ["write documentation", "improve readme", "edit this text"]
+      },
+      "entry": ".claude/skills/text-writer/SKILL.md",
+      "assets": [".claude/skills/text-writer/assets/templates/"]
+    },
+    {
+      "id": "security-audit",
+      "name": "Security Auditor",
+      "description": "Scans code for vulnerabilities, secrets, and compliance issues.",
+      "activation": {
+        "paths": ["**/*.ts", "**/*.js", "**/*.py"],
+        "keywords": ["security audit", "vulnerability", "check for secrets"]
+      },
+      "entry": ".claude/skills/security-audit/SKILL.md",
+      "scripts": [".claude/skills/security-audit/scripts/scan-secrets.sh"]
+    },
+    {
+      "id": "refactor",
+      "name": "Code Refactoring Assistant",
+      "description": "Suggests and performs code refactoring to improve readability and maintainability.",
+      "activation": {
+        "paths": ["src/**/*.ts", "src/**/*.js"],
+        "keywords": ["refactor", "clean up", "improve this code"]
+      },
+      "entry": ".claude/skills/refactor/SKILL.md"
+    }
+  ]
+}

@@ -1,0 +1,141 @@
+name: CI
+
+on:
+  push:
+    branches: [main, v0/auth-flow]
+    paths:
+      - '**.ts'
+      - '**.tsx'
+      - '**.js'
+      - '**.mjs'
+      - '**.json'
+      - '**.prisma'
+      - 'package.json'
+      - 'backend/package.json'
+      - 'docker-compose*.yml'
+      - 'prisma/**'
+      - '.github/workflows/ci.yml'
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      node-version:
+        description: 'Node.js version to test against'
+        required: false
+        default: '20.18.1'
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_ENV: test
+  DATABASE_URL: postgresql://postgres:password@localhost:5432/cfs_wms
+  REDIS_URL: redis://localhost:6379
+  WEAVIATE_URL: http://localhost:8080
+  NEXTAUTH_SECRET: 0000000000000000000000000000000000000000000000000000000000000000
+  JWT_SECRET: 0000000000000000000000000000000000000000000000000000000000000000
+  ENCRYPTION_KEY: 0000000000000000000000000000000000000000000000000000000000000000
+
+jobs:
+  build:
+    name: Build (web + backend)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4  # 11d5960a326750d5838078e36cf38b85af677262
+
+      - name: Setup Node env (root)
+        uses: ./.github/actions/setup-node-env@main
+        with:
+          node-version: ${{ inputs.node-version || '20.18.1' }}
+
+      - name: Build Next.js web app
+        run: npm run build
+        env:
+          NEXT_PUBLIC_TRPC_URL: /api/trpc
+          NEXTAUTH_URL: http://localhost:3000
+
+      - name: Build NestJS backend
+        run: npm run build:backend
+        working-directory: backend
+
+      - name: Upload web build artifact
+        uses: actions/upload-artifact@v4  # ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: web-build
+          path: |
+            .next
+            out
+            public
+            next.config.ts
+          retention-days: 7
+
+      - name: Upload backend build artifact
+        uses: actions/upload-artifact@v4  # ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: backend-build
+          path: |
+            backend/dist
+            backend/package.json
+            backend/tsconfig.build.json
+          retention-days: 7
+
+  typecheck:
+    name: Type check
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4  # 11d5960a326750d5838078e36cf38b85af677262
+
+      - name: Setup Node env (root + backend)
+        uses: ./.github/actions/setup-node-env@main
+        with:
+          node-version: ${{ inputs.node-version || '20.18.1' }}
+          enable-backend: true
+
+      - name: Type check web (tsc --noEmit)
+        run: npx tsc --noEmit -p tsconfig.json
+        env:
+          NEXT_TELEMETRY_DISABLED: '1'
+
+      - name: Type check backend (tsc --noEmit)
+        run: npx tsc --noEmit -p backend/tsconfig.json
+
+  lint:
+    name: Lint & format
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4  # 11d5960a326750d5838078e36cf38b85af677262
+
+      - name: Setup Node env (root + backend)
+        uses: ./.github/actions/setup-node-env@main
+        with:
+          node-version: ${{ inputs.node-version || '20.18.1' }}
+          enable-backend: true
+
+      - name: Install ESLint + Prettier (project dev tools)
+        run: npm install --no-save --no-package-lock eslint@^9 prettier@^3 typescript-eslint@^8 @eslint/js
+
+      - name: Lint backend
+        run: npx eslint "backend/src/**/*.ts" "backend/test/**/*.ts" --max-warnings=0
+        continue-on-error: false
+
+      - name: Check backend formatting
+        run: npx prettier --check "backend/src/**/*.ts" "backend/test/**/*.ts"
+
+      - name: Lint web (Next.js ESLint)
+        run: npx next lint --dir . --max-warnings=0
+        continue-on-error: false
+
+      - name: Check web formatting
+        run: npx prettier --check "app/**/*.tsx" "app/**/*.ts" "lib/**/*.ts" "components/**/*.tsx" "components/**/*.ts" "hooks/**/*.ts" "providers/**/*.ts" "server/**/*.ts" "workers/**/*.ts" "prisma/**/*.ts" 2>/dev/null || true

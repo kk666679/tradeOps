@@ -1,0 +1,39 @@
+{
+  "id": "FEAT-003",
+  "type": "feat",
+  "description": "Create Digital Twin React UI component with React Flow zone visualization, device overlays, telemetry drawer, anomaly banner, SSE subscription hook, and device simulator. Add comprehensive integration tests covering end-to-end flow (register device → POST telemetry → ledger → SSE → UI) and error scenarios. Independent of FEAT-001 and FEAT-002 (can be developed in parallel once their APIs are known).",
+  "status": "pending",
+  "steps": [
+    "Create components/DigitalTwin.tsx with DigitalTwinProps { initialZone?: LedgerZone, webhookEndpoint?: string (default: http://localhost:8787/webhooks/telemetry), sseEndpoint?: string (default: http://localhost:8787/sse) }. Use @xyflow/react (already in root package.json). Component renders: (1) ReactFlow canvas with 5 zone nodes (FIZ, FCZ, CONTROL, CROSS, IOT) arranged in a graph layout, (2) Device overlays: fetch devices from MCP resource tradeops://iot/devices or GET /api/devices proxy, render device icons (📱 RFID, 📷 camera, 📍 GPS, 🌡️ sensor, 🏷️ barcode) at zone node positions, (3) Telemetry drawer: right side panel (collapsible, default open), displays last 10 telemetry events from SSE stream, scrollable list with timestamp, deviceId, sensorValue, unit, anomaly badge, (4) Anomaly banner: top fixed banner (dismissible, red background), shows latest anomaly event with deviceId, zoneId, value, timestamp, close button, (5) Device simulator button: bottom right FAB, opens modal with form (deviceId select, payload textarea, signature input auto-computed), on submit POSTs to webhookEndpoint.",
+    "Create useZoneSSE custom hook in components/DigitalTwin.tsx: function useZoneSSE(zoneId: string, endpoint: string): SSEEvent[]. Uses EventSource to connect to {endpoint}/{zoneId}, listens for SSE messages, parses JSON SSEEvent { type, deviceId, zoneId, telemetry, timestamp, anomaly }, maintains array of last 50 events in state, returns events array. Handles connection errors, reconnects on disconnect, cleans up on unmount.",
+    "Create components/DigitalTwin.module.css (optional) with styles for: .digitalTwin (container, flex layout), .canvas (React Flow container), .drawer (right side panel, width 300px, overflow-y scroll), .anomalyBanner (top fixed, z-index 1000, red bg), .simulatorButton (bottom right FAB, z-index 999), .telemetryEvent (list item, border-b, padding). Use Tailwind classes if project uses Tailwind, otherwise vanilla CSS.",
+    "Create tests/integration.spec.ts with end-to-end integration tests: (1) 'register device → POST telemetry → ledger event → SSE broadcast': start server, call registerIoTDevice MCP tool, POST to /webhooks/telemetry with valid HMAC, query ledger for iot.telemetry.received event, assert event exists with correct deviceId/payload, connect SSE client to /sse/IOT, assert SSE message received matching telemetry. (2) 'error: device not found': POST telemetry for non-existent deviceId, assert 404 response. (3) 'error: bad signature': POST telemetry with invalid HMAC, assert 401 response. (4) 'error: expired timestamp': POST telemetry with timestamp >60s old, assert 400 response. (5) 'error: rate limit exceeded': POST 1001 telemetry requests for same deviceId within 1 minute, assert 1001st request returns 429. (6) 'anomaly detection': POST telemetry with out-of-range value, query ledger, assert payload.anomaly=true, query anomalyReport MCP tool, assert event in results.",
+    "Verify existing Part A tests still pass: npm test -- tools.spec.ts, npm test -- auth.spec.ts, npm test -- ledger.spec.ts. Assert no regressions (45 tests pass unchanged). Update .env.example with WEBHOOK_SECRET=your-secret-here, IOT_WEBHOOK_PORT=8788, IOT_RATE_LIMIT_DEFAULT=1000. Update README.md IoT section: describe 7 new tools, 4 new resources, webhook/SSE endpoints, Digital Twin UI route /digital-twin, environment variables, example curl commands for webhook POST and SSE GET."
+  ],
+  "acceptance_criteria": [
+    "components/DigitalTwin.tsx renders React Flow canvas with 5 zone nodes (FIZ, FCZ, CONTROL, CROSS, IOT)",
+    "Device overlays fetch devices from backend and render icons at zone node positions",
+    "Telemetry drawer displays last 10 telemetry events from SSE stream, scrollable, shows timestamp/deviceId/value/unit/anomaly",
+    "Anomaly banner appears at top when anomaly event received, dismissible, red background, shows deviceId/zone/value/timestamp",
+    "Device simulator button opens modal with form to POST mock telemetry to webhook endpoint",
+    "useZoneSSE hook connects to SSE endpoint, receives SSEEvent messages, maintains events array, handles reconnection",
+    "tests/integration.spec.ts end-to-end test: register device → POST telemetry → ledger event exists → SSE broadcast received",
+    "tests/integration.spec.ts error tests: device not found (404), bad signature (401), expired timestamp (400), rate limit (429), anomaly detection (payload.anomaly=true)",
+    "npm test (all Part A tests + FEAT-001 tests + FEAT-002 tests + integration tests pass, no regressions)",
+    ".env.example updated with WEBHOOK_SECRET, IOT_WEBHOOK_PORT, IOT_RATE_LIMIT_DEFAULT",
+    "README.md IoT section documents 7 tools, 4 resources, webhook/SSE endpoints, Digital Twin UI, environment variables, example commands"
+  ],
+  "verification": [
+    "npm run typecheck (no TypeScript errors in components/DigitalTwin.tsx)",
+    "npm test -- integration.spec.ts (all integration and error tests pass)",
+    "npm test (all tests pass: Part A 45 + FEAT-001 IoT unit tests + FEAT-002 MCP tests + FEAT-003 integration tests)",
+    "npm run build (MCP server compiles successfully)",
+    "npm run dev (Next.js dev server starts)",
+    "Manual: open http://localhost:3000/digital-twin → React Flow zone graph renders with 5 nodes",
+    "Manual: register device via simulator → device icon appears on zone node",
+    "Manual: POST telemetry via simulator → telemetry drawer updates with new event, SSE stream receives event",
+    "Manual: POST out-of-range telemetry → anomaly banner appears at top, dismissible"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

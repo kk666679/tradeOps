@@ -1,0 +1,40 @@
+{
+    "permissions": {
+        "allow": ["npm", "node", "git", "prisma", "redis-cli"],
+        "deny": ["rm -rf /", "sudo"],
+        "hooks": {
+            "PretoolsUse": [
+                {
+                    "matcher": "write",
+                    "hooks": [
+                        {
+                            "type": "command",
+                            "command": ".claude/hooks/check-secrets.sh"
+                        }
+                    ]
+                },
+                {
+                    "matcher": "execute_command",
+                    "hooks": [
+                        {
+                            "type": "command",
+                            "command": "echo 'Running command: $CLAUDE_COMMAND' >> .claude/hooks/command-log.txt"
+                        }
+                    ]
+                }
+            ],
+            "PostToolUse": [
+                {
+                    "matcher": "write",
+                    "hooks": [
+                        {
+                            "type": "command",
+                            "command": "npx prettier --write $CLAUDE_FILE && echo 'Formatted $CLAUDE_FILE' >> .claude/hooks/format-log.txt"
+                        }
+                    ]
+                }
+            ],
+            
+        }
+    }
+}

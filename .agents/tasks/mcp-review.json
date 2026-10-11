@@ -1,0 +1,31 @@
+{
+  "verdict": "CHANGES_REQUESTED",
+  "findings": [
+    {
+      "severity": "HIGH",
+      "label": "Tool tier registration incomplete",
+      "description": "27 tools are registered in TOOL_DEFINITIONS but never registered in the toolTiers map via setToolTier(). The authorizeTool() function falls back to privileged tier for unknown tools, causing all tools to be treated as restricted. Fix: after creating the MCP server, call setToolTier() for each tool with its correct tier (read/write/agent)."
+    },
+    {
+      "severity": "HIGH",
+      "label": "Resource URIs incomplete",
+      "description": "Only 4 of 8 required URIs are registered. Missing: tradeops://ledger/events/{eventId}, tradeops://hs/{code}/rulings, tradeops://declaration/{declId}/status, tradeops://device/{deviceId}/telemetry. Templated URIs require MCP resource template support; implement or document as limitation."
+    },
+    {
+      "severity": "MEDIUM",
+      "label": "RBAC test failures",
+      "description": "authorizeTool('viewer', 'customs_get_declaration_status') returns allowed: false because the tool has no tier registered, so it defaults to privileged. Fix: register tool tiers before running authorization tests. This is a symptom of the tool tier registration issue."
+    },
+    {
+      "severity": "MEDIUM",
+      "label": "Hash chain tampering detection edge case",
+      "description": "When prevHash is tampered, computeEventHash() recomputes the hash including the corrupted prevHash, so the recomputed hash no longer matches the stored hash. The error message reports hash mismatch instead of prevHash break, masking the root cause. While chain integrity is correctly enforced, the diagnostic is misleading. Restructure verification: verify hash is correct first, then verify prevHash link."
+    },
+    {
+      "severity": "LOW",
+      "label": "Backend tool logic not tested",
+      "description": "Individual tool handlers (customs, FIZ, FCZ, cross-zone) are not covered by integration tests. Only tool registration metadata is tested. Consider adding handlers that call mock backend methods to verify end-to-end flow."
+    }
+  ],
+  "reviewDoc": "c:\\Users\\kurni\\OneDrive\\Desktop\\cfs-main\\.agents\\tasks\\mcp-review.md"
+}

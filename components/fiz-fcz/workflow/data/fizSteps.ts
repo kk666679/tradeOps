@@ -1,0 +1,120 @@
+import type { WorkflowStepDefinition } from "../types"
+
+/**
+ * FIZ — Free Industrial Zone.
+ * Every step is an explicit event on the bonded ledger. Event identifiers and
+ * agent names are preserved exactly from the reference implementation.
+ *
+ * Each step now carries the six-module substrate fields: `module`,
+ * `status`, `hsCode`, `dutyStatus`, plus supporting and exception agents.
+ */
+export const FIZ_STEPS: readonly WorkflowStepDefinition[] = [
+  {
+    id: "fiz-1",
+    zone: "fiz",
+    step: 1,
+    title: "Raw material",
+    sub: "Duty-suspended intake",
+    description:
+      "Duty-suspended intake of raw materials against the FIZ scheme. Quantities, HS codes, and supplier origin are registered before putaway so duty liability stays traceable to the first receipt.",
+    event: "fiz.raw.received",
+    agent: "Inbound Agent",
+    module: "WMS · FIZ",
+    status: "pending",
+    hsCode: "8471.30",
+    dutyStatus: "suspended",
+    supportingAgents: ["Inventory Agent", "Customs Agent"],
+    exceptionAgents: ["Risk / Compliance"],
+    exceptionTarget: "close-risk",
+  },
+  {
+    id: "fiz-2",
+    zone: "fiz",
+    step: 2,
+    title: "Machinery",
+    sub: "HS 84 / 85 · approval",
+    description:
+      "Import of plant and machinery under HS chapters 84 and 85, linked to the zone operator's approval record so capital equipment can be moved in under duty suspension and written down correctly.",
+    event: "fiz.machinery.approved",
+    agent: "Machinery Agent",
+    module: "WMS · FIZ",
+    status: "pending",
+    hsCode: "8471.30",
+    dutyStatus: "suspended",
+    supportingAgents: ["Customs Agent", "Inventory Agent"],
+    exceptionAgents: ["Customs Agent", "Risk / Compliance"],
+    exceptionTarget: "close-risk",
+  },
+  {
+    id: "fiz-3",
+    zone: "fiz",
+    step: 3,
+    title: "Production input",
+    sub: "BOM · yield tracking",
+    description:
+      "Consumption of raw material against the bill of materials. Yield is tracked per work order so the gap between input and output is visible before it becomes an unexplained shortage.",
+    event: "fiz.production.consumed",
+    agent: "BOM / Yield Agent",
+    module: "WMS · FIZ",
+    status: "pending",
+    hsCode: "8471.30",
+    dutyStatus: "suspended",
+    supportingAgents: ["Inventory Agent", "Production Agent"],
+    exceptionAgents: ["BOM / Yield Agent", "Risk / Compliance"],
+    exceptionTarget: "close-risk",
+  },
+  {
+    id: "fiz-4",
+    zone: "fiz",
+    step: 4,
+    title: "Wastage / scrap",
+    sub: "Reason-coded · excised",
+    description:
+      "Reason-coded wastage and scrap excised from the bonded stock position. Each write-off carries a reason code so the duty impact can be reconciled instead of absorbed silently.",
+    event: "fiz.scrap.excised",
+    agent: "Waste Agent",
+    module: "WMS · FIZ",
+    status: "pending",
+    hsCode: "8471.30",
+    dutyStatus: "excised",
+    supportingAgents: ["Inventory Agent", "Customs Agent"],
+    exceptionAgents: ["Waste Agent", "Risk / Compliance"],
+    exceptionTarget: "close-risk",
+  },
+  {
+    id: "fiz-5",
+    zone: "fiz",
+    step: 5,
+    title: "Finished goods",
+    sub: "Output HS register",
+    description:
+      "Finished goods are registered against an output HS classification, closing the manufacturing loop and creating the stock position that later moves to the FCZ or overseas.",
+    event: "fiz.fg.produced",
+    agent: "Production Agent",
+    module: "WMS · FIZ",
+    status: "pending",
+    hsCode: "8471.30",
+    dutyStatus: "suspended",
+    supportingAgents: ["Inventory Agent", "BOM / Yield Agent"],
+    exceptionAgents: ["Production Agent", "Risk / Compliance"],
+    exceptionTarget: "close-risk",
+  },
+  {
+    id: "fiz-6",
+    zone: "fiz",
+    step: 6,
+    title: "Export",
+    sub: "FIZ → overseas",
+    description:
+      "Departure of finished goods from the FIZ. Either a direct export or a bonded transfer into the FCZ — both leave the same exit evidence on the ledger.",
+    event: "fiz.export.confirmed",
+    agent: "Export Agent",
+    module: "Trade OPS",
+    status: "pending",
+    hsCode: "8471.30",
+    dutyStatus: "suspended",
+    supportingAgents: ["Customs Agent", "Inventory Agent"],
+    exceptionAgents: ["Export Agent", "Risk / Compliance"],
+    exceptionTarget: "close-risk",
+  },
+]

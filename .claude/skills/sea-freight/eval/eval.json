@@ -1,0 +1,83 @@
+{
+  "skill": "sea-freight",
+  "version": "1.0.0",
+  "description": "Evaluation suite for the sea-freight skill. Cases are stored in reference/golden.jsonl; this file defines how they are scored. The suite weights documentation and Incoterms correctness heavily because errors in these areas cause customs holds, cargo release failures, and uninsured losses.",
+  "baseline": {
+    "overallPassRate": 1.0,
+    "byCategory": {
+      "documentation": 1.0,
+      "incoterms": 1.0,
+      "container": 0.95,
+      "cost": 0.9,
+      "risk": 0.95,
+      "guardrails": 1.0,
+      "refusal": 1.0
+    },
+    "notes": "Baseline set on 2026-10-09. Any category that falls below its baseline blocks merge. Any category raised above its baseline must be justified in the PR description and the baseline updated in the same commit."
+  },
+  "scoring": {
+    "mode": "exact-match-with-exceptions",
+    "rationale": "Ocean freight decisions are consequential and must be deterministic given the same inputs. A booking prepared with the wrong Incoterms or the wrong container is a commercial and operational defect.",
+    "fields": {
+      "decision": { "comparison": "exact", "required": true, "weight": 4 },
+      "reason": { "comparison": "keyword-presence", "weight": 1 },
+      "readiness.container.recommendedType": { "comparison": "exact", "weight": 3 },
+      "readiness.incoterms.riskTransferPoint": { "comparison": "exact", "weight": 3 },
+      "readiness.incoterms.containerAppropriate": { "comparison": "exact", "weight": 3 },
+      "readiness.cost.totalMyr": { "comparison": "numeric-within-tolerance", "tolerancePct": 5, "weight": 2 },
+      "readiness.cost.baseFreightMyr": { "comparison": "numeric-within-tolerance", "tolerancePct": 5, "weight": 2 },
+      "readiness.risk.insuranceGap": { "comparison": "exact", "weight": 3 },
+      "readiness.risk.demurrageExposureMyr": { "comparison": "numeric-within-tolerance", "tolerancePct": 20, "weight": 1 },
+      "exceptions": { "comparison": "set-equality-on-key", "key": "code", "subfields": { "severity": "exact" }, "weight": 3 },
+      "handoffs": { "comparison": "subset", "weight": 1 },
+      "audit.rulesApplied": { "comparison": "subset", "weight": 1 }
+    },
+    "passThreshold": 0.9,
+    "criticalFailures": [
+      "decision",
+      "readiness.incoterms.riskTransferPoint",
+      "readiness.risk.insuranceGap",
+      "exceptions.code"
+    ],
+    "notes": "Critical-failure list is strict. A shipment prepared with the wrong Incoterms risk point or with an undetected insurance gap is a commercial defect that would only surface at claim time."
+  },
+  "categories": [
+    { "id": "documentation", "description": "Documentation validation, BOL fields, DG declaration, UN/LOCODE validity.", "cases": ["SF-001", "SF-005", "SF-006", "SF-012", "SF-016"], "weight": 2.0 },
+    { "id": "incoterms", "description": "Incoterms resolution, container suitability, risk-cost divergence, insurance obligation.", "cases": ["SF-002", "SF-007", "SF-008", "SF-013"], "weight": 2.5 },
+    { "id": "container", "description": "Container selection, utilization, weight limits, special equipment.", "cases": ["SF-003", "SF-009", "SF-010", "SF-014"], "weight": 1.5 },
+    { "id": "cost", "description": "Freight cost decomposition, surcharge analysis.", "cases": ["SF-001", "SF-004", "SF-011"], "weight": 1.5 },
+    { "id": "risk", "description": "Insurance gap detection, demurrage exposure, carrier-liability analysis.", "cases": ["SF-008", "SF-013", "SF-015"], "weight": 2.0 },
+    { "id": "guardrails", "description": "Cases that should trigger a guardrail must return GUARDRAIL_PENDING rather than a decision.", "cases": ["SF-017", "SF-018", "SF-019"], "weight": 2.0 },
+    { "id": "refusal", "description": "Cases where the skill must refuse: sanctions, missing DG declaration, insurance absent under buyer-risk Incoterms.", "cases": ["SF-005", "SF-016", "SF-020"], "weight": 2.0 }
+  ],
+  "harness": {
+    "runner": "server/agents/skills/eval/runner.ts",
+    "fixture": "reference/golden.jsonl",
+    "stubProcedures": true,
+    "stubFile": "server/agents/skills/eval/stubs/sea-freight.stubs.ts",
+    "notes": "The runner asserts that no case calls a procedure outside the skill's scope list, in addition to scoring the output."
+  },
+  "reporting": {
+    "format": "junit",
+    "outputPath": "test-results/sea-freight.xml",
+    "includePerCaseDetails": true,
+    "includeRuleCoverage": true,
+    "ruleCoverageTargets": {
+      "shipment-not-found": 1,
+      "compliance-screen-failed": 1,
+      "missing-consignee": 1,
+      "invalid-unlocode": 1,
+      "weight-volume-mismatch": 1,
+      "dangerous-goods-declaration-missing": 1,
+      "temperature-equipment-unavailable": 1,
+      "incoterms-not-container-appropriate": 1,
+      "incoterms-exw-insurance-gap": 1,
+      "container-volume-underutilized": 1,
+      "container-weight-over-limit": 1,
+      "insurance-gap": 1,
+      "surcharge-above-norm": 1,
+      "demurrage-exposure-high": 1,
+      "cutoff-imminent": 1
+    }
+  }
+}

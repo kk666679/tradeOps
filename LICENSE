@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2026 Awe697777
+Copyright (c) 2026 <Chemmara Enterprise>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,3 +19,70 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+================================================================================
+APPENDIX: SCOPE OF THIS LICENSE AND THIRD-PARTY COMPONENTS
+================================================================================
+
+1. APPLICATION CODE
+
+   The MIT grant above applies to the application source code in this
+   repository: the Next.js application, tRPC routers, Prisma schema, agent
+   framework, workers, UI components, and utility libraries.
+
+2. TARIFF DATASET (src/hs-code-data.ts)
+
+   The tariff dataset is a curated compilation. Its underlying facts are drawn
+   from public and government-published sources:
+
+     - WCO Harmonized System 2022 nomenclature (World Customs Organization)
+     - Malaysia Customs Duties Order 2022 and amendments (Federal Gazette)
+     - Malaysia Excise Duties Order and amendments (Federal Gazette)
+     - Malaysia Sales Tax Act 2018 and associated Orders
+     - Customs (Prohibition of Imports) Order 2023 and amendments
+     - MITI Free Trade Agreement tariff schedules
+     - Royal Malaysian Customs Department HS Explorer publications
+
+   Those underlying facts are not subject to copyright. The selection,
+   arrangement, annotation, TypeScript representation, and helper functions in
+   this repository are copyright <kurnia-kadir.xyz> <chemmara.xyz> and are licensed under
+   the MIT terms above.
+
+   Users of this dataset are solely responsible for verifying every rate,
+   flag, and classification against the current primary source before relying
+   on it. See the disclaimer at the top of src/hs-code-data.ts and the
+   regulatory-accuracy section of SECURITY.md.
+
+3. THIRD-PARTY DEPENDENCIES
+
+   This project depends on third-party software, including but not limited to
+   Next.js, React, Prisma, tRPC, BullMQ, Weaviate client libraries, LangChain,
+   TensorFlow.js, and ONNX Runtime. Each is governed by its own license, and
+   those licenses take precedence for those components. A machine-readable
+   inventory is produced by `pnpm licenses list` and is included in release
+   artefacts.
+
+4. AI MODEL WEIGHTS AND OUTPUTS
+
+   This license does not grant any rights to AI model weights, embeddings,
+   or generated outputs obtained from third-party providers (for example,
+   OpenAI). Your use of those providers is governed by your agreements with
+   them.
+
+5. CONTRIBUTIONS
+
+   By submitting a contribution to this repository you agree that it is
+   licensed under the MIT terms above. See CONTRIBUTING.md for the sign-off
+   requirement.
+
+================================================================================
+NO WARRANTY OF REGULATORY CORRECTNESS
+================================================================================
+
+The Software is a tool for preparing and auditing customs documentation. It
+is not a customs ruling, a legal opinion, or a substitute for professional
+advice. The authors and copyright holders make no representation that any
+rate, classification, control flag, or calculation produced by the Software
+complies with the Customs Act 1967, the Sales Tax Act 2018, the Excise Act
+1976, or any other law. You are solely responsible for the accuracy of any
+declaration you file.

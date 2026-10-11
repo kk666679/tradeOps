@@ -1,0 +1,44 @@
+# Labeler configuration for automatic PR labeling.
+# https://github.com/actions/labeler
+
+backend:
+  - backend/**/*
+  - backend/package.json
+  - backend/package-lock.json
+
+frontend:
+  - app/**/*
+  - components/**/*
+  - hooks/**/*
+  - providers/**/*
+  - lib/**/*
+  - server/**/*
+  - workers/**/*
+  - next.config.ts
+  - tsconfig.json
+  - package.json
+
+prisma:
+  - prisma/**/*
+  - prisma.config.ts
+
+config:
+  - config/**/*
+  - docker-compose*.yml
+  - Dockerfile.*
+  - .github/**/*
+
+docs:
+  - README.md
+  - SECURITY.md
+  - CONTRIBUTING.md
+  - CODE_OF_CONDUCT.md
+  - backend/README.md
+
+tariff:
+  - src/hs-code-data.ts
+  - CHANGELOG-tariff.md
+
+tests:
+  - backend/test/**/*
+  - backend/src/**/*.spec.ts

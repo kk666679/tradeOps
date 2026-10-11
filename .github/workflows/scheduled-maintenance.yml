@@ -1,0 +1,135 @@
+name: Scheduled Maintenance
+
+on:
+  schedule:
+    # Every Monday 03:00 UTC — low-traffic window.
+    - cron: '0 3 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: scheduled-maintenance
+  cancel-in-progress: true
+
+jobs:
+  prune-stale-branches:
+    name: Prune stale branches
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4  # 11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
+
+      - name: Prune merged branches
+        uses: actions/github-script@v7  # 10b53a9ec6c222bb4ce97aa6bd2b5f739696b536
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { data: branches } = await github.rest.repos.listBranches({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              per_page: 100,
+            });
+            const cutoff = Date.now() - 1000 * 60 * 60 * 24 * 30; // 30 days
+            for (const branch of branches) {
+              if (branch.name === 'main') continue;
+              const { data: commits } = await github.rest.repos.listCommits({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                sha: branch.name,
+                per_page: 1,
+              });
+              const lastCommit = commits[0]?.commit?.committer?.date;
+              if (lastCommit && new Date(lastCommit).getTime() < cutoff) {
+                console.log(`Pruning stale branch: ${branch.name}`);
+                await github.rest.git.deleteRef({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  ref: `heads/${branch.name}`,
+                });
+              }
+            }
+
+  cleanup-artifacts:
+    name: Clean up old artifacts
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: List and delete old artifacts
+        uses: actions/github-script@v7  # 10b53a9ec6c222bb4ce97aa6bd2b5f739696b536
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { data: artifacts } = await github.rest.actions.listArtifactsForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              per_page: 100,
+            });
+            const cutoff = Date.now() - 1000 * 60 * 60 * 24 * 14; // 14 days
+            for (const artifact of artifacts) {
+              const created = new Date(artifact.created_at).getTime();
+              if (created < cutoff) {
+                console.log(`Deleting artifact: ${artifact.name} (${artifact.id})`);
+                await github.rest.actions.deleteArtifact({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  artifact_id: artifact.id,
+                });
+              }
+            }
+
+  backup-check:
+    name: Backup health check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Verify backups exist
+        run: |
+          echo "Scheduled backup verification."
+          # Integration point — replace with your actual backup check.
+          # Example (AWS S3):
+          #   aws s3 ls s3://cfs-wms-backups/ --profile prod --human-readable --summarize | tail -1
+          echo "Backup health check integration point configured."
+
+  cleanup-cache:
+    name: Clean up GitHub Actions caches
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Delete caches older than 7 days
+        uses: actions/github-script@v7  # 10b53a9ec6c222bb4ce97aa6bd2b5f739696b536
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const cutoff = Date.now() - 1000 * 60 * 60 * 24 * 7;
+            let page = 1;
+            let deleted = 0;
+            while (true) {
+              const { data: caches } = await github.rest.actions.getActionsCacheList({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                page,
+                per_page: 100,
+              });
+              if (caches.length === 0) break;
+              for (const cache of caches) {
+                const created = new Date(cache.created_at).getTime();
+                if (created < cutoff) {
+                  console.log(`Deleting cache: ${cache.id}`);
+                  await github.rest.actions.deleteActionsCache({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    cache_id: cache.id,
+                  });
+                  deleted++;
+                }
+              }
+              page++;
+            }
+            console.log(`Deleted ${deleted} old caches`);

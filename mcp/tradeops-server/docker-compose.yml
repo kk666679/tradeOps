@@ -1,0 +1,31 @@
+version: '3.9'
+
+services:
+  tradeops-mcp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8787:8787"
+      - "8788:8788"
+    environment:
+      - MCP_TRANSPORT=http
+      - MCP_HTTP_PORT=8787
+      - MCP_HTTP_HOST=0.0.0.0
+      - NODE_ENV=production
+      - LOG_LEVEL=info
+      - TRADEOPS_BACKEND_URL=${TRADEOPS_BACKEND_URL:-http://localhost:4000}
+      - LEDGER_BACKEND_URL=${LEDGER_BACKEND_URL:-http://localhost:4000}
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8787/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - tradeops
+
+networks:
+  tradeops:
+    driver: bridge

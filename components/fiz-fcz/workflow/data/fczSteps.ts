@@ -1,0 +1,120 @@
+import type { WorkflowStepDefinition } from "../types"
+
+/**
+ * FCZ — Free Commercial Zone.
+ * Commercial flows run zero-duty. Event identifiers and agent names are
+ * preserved exactly from the reference implementation.
+ *
+ * Each step now carries the six-module substrate fields: `module`,
+ * `status`, `hsCode`, `dutyStatus`, plus supporting and exception agents.
+ */
+export const FCZ_STEPS: readonly WorkflowStepDefinition[] = [
+  {
+    id: "fcz-1",
+    zone: "fcz",
+    step: 1,
+    title: "Inbound receipt",
+    sub: "ASN · QC · putaway",
+    description:
+      "Receipt of goods into the FCZ against an advance shipping notice, with quality control and putaway. Inbound documents are captured at the door, not reconstructed later.",
+    event: "fcz.inbound.received",
+    agent: "FCZ Receiving Agent",
+    module: "WMS · FCZ",
+    status: "pending",
+    hsCode: "8471.30",
+    dutyStatus: "zero",
+    supportingAgents: ["Inventory Agent", "Customs Agent"],
+    exceptionAgents: ["Risk / Compliance"],
+    exceptionTarget: "close-risk",
+  },
+  {
+    id: "fcz-2",
+    zone: "fcz",
+    step: 2,
+    title: "Transhipment",
+    sub: "Port → FCZ → port",
+    description:
+      "Goods move port → FCZ → port under a bonded transit record. Consignments never enter the customs territory, so duty stays suspended for the whole leg.",
+    event: "fcz.transhipment.completed",
+    agent: "Transhipment Agent",
+    module: "WMS · FCZ",
+    status: "pending",
+    hsCode: "8471.30",
+    dutyStatus: "zero",
+    supportingAgents: ["Inventory Agent", "Customs Agent"],
+    exceptionAgents: ["Transhipment Agent", "Risk / Compliance"],
+    exceptionTarget: "close-risk",
+  },
+  {
+    id: "fcz-3",
+    zone: "fcz",
+    step: 3,
+    title: "Break-bulk",
+    sub: "Parent / child split",
+    description:
+      "A parent consignment is split into child consignments, each with its own destination and document set while retaining the link back to the parent for reconciliation.",
+    event: "fcz.breakbulk.split",
+    agent: "Break-bulk Agent",
+    module: "WMS · FCZ",
+    status: "pending",
+    hsCode: "8471.30",
+    dutyStatus: "zero",
+    supportingAgents: ["Inventory Agent"],
+    exceptionAgents: ["Break-bulk Agent", "Risk / Compliance"],
+    exceptionTarget: "close-risk",
+  },
+  {
+    id: "fcz-4",
+    zone: "fcz",
+    step: 4,
+    title: "Repackaging",
+    sub: "Value-add tracking",
+    description:
+      "Kitting, repacking, and labelling performed inside the zone. Value added is tracked separately from the original customs value so origin and valuation stay defensible.",
+    event: "fcz.repack.value_added",
+    agent: "Repackaging Agent",
+    module: "WMS · FCZ",
+    status: "pending",
+    hsCode: "8471.30",
+    dutyStatus: "zero",
+    supportingAgents: ["Inventory Agent"],
+    exceptionAgents: ["Repackaging Agent", "Risk / Compliance"],
+    exceptionTarget: "close-risk",
+  },
+  {
+    id: "fcz-5",
+    zone: "fcz",
+    step: 5,
+    title: "Re-export",
+    sub: "Zero duty · bonded",
+    description:
+      "Outward movement of goods that never entered the customs territory. The exit is recorded against the original bonded entry so the pair can be matched at audit.",
+    event: "fcz.reexport.confirmed",
+    agent: "Re-export Agent",
+    module: "Trade OPS",
+    status: "pending",
+    hsCode: "8471.30",
+    dutyStatus: "zero",
+    supportingAgents: ["Customs Agent", "Inventory Agent"],
+    exceptionAgents: ["Re-export Agent", "Risk / Compliance"],
+    exceptionTarget: "close-risk",
+  },
+  {
+    id: "fcz-6",
+    zone: "fcz",
+    step: 6,
+    title: "Entrepot match",
+    sub: "Import ↔ export pair",
+    description:
+      "The import and export records of the same consignment are paired. A matched pair is the evidence that duty suspension was correctly applied and can now be closed.",
+    event: "fcz.entrepot.matched",
+    agent: "Entrepot Agent",
+    module: "Trade OPS",
+    status: "pending",
+    hsCode: "8471.30",
+    dutyStatus: "zero",
+    supportingAgents: ["Customs Agent", "Reconciliation Agent"],
+    exceptionAgents: ["Entrepot Agent", "Risk / Compliance"],
+    exceptionTarget: "close-risk",
+  },
+]
