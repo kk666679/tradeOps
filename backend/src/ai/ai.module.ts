@@ -5,8 +5,12 @@ import { RagService } from './rag.service';
 import { ForecastingService } from './forecasting.service';
 import { MemoryService } from './memory.service';
 import { VectorService } from './vector.service';
+import { AiGatewayController } from './ai-gateway.controller';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
+  imports: [AuthModule],
+  controllers: [AiGatewayController],
   providers: [EmbeddingsService, LlmService, RagService, ForecastingService, MemoryService, VectorService],
   exports: [EmbeddingsService, LlmService, RagService, ForecastingService, MemoryService, VectorService],
 })

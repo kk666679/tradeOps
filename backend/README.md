@@ -135,7 +135,10 @@ docker compose up --build
 | `LOG_LEVEL` | no | `info` | |
 | `TRPC_PREFIX` | no | `/trpc` | mount path |
 | `OTEL_EXPORTER_OTLP_ENDPOINT` | no | — | OpenTelemetry |
-| `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` / `GOOGLE_API_KEY` / `GROQ_API_KEY` / … | no | — | AI providers, read by `src/ai/llm.service.ts` |
+| `OPENAI_API_KEY` | no | — | Required by the OpenAI-compatible AI chat gateway |
+| `OPENAI_MODEL` | no | `gpt-4o` | Default model for the AI chat gateway |
+| `OPENAI_BASE_URL` | no | `https://api.openai.com/v1` | Optional OpenAI-compatible provider endpoint |
+| `IOT_WEBHOOK_SECRET` | no | — | Shared HMAC key for signed IoT telemetry webhooks |
 | `VECTOR_DB_URL` | no | — | pgvector or external vector store |
 | `AWS_REGION` / `AWS_S3_BUCKET` | no | — | document storage |
 | `WORKER_ONLY` | no | `false` | run only the BullMQ workers, no HTTP |
@@ -156,7 +159,27 @@ pnpm test             # unit
 pnpm test:watch
 pnpm test:cov
 pnpm test:e2e         # Supertest (requires Postgres + Redis)
+pnpm tradeops -- ai "Summarize this shipment"
+pnpm tradeops -- telemetry send SENSOR-1 iot.telemetry.received '{"temperature":21}'
 ```
+
+### AI gateway and IoT telemetry
+
+The backend exposes an authenticated, non-streaming OpenAI-compatible endpoint at
+`POST /api/ai/v1/chat/completions`. Supply a backend JWT in the `Authorization:
+Bearer <token>` header. Provider credentials remain server-side.
+
+IoT devices submit JSON to `POST /api/iot/webhooks/:deviceId` with
+`x-tenant-id`, `x-tradeops-timestamp` (Unix seconds), and
+`x-tradeops-signature` (hex HMAC-SHA256). The signed canonical message is
+`<timestamp>.<tenantId>.<deviceId>.<JSON.stringify(body)>`; signatures older
+than five minutes are rejected. The endpoint stores accepted events in the
+tenant-scoped `DomainEvent` table. Authenticated clients can read device
+telemetry from `GET /api/iot/devices/:deviceId/telemetry?limit=100`.
+
+The CLI uses `TRADEOPS_API_URL` (default `http://localhost:3001/api`),
+`TRADEOPS_ACCESS_TOKEN` for AI and telemetry reads, and `TRADEOPS_TENANT_ID`
+plus `IOT_WEBHOOK_SECRET` for signed telemetry submissions.
 
 ---
 

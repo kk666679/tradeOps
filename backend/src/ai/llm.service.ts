@@ -1,52 +1,106 @@
-import { Injectable, Logger } from '@nestjs/common';
+import {
+  BadGatewayException,
+  Injectable,
+  Logger,
+  ServiceUnavailableException,
+} from '@nestjs/common';
 
-const MCP_SERVER_URL = process.env.MCP_SERVER_URL ?? 'http://localhost:3100';
-const MCP_API_KEY = process.env.MCP_API_KEY ?? '';
+export type ChatRole = 'system' | 'user' | 'assistant';
+
+export interface ChatMessage {
+  role: ChatRole;
+  content: string;
+}
+
+export interface ChatCompletionOptions {
+  model?: string;
+  temperature?: number;
+  maxTokens?: number;
+}
 
 @Injectable()
 export class LlmService {
   private readonly logger = new Logger(LlmService.name);
 
-  async complete(prompt: string, system = 'You are a customs assistant.'): Promise<string> {
-    if (!MCP_SERVER_URL || !MCP_API_KEY) {
-      this.logger.warn('MCP_SERVER_URL or MCP_API_KEY not configured — returning offline stub');
-      return '[offline] ' + prompt.slice(0, 200) + '\n\n(system: ' + system + ')';
+  get defaultModel(): string {
+    return process.env.OPENAI_MODEL?.trim() || 'gpt-4o';
+  }
+
+  async complete(
+    prompt: string,
+    system = 'You are a customs assistant.',
+    options: ChatCompletionOptions = {},
+  ): Promise<string> {
+    return this.chat(
+      [
+        { role: 'system', content: system },
+        { role: 'user', content: prompt },
+      ],
+      options,
+    );
+  }
+
+  async chat(
+    messages: ChatMessage[],
+    options: ChatCompletionOptions = {},
+  ): Promise<string> {
+    const apiKey = process.env.OPENAI_API_KEY?.trim();
+    if (!apiKey) {
+      throw new ServiceUnavailableException('AI provider is not configured (OPENAI_API_KEY is missing).');
     }
 
+    const baseUrl = (process.env.OPENAI_BASE_URL ?? 'https://api.openai.com/v1').replace(/\/+$/, '');
+    const model = options.model ?? this.defaultModel;
+    let response: Response;
     try {
-      const res = await fetch(`${MCP_SERVER_URL}/mcp`, {
+      response = await fetch(`${baseUrl}/chat/completions`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${MCP_API_KEY}`,
+          authorization: `Bearer ${apiKey}`,
+          'content-type': 'application/json',
         },
         body: JSON.stringify({
-          jsonrpc: '2.0',
-          id: crypto.randomUUID(),
-          method: 'tools/call',
-          params: {
-            name: 'llm_complete',
-            arguments: { prompt, system },
-          },
+          model,
+          messages,
+          ...(options.temperature !== undefined ? { temperature: options.temperature } : {}),
+          ...(options.maxTokens !== undefined ? { max_tokens: options.maxTokens } : {}),
         }),
+        signal: AbortSignal.timeout(60_000),
       });
-
-      if (!res.ok) {
-        this.logger.error(`MCP server error: ${res.status}`);
-        return '[error] MCP server returned ' + res.status;
-      }
-
-      const data = await res.json() as { result?: { content?: { type: string; text: string }[] }; error?: { message: string } };
-
-      if (data.error) {
-        this.logger.error('MCP tool error', data.error);
-        return '[error] ' + data.error.message;
-      }
-
-      return data.result?.content?.find((c) => c.type === 'text')?.text ?? '[no response]';
     } catch (err) {
-      this.logger.error('MCP request failed', err instanceof Error ? err.message : String(err));
-      return '[offline] ' + prompt.slice(0, 200);
+      this.logger.error(`AI provider request failed: ${err instanceof Error ? err.message : String(err)}`);
+      throw new BadGatewayException('AI provider could not be reached.');
     }
+
+    if (!response.ok) {
+      this.logger.error(`AI provider returned HTTP ${response.status}.`);
+      throw new BadGatewayException(`AI provider request failed with status ${response.status}.`);
+    }
+
+    let result: unknown;
+    try {
+      result = await response.json();
+    } catch {
+      throw new BadGatewayException('AI provider returned an invalid response.');
+    }
+
+    const content =
+      typeof result === 'object' &&
+      result !== null &&
+      'choices' in result &&
+      Array.isArray(result.choices) &&
+      typeof result.choices[0] === 'object' &&
+      result.choices[0] !== null &&
+      'message' in result.choices[0] &&
+      typeof result.choices[0].message === 'object' &&
+      result.choices[0].message !== null &&
+      'content' in result.choices[0].message
+        ? result.choices[0].message.content
+        : undefined;
+
+    if (typeof content !== 'string') {
+      throw new BadGatewayException('AI provider response did not include a text completion.');
+    }
+    return content;
   }
 }
