@@ -1,0 +1,27 @@
+{
+  "$schema": "https://modelcontextprotocol.io/schemas/2026-07-28/policy-bundle.json",
+  "id": "tradeops-default",
+  "title": "TradeOps default policy",
+  "description": "Baseline policy: human approval for high-value declarations, agents may never move bonded goods, and read-only tools pass through.",
+  "rules": [
+    {
+      "id": "tradeops/high-value",
+      "description": "Declarations above the tenant threshold require human approval",
+      "match": { "tool": "declaration.submit" },
+      "when": { "valueMYR": { "gt": 250000 } },
+      "decision": "require_approval"
+    },
+    {
+      "id": "tradeops/agent-bonded",
+      "description": "Agents cannot move bonded goods",
+      "match": { "tool": ["ledger.move", "gate.bondedOut"], "agentId": { "present": true } },
+      "decision": "require_approval"
+    },
+    {
+      "id": "tradeops/read-only-allow",
+      "description": "Read-only tools are always allowed",
+      "match": { "toolReadOnly": true },
+      "decision": "allow"
+    }
+  ]
+}

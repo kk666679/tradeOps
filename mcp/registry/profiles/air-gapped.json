@@ -1,0 +1,30 @@
+{
+  "$schema": "https://modelcontextprotocol.io/schemas/2026-07-28/profile.json",
+  "profileId": "air-gapped",
+  "title": "Air-gapped",
+  "description": "No outbound network. All servers, tariff data, and rule sets are vendored. Suitable for defence, restricted zones, or environments without internet connectivity.",
+  "transport": "stdio",
+  "protocolVersion": "2026-07-28",
+  "auth": { "provider": "local-none" },
+  "servers": [
+    { "name": "io.tradeops.mcp.tradeops-core",    "required": true },
+    { "name": "io.tradeops.mcp.trade-compliance", "required": true },
+    { "name": "io.tradeops.mcp.audit-governance", "required": true }
+  ],
+  "extensions": {
+    "io.modelcontextprotocol/tasks":  { "enabled": true },
+    "io.modelcontextprotocol/ui":     { "enabled": false },
+    "io.modelcontextprotocol/skills": { "enabled": true }
+  },
+  "governance": {
+    "auditChain": "in-process",
+    "policyEngine": "in-process",
+    "policyBundle": "regulated-enterprise",
+    "otel": { "enabled": false }
+  },
+  "vendoredData": {
+    "tariff": "vendor/hs-code-data.ts",
+    "ruleSet": "vendor/rule-set-2026-07-28.json",
+    "updateChannel": "manual-import"
+  }
+}

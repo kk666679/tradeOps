@@ -1,0 +1,27 @@
+{
+  "$schema": "https://modelcontextprotocol.io/schemas/2026-07-28/extension.json",
+  "id": "io.modelcontextprotocol/ui",
+  "version": "2026-07-28",
+  "title": "MCP Apps",
+  "description": "Tools may return interactive UI rendered in a sandboxed iframe. CSP allowlists restrict outbound network access and loaded resources.",
+  "resultShape": {
+    "_meta.ui.resourceUri": "ui://...",
+    "_meta.ui.csp.connectDomains": "string[]",
+    "_meta.ui.csp.resourceDomains": "string[]",
+    "_meta.ui.preferredHeight": "number (optional)",
+    "data": "unknown",
+    "initialState": "object (optional)"
+  },
+  "cspPolicy": {
+    "defaultSrc": "'none'",
+    "connectSrc": "from _meta.ui.csp.connectDomains",
+    "imgSrc": "from _meta.ui.csp.resourceDomains",
+    "styleSrc": "from _meta.ui.csp.resourceDomains",
+    "scriptSrc": "'self'",
+    "frameAncestors": "MCP client host only"
+  },
+  "usedBy": [
+    "io.tradeops.mcp.jkdm-customs",
+    "io.tradeops.mcp.iot-gateway"
+  ]
+}

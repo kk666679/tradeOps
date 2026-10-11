@@ -1,0 +1,26 @@
+{
+  "$schema": "https://modelcontextprotocol.io/schemas/2026-07-28/tenant.json",
+  "tenantId": "demo-pool",
+  "title": "Demo tenant (pool)",
+  "tenancyModel": "pool",
+  "profile": "edge-http",
+  "enabledServers": [
+    "io.tradeops.mcp.tradeops-core",
+    "io.tradeops.mcp.trade-compliance",
+    "io.tradeops.mcp.audit-governance"
+  ],
+  "disabledTools": ["ledger.reconcile"],
+  "auth": {
+    "provider": "oidc-generic",
+    "allowedScopes": [
+      "tradeops.core.read",
+      "tradeops.core.write",
+      "compliance.gate.read",
+      "governance.audit.read"
+    ]
+  },
+  "limits": {
+    "requestsPerMinute": 600,
+    "concurrentTasks": 20
+  }
+}

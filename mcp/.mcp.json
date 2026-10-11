@@ -1,0 +1,41 @@
+{
+  "$schema": "https://modelcontextprotocol.io/schemas/2026-07-28/mcp-config.json",
+  "mcpServers": {
+    "tradeops-core": {
+      "command": "node",
+      "args": ["servers/tradeops-core/dist/index.js"],
+      "transport": "stdio",
+      "protocolVersion": "2026-07-28"
+    },
+    "jkdm-customs": {
+      "url": "http://localhost:8790/mcp",
+      "transport": "streamable-http",
+      "protocolVersion": "2026-07-28",
+      "auth": {
+        "type": "oauth2",
+        "resource": "https://tradeops.local/mcp/jkdm-customs"
+      }
+    },
+    "trade-compliance": {
+      "url": "http://localhost:8791/mcp",
+      "transport": "streamable-http",
+      "protocolVersion": "2026-07-28"
+    },
+    "iot-gateway": {
+      "url": "http://localhost:8792/mcp",
+      "transport": "streamable-http",
+      "protocolVersion": "2026-07-28",
+      "subscriptions": ["toolsListChanged", "resourcesListChanged"]
+    },
+    "audit-governance": {
+      "url": "http://localhost:8793/mcp",
+      "transport": "streamable-http",
+      "protocolVersion": "2026-07-28"
+    }
+  },
+  "extensions": {
+    "io.modelcontextprotocol/tasks": { "enabled": true },
+    "io.modelcontextprotocol/ui": { "enabled": true },
+    "io.modelcontextprotocol/skills": { "enabled": true }
+  }
+}

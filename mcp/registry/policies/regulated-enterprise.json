@@ -1,0 +1,44 @@
+{
+  "$schema": "https://modelcontextprotocol.io/schemas/2026-07-28/policy-bundle.json",
+  "id": "regulated-enterprise",
+  "title": "Regulated enterprise policy",
+  "description": "Stricter policy for regulated entities. Mandatory approval on any write; agents restricted to read-only unless explicitly delegated; capability drift monitoring enforced.",
+  "rules": [
+    {
+      "id": "regulated/any-write-approval",
+      "description": "Any non-read-only tool requires human approval",
+      "match": { "toolReadOnly": false },
+      "decision": "require_approval"
+    },
+    {
+      "id": "regulated/agent-read-only",
+      "description": "Agents are read-only unless delegated",
+      "match": { "agentId": { "present": true }, "toolReadOnly": false },
+      "decision": "deny",
+      "unless": { "delegated": true }
+    },
+    {
+      "id": "regulated/declaration-submit",
+      "description": "Declaration submission always requires human approval",
+      "match": { "tool": "declaration.submit" },
+      "decision": "require_approval"
+    },
+    {
+      "id": "regulated/bonded-move",
+      "description": "Bonded movement always requires human approval",
+      "match": { "tool": ["ledger.move", "gate.bondedOut"] },
+      "decision": "require_approval"
+    },
+    {
+      "id": "regulated/read-only-allow",
+      "description": "Read-only tools are allowed",
+      "match": { "toolReadOnly": true },
+      "decision": "allow"
+    }
+  ],
+  "capabilityDrift": {
+    "enabled": true,
+    "action": "alert_and_block_new_tools",
+    "alertChannel": "security@tradeops.local"
+  }
+}

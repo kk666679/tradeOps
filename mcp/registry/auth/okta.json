@@ -1,0 +1,19 @@
+{
+  "$schema": "https://modelcontextprotocol.io/schemas/2026-07-28/auth-provider.json",
+  "id": "okta",
+  "title": "Okta",
+  "description": "Enterprise-managed authorization via Okta with SCIM provisioning and group-to-scope mapping.",
+  "type": "oauth2",
+  "issuer": "https://{org}.okta.com/oauth2/default",
+  "authorizationEndpoint": "https://{org}.okta.com/oauth2/default/v1/authorize",
+  "tokenEndpoint": "https://{org}.okta.com/oauth2/default/v1/token",
+  "jwksUri": "https://{org}.okta.com/oauth2/default/v1/keys",
+  "clientRegistration": "cimd",
+  "pkce": "S256",
+  "resourceIndicators": true,
+  "issuerValidation": "RFC9207",
+  "enterpriseManaged": {
+    "scim": true,
+    "groupToScopeMapping": true
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "$schema": "https://modelcontextprotocol.io/schemas/2026-07-28/capability-catalog.json",
+  "id": "jkdm",
+  "title": "JKDM customs capability catalog",
+  "description": "Customs-domain capabilities, aligned to the JKDM guideline dated 22 April 2025 and the Customs Act 1967.",
+  "capabilities": [
+    {
+      "id": "jkdm.classify",
+      "title": "HS classification",
+      "servers": ["io.tradeops.mcp.jkdm-customs"],
+      "tools": ["classify.hs"],
+      "risk": "medium",
+      "mrtr": ["low_confidence_confirmation"],
+      "legalRef": "Customs Duties Order 2022"
+    },
+    {
+      "id": "jkdm.duty",
+      "title": "Duty and tax calculation",
+      "servers": ["io.tradeops.mcp.jkdm-customs"],
+      "tools": ["duty.calculate"],
+      "risk": "medium",
+      "legalRef": "Customs Act 1967; Sales Tax Act 2018; Excise Act 1976"
+    },
+    {
+      "id": "jkdm.declaration",
+      "title": "Declaration preparation and submission",
+      "servers": ["io.tradeops.mcp.jkdm-customs"],
+      "tools": ["declaration.prepare", "declaration.submit"],
+      "risk": "high",
+      "extensions": ["io.modelcontextprotocol/tasks"],
+      "humanApproval": "required_for_submit"
+    },
+    {
+      "id": "jkdm.permit",
+      "title": "Permit checks",
+      "servers": ["io.tradeops.mcp.jkdm-customs"],
+      "tools": ["permit.check"],
+      "risk": "high",
+      "agencies": ["MAQIS", "SIRIM", "MITI", "MDA", "DCA"]
+    },
+    {
+      "id": "jkdm.drawback",
+      "title": "Drawback and exemption",
+      "servers": ["io.tradeops.mcp.jkdm-customs"],
+      "tools": ["drawback.claim"],
+      "risk": "high",
+      "extensions": ["io.modelcontextprotocol/tasks"]
+    }
+  ]
+}

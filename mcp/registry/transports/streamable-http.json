@@ -1,0 +1,11 @@
+{
+  "$schema": "https://modelcontextprotocol.io/schemas/2026-07-28/transport.json",
+  "id": "streamable-http",
+  "title": "Streamable HTTP",
+  "description": "Stateless POST binding. No Mcp-Session-Id; every request self-describes via params._meta.",
+  "sessions": "none",
+  "stateless": true,
+  "headerMirroring": "SEP-2243",
+  "resourceIndicatorHeader": "X-MCP-Resource",
+  "notes": "Body is authoritative; header/body mismatches are rejected at the application layer."
+}
