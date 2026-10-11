@@ -59,6 +59,7 @@ src/
 ├── integration/           # Agent mesh, customs, EDI, ERP, FIZ-FCZ, TMS, webhooks, WMS-ext
 ├── inventory/
 ├── logistics/             # Shipment tracking + gateway
+├── mcp/                   # MCP endpoint, protocol helpers, and TradeOps tools
 ├── modules/task/          # Generic task queue
 ├── order-management/      # Approvals, customs, fulfilment, manufacturing, purchase, trading, transhipment
 ├── prisma/                # PrismaModule + PrismaService
@@ -72,6 +73,9 @@ src/
 ├── wms/                   # Bonded, exemption, forecasting, gate, inbound, inventory, movement, outbound, slotting
 └── workers/               # Standalone BullMQ workers (agent, embedding, forecast, llm, twin)
 ```
+
+The MCP runtime is in `src/mcp/`; its registry manifests are in the backend
+root's `mcp/` directory.
 
 Prisma schema lives in `prisma/`. Migrations in `prisma/migrations/`. Seed in `prisma/seed.ts`.
 
@@ -159,6 +163,7 @@ pnpm test             # unit
 pnpm test:watch
 pnpm test:cov
 pnpm test:e2e         # Supertest (requires Postgres + Redis)
+pnpm test:mcp         # MCP protocol and tool tests
 pnpm tradeops -- ai "Summarize this shipment"
 pnpm tradeops -- telemetry send SENSOR-1 iot.telemetry.received '{"temperature":21}'
 ```
@@ -176,6 +181,10 @@ IoT devices submit JSON to `POST /api/iot/webhooks/:deviceId` with
 than five minutes are rejected. The endpoint stores accepted events in the
 tenant-scoped `DomainEvent` table. Authenticated clients can read device
 telemetry from `GET /api/iot/devices/:deviceId/telemetry?limit=100`.
+
+MCP clients connect to the authenticated Streamable HTTP endpoint at
+`POST /api/mcp`. The runtime and registry live in this backend under
+`src/mcp/` and `mcp/`; see [the MCP guide](./mcp/README.md).
 
 The CLI uses `TRADEOPS_API_URL` (default `http://localhost:3001/api`),
 `TRADEOPS_ACCESS_TOKEN` for AI and telemetry reads, and `TRADEOPS_TENANT_ID`
