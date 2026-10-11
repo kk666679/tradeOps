@@ -20,6 +20,7 @@ import { IntegrationModule } from './integration/integration.module';
 import { CustomAgentsModule } from './custom-agents/custom-agents.module';
 import { AutoclawModule } from './autoclaw/autoclaw.module';
 import { AiModule } from './ai/ai.module';
+import { McpModule } from './mcp/mcp.module';
 import { RulesModule } from './rules/rules.module';
 import { QueuesModule } from './queues/queues.module';
 import { EventsModule } from './events/events.module';
@@ -35,7 +36,7 @@ import { AppService } from './app.service';
     CargoModule, TradeOpsModule, FizModule, FczModule,
     WmsModule, OrderManagementModule, InventoryModule, LogisticsModule,
     DigitalTwinModule, IntegrationModule, CustomAgentsModule, AutoclawModule,
-    AiModule, RulesModule, QueuesModule, EventsModule,
+    AiModule, McpModule, RulesModule, QueuesModule, EventsModule,
     HealthModule, WorkersModule,
   ],
   controllers: [AppController],
