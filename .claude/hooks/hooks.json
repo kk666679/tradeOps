@@ -1,0 +1,26 @@
+{
+  "PostToolUse": [
+    {
+      "matcher": "Write|Edit",
+      "hooks": [
+        { "type": "command", "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/format-changed.sh" }
+      ]
+    }
+  ],
+  "PreToolUse": [
+    {
+      "matcher": "Bash(git push:*)",
+      "hooks": [
+        { "type": "command", "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/guard-push.sh" }
+      ]
+    }
+  ],
+  "SessionStart": [
+    {
+      "hooks": [
+        { "type": "command", "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/verify-mcp.sh" },
+        { "type": "command", "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/claude-md-size.sh" }
+      ]
+    }
+  ]
+}
