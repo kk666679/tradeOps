@@ -1,24 +1,15 @@
-# Orchestrate Supply Chain Analysis
+---
+description: Orchestrate a full supply chain review across subagents
+allowed-tools: [Task, Read, Glob, Grep]
+---
 
-## Purpose
-Coordinate multiple agents for end-to-end optimization.
+# /orchestrate_supply_chain
 
-## Inputs
-- demand_data
-- supply_data
-- network_data
-- constraints
-- objectives
+1. `cargo-expert` normalizes the cargo tree.
+2. `sea-freight-expert` reports vessel and routing status.
+3. `inventory-expert` proposes allocation and rebalancing.
+4. `order-management-expert` reconciles orders.
+5. `forecasting-expert` produces a horizon forecast.
+6. Aggregate into a single report with per-agent sections.
 
-## Instructions
-1. Call demand-forecaster
-2. Call network-designer
-3. Call procurement-negotiator
-4. Call digital-twin-engineer for validation
-5. Synthesize outputs
-
-## Output
-- unified_strategy
-- cost_vs_service_analysis
-- risks
-- recommendations
+Each subagent runs in its own context. The top-level model only aggregates.

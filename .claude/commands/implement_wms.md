@@ -1,27 +1,14 @@
-# Implement Warehouse Management System
+---
+description: Implement a WMS schema change with a migration
+allowed-tools: [Task, Read, Glob, Grep, Edit, Write, Bash]
+argument-hint: "<change description>"
+---
 
-## Purpose
-Design or configure WMS processes.
+# /implement_wms $ARGUMENTS
 
-## Inputs
-- warehouse_layout
-- process_flows
-- inventory_profile
-- technology_stack
-- integration_requirements
+Delegate to `wms-implementer`. Require:
 
-## Instructions
-Use the wms-implementer agent.
-
-Steps:
-1. Map warehouse operations
-2. Define system workflows
-3. Configure inventory logic
-4. Align with tech stack
-5. Validate integration points
-
-## Output
-- wms_configuration
-- process_design
-- integration_plan
-- implementation_risks
+- Prisma schema diff.
+- Migration SQL.
+- Backward-compatibility note.
+- Scratch-database test evidence.

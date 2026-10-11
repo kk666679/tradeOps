@@ -1,27 +1,10 @@
-# Design Supply Chain Network
+---
+description: Propose a supply chain network configuration
+allowed-tools: [Task, "mcp__trade-compliance__gate.evaluate"]
+argument-hint: "<goal: cost|time|resilience>"
+---
 
-## Purpose
-Optimize logistics and distribution network.
+# /design_network $ARGUMENTS
 
-## Inputs
-- demand_data
-- candidate_locations
-- transportation_costs
-- service_level_targets
-- constraints
-
-## Instructions
-Use the network-designer agent.
-
-Steps:
-1. Analyze demand distribution
-2. Evaluate location candidates
-3. Optimize facility placement
-4. Model transportation flows
-5. Balance cost vs service level
-
-## Output
-- recommended_network
-- cost_breakdown
-- service_levels
-- tradeoffs
+Delegate to `network-designer`. Every proposed lane must pass the
+regulatory gate for the target client.

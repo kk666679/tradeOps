@@ -1,25 +1,10 @@
-# Vector Analysis
+---
+description: Run RAG over cargo documents for a question
+allowed-tools: [Task, "mcp__ai-layer__rag.search"]
+argument-hint: "<question>"
+---
 
-## Purpose
-Perform embedding-based similarity or semantic analysis.
+# /analyze_vector $ARGUMENTS
 
-## Inputs
-- dataset
-- query
-- embedding_model (optional)
-- similarity_metric (optional)
-
-## Instructions
-Use the vector-analyst agent.
-
-Steps:
-1. Convert data into embeddings
-2. Perform similarity search
-3. Rank results
-4. Identify clusters or patterns
-
-## Output
-- similar_items
-- similarity_scores
-- clusters
-- insights
+Delegate to `vector-analyst`. Require at least one above-threshold source;
+otherwise return "no answer".

@@ -1,27 +1,15 @@
-# Forecast Demand
+---
+description: Produce a cargo-volume forecast for a tenant
+allowed-tools: [Task, "mcp__ai-layer__forecast.predict", "mcp__tradeops-core__inventory.query"]
+argument-hint: "<tenantId> <horizonWeeks>"
+---
 
-## Purpose
-Generate demand forecasts using historical data and external drivers.
+# /forecast_demand $1 $2
 
-## Inputs
-- product_id
-- location
-- historical_data
-- forecast_horizon
-- external_factors (optional)
+Delegate to `forecasting-expert`. Require:
 
-## Instructions
-Use the demand-forecaster agent.
+- Training window and last data point.
+- Confidence intervals.
+- Caveats.
 
-Steps:
-1. Analyze historical demand patterns
-2. Identify seasonality and trends
-3. Incorporate external factors if provided
-4. Generate forecast for the specified horizon
-5. Output confidence intervals
-
-## Output
-- forecast_values
-- confidence_range
-- key_drivers
-- anomalies_detected
+Never label the forecast as a commitment.

@@ -1,27 +1,10 @@
-# Procurement Negotiation Strategy
+---
+description: Draft a procurement negotiation position (advisory only)
+allowed-tools: [Task, Read, Glob, Grep]
+argument-hint: "<quotes file>"
+---
 
-## Purpose
-Develop supplier negotiation strategies.
+# /negotiate_procurement $ARGUMENTS
 
-## Inputs
-- supplier_list
-- spend_data
-- market_conditions
-- contract_terms
-- risk_profile
-
-## Instructions
-Use the procurement-negotiator agent.
-
-Steps:
-1. Analyze supplier positioning
-2. Identify leverage points
-3. Benchmark pricing
-4. Develop negotiation tactics
-5. Suggest contract improvements
-
-## Output
-- negotiation_strategy
-- cost_saving_opportunities
-- risk_assessment
-- recommended_terms
+Delegate to `procurement-negotiator`. The output is a draft. Nothing is
+sent.

@@ -1,27 +1,9 @@
-# Build Digital Twin
+---
+description: Run a what-if scenario on the digital twin
+allowed-tools: [Task, "mcp__tradeops-core__yard.status", "mcp__iot-gateway__zone.graph"]
+argument-hint: "<scenario>"
+---
 
-## Purpose
-Create a simulation model of the supply chain or warehouse.
+# /build_digital_twin $ARGUMENTS
 
-## Inputs
-- system_scope (warehouse | network | end-to-end)
-- nodes
-- flows
-- constraints
-- objectives
-
-## Instructions
-Use the digital-twin-engineer agent.
-
-Steps:
-1. Map entities and relationships
-2. Define system constraints
-3. Build simulation logic
-4. Validate model consistency
-5. Prepare scenario capabilities
-
-## Output
-- digital_twin_model
-- assumptions
-- simulation_scenarios
-- risk_points
+Delegate to `digital-twin-engineer`. Every output is labelled **simulated**.
