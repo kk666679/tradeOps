@@ -132,7 +132,7 @@ importers:
         specifier: ^5.10.1
         version: 5.11.1(supports-color@8.1.1)
       lucide-react:
-        specifier: ^1.14.0
+        specifier: ^1.55.0
         version: 1.55.0(@types/react@19.3.0)(react@19.2.5)
       media-chrome:
         specifier: ^4.19.0
