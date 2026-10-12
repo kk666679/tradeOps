@@ -2,7 +2,7 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { BrandLogo } from '@/components/branding/BrandLogo';
-import { ChevronDown, LayoutDashboard, Warehouse, ShoppingCart, Package, Globe, Zap, Cpu, Plug, Factory, Store, Bot, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { ChevronDown, LayoutDashboard, Warehouse, ShoppingCart, Package, Globe, Zap, Cpu, Plug, Factory, Store, Bot, BookOpen, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
 import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
@@ -14,6 +14,7 @@ const GROUP_ICONS: Record<string, React.ElementType> = {
   Zones: Globe,
   Intelligence: Cpu,
   Integrations: Plug,
+  Walkthroughs: BookOpen,
 };
 
 const ITEM_ICONS: Record<string, React.ElementType> = {
@@ -28,6 +29,20 @@ const ITEM_ICONS: Record<string, React.ElementType> = {
   'Digital Twin': Cpu,
   'Custom Agents': Bot,
   Integrations: Plug,
+  'All Walkthroughs': BookOpen,
+  'Admin guide': BookOpen,
+  'Bonded guide': BookOpen,
+  'Cargo guide': BookOpen,
+  'Custom Agents guide': BookOpen,
+  'Digital Twin guide': BookOpen,
+  'FCZ guide': BookOpen,
+  'FIZ guide': BookOpen,
+  'Integration guide': BookOpen,
+  'Order Management guide': BookOpen,
+  'Search guide': BookOpen,
+  'Settings guide': BookOpen,
+  'Trade OPS guide': BookOpen,
+  'WMS guide': BookOpen,
 };
 
 const GROUPS: [string, [string, string][]][] = [
@@ -35,6 +50,22 @@ const GROUPS: [string, [string, string][]][] = [
   ['Zones', [['FIZ', '/fiz'], ['FCZ', '/fcz'], ['Bonded', '/bonded'], ['Bonded Workflow', '/bonded-workflow']]],
   ['Intelligence', [['Dashboard', '/dashboard'], ['Digital Twin', '/digital-twin'], ['Custom Agents', '/custom-agents']]],
   ['Integrations', [['Integrations', '/integration']]],
+  ['Walkthroughs', [
+    ['All Walkthroughs', '/walkthrough'],
+    ['Admin guide', '/admin/walkthrough'],
+    ['Bonded guide', '/bonded/walkthrough'],
+    ['Cargo guide', '/cargo/walkthrough'],
+    ['Custom Agents guide', '/custom-agents/walkthrough'],
+    ['Digital Twin guide', '/digital-twin/walkthrough'],
+    ['FCZ guide', '/fcz/walkthrough'],
+    ['FIZ guide', '/fiz/walkthrough'],
+    ['Integration guide', '/integration/walkthrough'],
+    ['Order Management guide', '/order-management/walkthrough'],
+    ['Search guide', '/search/walkthrough'],
+    ['Settings guide', '/settings/walkthrough'],
+    ['Trade OPS guide', '/trade-ops/walkthrough'],
+    ['WMS guide', '/wms/walkthrough'],
+  ]],
 ];
 
 // Per-feature sub-page dropdowns. Every href below maps to a real route under app/(app)/.
