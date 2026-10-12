@@ -24,7 +24,9 @@
     "test:mcp": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand src/mcp",
     "tradeops": "node ./bin/tradeops.mjs",
     "postinstall": "prisma generate",
-    "start:both": "concurrently --names BACKEND,MCP --prefix-colors blue,green \"npm run start:backend\" \"npm run start:mcp\""
+    "start:both": "concurrently --names BACKEND,MCP --prefix-colors blue,green \"npm run start:backend\" \"npm run start:mcp\"",
+    "start:all": "concurrently --kill-others --names backend,mcp --prefix-colors blue,magenta \"npm:start:backend\" \"npm:start:mcp\"",
+    "prestart:all": "bash scripts/prestart-all.sh"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.32.1",

@@ -60,3 +60,5 @@ node_modules/
 backend/mcp/servers/*/dist/
 backend/scripts/mcp-launcher.js
 backend/scripts/mcp-launcher.d.ts
+tsconfig.scoped.json
+tsconfig.scoped.json
