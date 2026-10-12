@@ -126,14 +126,8 @@ function shutdown(): void {
   shuttingDown = true;
 
   for (const child of children.values()) {
-    if (child.exitCode === null) child.kill('SIGTERM');
+    if (child.exitCode === null) child.kill('SIGKILL');
   }
-
-  setTimeout(() => {
-    for (const child of children.values()) {
-      if (child.exitCode === null) child.kill('SIGKILL');
-    }
-  }, 5000).unref();
 }
 
 process.on('SIGINT', shutdown);
