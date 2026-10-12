@@ -9,7 +9,9 @@ on:
       - '**.js'
       - '**.mjs'
       - 'package.json'
+      - 'pnpm-lock.yaml'
       - 'backend/package.json'
+      - 'backend/pnpm-lock.yaml'
       - '.github/workflows/codeql.yml'
   pull_request:
     branches: [main]
@@ -28,31 +30,29 @@ concurrency:
 
 jobs:
   analyze:
-    name: Analyze
+    name: Analyze (${{ matrix.language }})
     runs-on: ubuntu-latest
     timeout-minutes: 45
     strategy:
       fail-fast: false
-      # ✅ FIX: Use a single combined language instead of a matrix.
-      # TypeScript and JavaScript are analyzed together by CodeQL.
       matrix:
         language: [javascript-typescript]
     steps:
       - name: Checkout
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4
+        uses: actions/checkout@v4
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@42947a340483f03ba47bb1a039b2c519aab3df85  # v3.37.8
+        uses: github/codeql-action/init@v4
         with:
           languages: ${{ matrix.language }}
           queries: security-extended
-          tools: latest
+          tools: linked
 
       - name: Autobuild
-        uses: github/codeql-action/autobuild@42947a340483f03ba47bb1a039b2c519aab3df85  # v3.37.8
+        uses: github/codeql-action/autobuild@v4
 
       - name: Perform CodeQL analysis
-        uses: github/codeql-action/analyze@42947a340483f03ba47bb1a039b2c519aab3df85  # v3.37.8
+        uses: github/codeql-action/analyze@v4
         with:
-          category: "security:${{ matrix.language }}"
+          category: "/language:${{ matrix.language }}"
           upload: true
