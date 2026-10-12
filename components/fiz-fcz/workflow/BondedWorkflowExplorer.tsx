@@ -65,6 +65,7 @@ function miniMapNodeColor(node: WorkflowNode): string {
 }
 
 export interface BondedWorkflowExplorerProps {
+  height?: number;
   /**
    * `full` exposes the agent directory and agent links; `preview` is the
    * simplified overview suitable for a marketing page.

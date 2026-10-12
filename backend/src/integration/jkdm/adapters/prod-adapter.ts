@@ -73,11 +73,11 @@ export function createProdAdapter(
         correlationId,
         notes: "prod adapter has no verified transport",
       });
-      transportNotImplemented();
+      return transportNotImplemented();
     },
 
     async getDeclarationStatus(_declarationRef: string): Promise<DeclarationStatus> {
-      transportNotImplemented();
+      return transportNotImplemented();
     },
 
     async recordManualResponse(_input: ManualResponse): Promise<ManualResponseRecord> {

@@ -1,58 +1,30 @@
 'use client';
+import { createContext, useContext, type ReactNode } from 'react';
 
-import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
-import { io, Socket } from 'socket.io-client';
-import { getAuthToken } from '@/lib/trpc';
-
-interface SocketContextValue {
-  socket: Socket | null;
+export interface SocketContextValue {
   connected: boolean;
-  subscribe: (event: string, handler: (data: any) => void) => () => void;
+  emit: (event: string, payload?: unknown) => void;
+  on: (event: string, handler: (payload: unknown) => void) => () => void;
+  subscribe: (channel: string, handler: (payload: unknown) => void) => () => void;
 }
 
-const SocketContext = createContext<SocketContextValue>({
-  socket: null,
+const NOOP_SOCKET: SocketContextValue = {
   connected: false,
+  emit: () => {},
+  on: () => () => {},
   subscribe: () => () => {},
-});
+};
 
-export function useSocket() {
-  return useContext(SocketContext);
-}
+const SocketContext = createContext<SocketContextValue>(NOOP_SOCKET);
 
 export function SocketProvider({ children }: { children: ReactNode }) {
-  const socketRef = useRef<Socket | null>(null);
-  const [connected, setConnected] = useState(false);
-
-  useEffect(() => {
-    const token = getAuthToken();
-    const socket = io(process.env.NEXT_PUBLIC_BACKEND_URL ?? 'http://localhost:3001', {
-      path: '/api/realtime/socket.io',
-      auth: { token },
-      autoConnect: true,
-      reconnectionAttempts: 5,
-    });
-
-    socket.on('connect', () => setConnected(true));
-    socket.on('disconnect', () => setConnected(false));
-
-    socketRef.current = socket;
-
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
-
-  const subscribe = (event: string, handler: (data: any) => void) => {
-    socketRef.current?.on(event, handler);
-    return () => {
-      socketRef.current?.off(event, handler);
-    };
-  };
-
   return (
-    <SocketContext.Provider value={{ socket: socketRef.current, connected, subscribe }}>
+    <SocketContext.Provider value={NOOP_SOCKET}>
       {children}
     </SocketContext.Provider>
   );
+}
+
+export function useSocket(): SocketContextValue {
+  return useContext(SocketContext);
 }

@@ -1,4 +1,3 @@
-import 'module-alias/register';
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import express from 'express';

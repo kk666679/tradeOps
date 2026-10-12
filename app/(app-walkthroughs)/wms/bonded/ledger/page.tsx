@@ -1,4 +1,4 @@
-import { WmsCrudSurface } from '@/app/(app)/wms/_components/WmsCrudSurface';
+import { WmsCrudSurface } from '@/app/(app-walkthroughs)/wms/_components/WmsCrudSurface';
 import * as React from 'react';
 import type { Metadata } from 'next';
 import { PageHeader } from '@/components/dashboard/page/PageHeader';

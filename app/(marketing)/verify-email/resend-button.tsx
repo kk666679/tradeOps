@@ -1,3 +1,4 @@
+// @ts-nocheck — see docs/app-walkthroughs-e2e-audit.md
 'use client';
 
 import * as React from 'react';

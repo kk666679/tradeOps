@@ -20,6 +20,22 @@ function log(name: string, message: string): void {
   console.log(`[MCP:${name}] ${message}`);
 }
 
+function severityTag(line: string): string {
+  // Servers emit structured JSON logs on stderr (stdout is reserved for the
+  // stdio JSON-RPC stream). Respect the record's own `level` so an info line
+  // is not mislabeled as an error. Unparseable stderr output is treated as ERR
+  // because we cannot determine its severity otherwise.
+  try {
+    const parsed: unknown = JSON.parse(line);
+    if (parsed && typeof (parsed as { level?: unknown }).level === 'string') {
+      return (parsed as { level: string }).level.toUpperCase();
+    }
+  } catch {
+    // not JSON — fall through
+  }
+  return 'ERR';
+}
+
 function discoverServers(): McpServer[] {
   if (!fs.existsSync(SERVERS_DIR)) {
     throw new Error(`Directory not found: ${SERVERS_DIR}`);
@@ -31,9 +47,13 @@ function discoverServers(): McpServer[] {
       const cwd = path.join(SERVERS_DIR, entry.name);
       const pkgPath = path.join(cwd, 'package.json');
 
-      const pkg = fs.existsSync(pkgPath)
-        ? JSON.parse(fs.readFileSync(pkgPath, 'utf8'))
-        : {};
+      // Directories with no package.json are shared support code (e.g. `src`),
+      // not runnable servers — skip them quietly instead of logging noise.
+      if (!fs.existsSync(pkgPath)) {
+        return null;
+      }
+
+      const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
 
       if (pkg.scripts?.['start:mcp']) {
         return {
@@ -107,7 +127,7 @@ function startServer(server: McpServer): void {
 
   child.stderr?.on('data', (data: Buffer) => {
     for (const line of data.toString().split(/\r?\n/).filter(Boolean)) {
-      log(`${server.name}:ERR`, line);
+      log(`${server.name}:${severityTag(line)}`, line);
     }
   });
 

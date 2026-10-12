@@ -19,3 +19,5 @@ export type {
   RecordManualResponseArgs, SubmitApprovalArgs, ExecutorClient, ExecuteArgs, ExecuteResult,
 } from "./lib/workflow-executor";
 export * from "./types/workflow";
+
+export { WorkflowStudio as WorkflowStudioEntry } from './WorkflowStudio';

@@ -129,7 +129,7 @@ export function CargoWorkspace() {
               empty={search ? 'No cargo matches this search.' : 'No cargo records yet.'}
               onSelect={(row) => setEditingCargo(records.find((record) => record.id === row.id) ?? null)}
               onDelete={removeCargo}
-              deletingId={deleteCargo.isPending ? deleteCargo.variables?.id : undefined}
+              deletingId={deleteCargo.isPending ? ((deleteCargo.variables ?? undefined) as { id?: string } | undefined)?.id : undefined}
             />
           </div>
         )}

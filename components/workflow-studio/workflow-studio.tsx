@@ -121,3 +121,5 @@ export function WorkflowStudio(props: WorkflowStudioProps) {
 }
 
 export default WorkflowStudio;
+
+export { WorkflowStudio as WorkflowStudioEntry } from './WorkflowStudio';

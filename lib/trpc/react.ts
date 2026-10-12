@@ -1,2 +1,1 @@
-"use client"
-export { trpc } from "@/providers/TRPCProvider"
+export { trpc, getAuthToken, setAuthToken } from './index';

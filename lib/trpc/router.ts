@@ -6,13 +6,13 @@
  * duplicate router definition. Regenerate with: `npm run trpc:types`.
  */
 export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
-        ctx: import("./trpc.context").TrpcCtx;
+        ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
         meta: object;
         errorShape: import("@trpc/server").TRPCDefaultErrorShape;
         transformer: true;
     }, import("@trpc/server").TRPCDecorateCreateRouterOptions<{
         auth: import("@trpc/server").TRPCBuiltRouter<{
-            ctx: import("./trpc.context").TrpcCtx;
+            ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
             meta: object;
             errorShape: import("@trpc/server").TRPCDefaultErrorShape;
             transformer: true;
@@ -61,7 +61,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
             }>;
         }>>;
         user: import("@trpc/server").TRPCBuiltRouter<{
-            ctx: import("./trpc.context").TrpcCtx;
+            ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
             meta: object;
             errorShape: import("@trpc/server").TRPCDefaultErrorShape;
             transformer: true;
@@ -70,17 +70,17 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 input: void;
                 output: {
                     id: string;
-                    tenantId: string;
                     email: string;
+                    tenantId: string;
+                    emailVerified: Date | null;
                     password: string;
                     name: string | null;
-                    emailVerified: Date | null;
                     avatarUrl: string | null;
                     phone: string | null;
                     locale: string;
                     timezone: string;
-                    role: import("@prisma/client").$Enums.GlobalRole;
-                    status: import("@prisma/client").$Enums.UserStatus;
+                    role: import(".prisma/client").$Enums.GlobalRole;
+                    status: import(".prisma/client").$Enums.UserStatus;
                     mfaEnabled: boolean;
                     mfaSecret: string | null;
                     lastLoginAt: Date | null;
@@ -97,17 +97,17 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 };
                 output: {
                     id: string;
-                    tenantId: string;
                     email: string;
+                    tenantId: string;
+                    emailVerified: Date | null;
                     password: string;
                     name: string | null;
-                    emailVerified: Date | null;
                     avatarUrl: string | null;
                     phone: string | null;
                     locale: string;
                     timezone: string;
-                    role: import("@prisma/client").$Enums.GlobalRole;
-                    status: import("@prisma/client").$Enums.UserStatus;
+                    role: import(".prisma/client").$Enums.GlobalRole;
+                    status: import(".prisma/client").$Enums.UserStatus;
                     mfaEnabled: boolean;
                     mfaSecret: string | null;
                     lastLoginAt: Date | null;
@@ -123,19 +123,19 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                     role?: "SUPER_ADMIN" | "ADMIN" | "OPS_MANAGER" | "WAREHOUSE_STAFF" | "CUSTOMER" | "AGENT" | "AUDITOR" | undefined;
                     name?: string | undefined;
                 };
-                output: import("@prisma/client").Prisma.BatchPayload;
+                output: import(".prisma/client").Prisma.BatchPayload;
                 meta: object;
             }>;
             remove: import("@trpc/server").TRPCMutationProcedure<{
                 input: {
                     id: string;
                 };
-                output: import("@prisma/client").Prisma.BatchPayload;
+                output: import(".prisma/client").Prisma.BatchPayload;
                 meta: object;
             }>;
         }>>;
         tenant: import("@trpc/server").TRPCBuiltRouter<{
-            ctx: import("./trpc.context").TrpcCtx;
+            ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
             meta: object;
             errorShape: import("@trpc/server").TRPCDefaultErrorShape;
             transformer: true;
@@ -179,7 +179,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
             }>;
         }>>;
         dashboard: import("@trpc/server").TRPCBuiltRouter<{
-            ctx: import("./trpc.context").TrpcCtx;
+            ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
             meta: object;
             errorShape: import("@trpc/server").TRPCDefaultErrorShape;
             transformer: true;
@@ -234,7 +234,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
             }>;
         }>>;
         task: import("@trpc/server").TRPCBuiltRouter<{
-            ctx: import("./trpc.context").TrpcCtx;
+            ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
             meta: object;
             errorShape: import("@trpc/server").TRPCDefaultErrorShape;
             transformer: true;
@@ -278,7 +278,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
             }>;
         }>>;
         inventory: import("@trpc/server").TRPCBuiltRouter<{
-            ctx: import("./trpc.context").TrpcCtx;
+            ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
             meta: object;
             errorShape: import("@trpc/server").TRPCDefaultErrorShape;
             transformer: true;
@@ -322,7 +322,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
             }>;
         }>>;
         logistics: import("@trpc/server").TRPCBuiltRouter<{
-            ctx: import("./trpc.context").TrpcCtx;
+            ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
             meta: object;
             errorShape: import("@trpc/server").TRPCDefaultErrorShape;
             transformer: true;
@@ -366,7 +366,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
             }>;
         }>>;
         digitalTwin: import("@trpc/server").TRPCBuiltRouter<{
-            ctx: import("./trpc.context").TrpcCtx;
+            ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
             meta: object;
             errorShape: import("@trpc/server").TRPCDefaultErrorShape;
             transformer: true;
@@ -410,13 +410,13 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
             }>;
         }>>;
         cargo: import("@trpc/server").TRPCBuiltRouter<{
-            ctx: import("./trpc.context").TrpcCtx;
+            ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
             meta: object;
             errorShape: import("@trpc/server").TRPCDefaultErrorShape;
             transformer: true;
         }, import("@trpc/server").TRPCDecorateCreateRouterOptions<{
             main: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -460,7 +460,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             bulk: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -504,7 +504,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             fcz: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -548,7 +548,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             fiz: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -592,7 +592,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             hazmat: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -637,13 +637,13 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
             }>>;
         }>>;
         wms: import("@trpc/server").TRPCBuiltRouter<{
-            ctx: import("./trpc.context").TrpcCtx;
+            ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
             meta: object;
             errorShape: import("@trpc/server").TRPCDefaultErrorShape;
             transformer: true;
         }, import("@trpc/server").TRPCDecorateCreateRouterOptions<{
             bonded: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -687,7 +687,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             exemption: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -731,7 +731,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             forecasting: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -775,7 +775,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             gate: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -819,7 +819,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             inbound: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -863,7 +863,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             inventory: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -907,7 +907,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             movement: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -951,7 +951,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             outbound: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -995,7 +995,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             slotting: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -1040,13 +1040,13 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
             }>>;
         }>>;
         tradeOps: import("@trpc/server").TRPCBuiltRouter<{
-            ctx: import("./trpc.context").TrpcCtx;
+            ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
             meta: object;
             errorShape: import("@trpc/server").TRPCDefaultErrorShape;
             transformer: true;
         }, import("@trpc/server").TRPCDecorateCreateRouterOptions<{
             analytics: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -1066,7 +1066,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             clearance: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -1110,7 +1110,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             compliance: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -1154,7 +1154,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             declarations: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -1198,7 +1198,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             documents: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -1242,7 +1242,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             duty: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -1294,7 +1294,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             hsClassification: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -1338,7 +1338,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             hsCodeRulings: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -1382,7 +1382,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             permits: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -1426,7 +1426,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             tradeFinance: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -1471,13 +1471,13 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
             }>>;
         }>>;
         orderManagement: import("@trpc/server").TRPCBuiltRouter<{
-            ctx: import("./trpc.context").TrpcCtx;
+            ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
             meta: object;
             errorShape: import("@trpc/server").TRPCDefaultErrorShape;
             transformer: true;
         }, import("@trpc/server").TRPCDecorateCreateRouterOptions<{
             approvals: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -1521,7 +1521,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             customs: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -1565,7 +1565,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             fulfilment: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -1609,7 +1609,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             manufacturing: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -1653,7 +1653,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             purchase: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -1697,7 +1697,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             trading: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -1741,7 +1741,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             transhipment: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -1786,13 +1786,13 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
             }>>;
         }>>;
         customAgents: import("@trpc/server").TRPCBuiltRouter<{
-            ctx: import("./trpc.context").TrpcCtx;
+            ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
             meta: object;
             errorShape: import("@trpc/server").TRPCDefaultErrorShape;
             transformer: true;
         }, import("@trpc/server").TRPCDecorateCreateRouterOptions<{
             audit: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -1836,7 +1836,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             builder: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -1880,7 +1880,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             customsAgents: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -1924,7 +1924,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             evals: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -1968,7 +1968,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             memory: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -2012,7 +2012,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             monitoring: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -2056,51 +2056,172 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             orchestration: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
             }, import("@trpc/server").TRPCDecorateCreateRouterOptions<{
-                list: import("@trpc/server").TRPCQueryProcedure<{
+                listWorkflows: import("@trpc/server").TRPCQueryProcedure<{
                     input: {
+                        q?: string | undefined;
                         take?: number | undefined;
-                        cursor?: string | undefined;
                     } | undefined;
-                    output: any;
-                    meta: object;
-                }>;
-                byId: import("@trpc/server").TRPCQueryProcedure<{
-                    input: {
+                    output: {
                         id: string;
-                    };
-                    output: any;
+                        name: string;
+                        description: any;
+                        updatedAt: string;
+                        active: boolean;
+                    }[];
                     meta: object;
                 }>;
-                create: import("@trpc/server").TRPCMutationProcedure<{
+                getWorkflow: import("@trpc/server").TRPCQueryProcedure<{
                     input: {
-                        [x: string]: unknown;
+                        workflowId: string;
                     };
-                    output: any;
-                    meta: object;
-                }>;
-                update: import("@trpc/server").TRPCMutationProcedure<{
-                    input: {
-                        [x: string]: unknown;
+                    output: {
                         id: string;
+                        name: string;
+                        description: any;
+                        definition: any;
+                        updatedAt: string;
                     };
-                    output: any;
                     meta: object;
                 }>;
-                delete: import("@trpc/server").TRPCMutationProcedure<{
+                saveDraft: import("@trpc/server").TRPCMutationProcedure<{
                     input: {
-                        id: string;
+                        name: string;
+                        definition: {
+                            [x: string]: unknown;
+                            nodes: any[];
+                            edges: any[];
+                            schemaVersion?: number | undefined;
+                            trigger?: {
+                                type: "manual";
+                            } | undefined;
+                            viewport?: {
+                                x: number;
+                                y: number;
+                                zoom: number;
+                            } | undefined;
+                        };
+                        workflowId?: string | undefined;
+                        expectedUpdatedAt?: string | undefined;
+                        description?: string | undefined;
                     };
-                    output: any;
+                    output: {
+                        id: string;
+                        name: string;
+                        description: string;
+                        updatedAt: string;
+                    };
+                    meta: object;
+                }>;
+                validate: import("@trpc/server").TRPCMutationProcedure<{
+                    input: {
+                        definition: {
+                            [x: string]: unknown;
+                            nodes: any[];
+                            edges: any[];
+                            schemaVersion?: number | undefined;
+                            trigger?: {
+                                type: "manual";
+                            } | undefined;
+                            viewport?: {
+                                x: number;
+                                y: number;
+                                zoom: number;
+                            } | undefined;
+                        };
+                    };
+                    output: {
+                        issues: {
+                            code: string;
+                            message: string;
+                            nodeId?: string;
+                            edgeId?: string;
+                        }[];
+                    };
+                    meta: object;
+                }>;
+                execute: import("@trpc/server").TRPCMutationProcedure<{
+                    input: {
+                        workflowId: string;
+                        input?: Record<string, unknown> | undefined;
+                    };
+                    output: {
+                        id: string;
+                        workflowId: string;
+                        status: import(".prisma/client").$Enums.WorkflowRunStatus;
+                        output: unknown;
+                        steps: {
+                            nodeId: string;
+                            status: "SUCCEEDED" | "FAILED" | "SKIPPED";
+                            attempts: number;
+                            startedAt?: string;
+                            endedAt: string;
+                            input?: unknown;
+                            output?: unknown;
+                            error?: string;
+                            logs: {
+                                level: "info" | "error";
+                                message: string;
+                            }[];
+                        }[];
+                        startedAt: string;
+                        endedAt: string | null;
+                        error?: undefined;
+                    } | {
+                        id: string;
+                        workflowId: string;
+                        status: import(".prisma/client").$Enums.WorkflowRunStatus;
+                        output: null;
+                        steps: import(".prisma/client/runtime/client").JsonValue;
+                        error: string;
+                        startedAt: string;
+                        endedAt: string | null;
+                    };
+                    meta: object;
+                }>;
+                listRuns: import("@trpc/server").TRPCQueryProcedure<{
+                    input: {
+                        workflowId: string;
+                        take?: number | undefined;
+                    };
+                    output: {
+                        id: string;
+                        status: import(".prisma/client").$Enums.WorkflowRunStatus;
+                        input: import(".prisma/client/runtime/client").JsonValue;
+                        output: import(".prisma/client/runtime/client").JsonValue;
+                        error: string | null;
+                        steps: import(".prisma/client/runtime/client").JsonValue;
+                        startedAt: string;
+                        endedAt: string | null;
+                    }[];
+                    meta: object;
+                }>;
+                getRun: import("@trpc/server").TRPCQueryProcedure<{
+                    input: {
+                        runId: string;
+                    };
+                    output: {
+                        id: string;
+                        workflowId: string;
+                        workflowName: string;
+                        status: import(".prisma/client").$Enums.WorkflowRunStatus;
+                        input: import(".prisma/client/runtime/client").JsonValue;
+                        output: import(".prisma/client/runtime/client").JsonValue;
+                        error: string | null;
+                        steps: import(".prisma/client/runtime/client").JsonValue;
+                        definition: any;
+                        startedAt: string;
+                        endedAt: string | null;
+                    };
                     meta: object;
                 }>;
             }>>;
             policy: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -2144,7 +2265,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             registry: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -2188,7 +2309,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             supervision: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -2233,13 +2354,13 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
             }>>;
         }>>;
         fiz: import("@trpc/server").TRPCBuiltRouter<{
-            ctx: import("./trpc.context").TrpcCtx;
+            ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
             meta: object;
             errorShape: import("@trpc/server").TRPCDefaultErrorShape;
             transformer: true;
         }, import("@trpc/server").TRPCDecorateCreateRouterOptions<{
             machinery: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -2283,7 +2404,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             operators: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -2327,7 +2448,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             production: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -2371,7 +2492,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             subcontract: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -2415,7 +2536,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             wastage: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -2460,13 +2581,13 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
             }>>;
         }>>;
         fcz: import("@trpc/server").TRPCBuiltRouter<{
-            ctx: import("./trpc.context").TrpcCtx;
+            ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
             meta: object;
             errorShape: import("@trpc/server").TRPCDefaultErrorShape;
             transformer: true;
         }, import("@trpc/server").TRPCDecorateCreateRouterOptions<{
             breakBulk: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -2510,7 +2631,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             entrepot: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -2554,7 +2675,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             reexport: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -2598,7 +2719,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             tradingHouses: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -2642,7 +2763,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             transhipment: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -2687,13 +2808,13 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
             }>>;
         }>>;
         integration: import("@trpc/server").TRPCBuiltRouter<{
-            ctx: import("./trpc.context").TrpcCtx;
+            ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
             meta: object;
             errorShape: import("@trpc/server").TRPCDefaultErrorShape;
             transformer: true;
         }, import("@trpc/server").TRPCDecorateCreateRouterOptions<{
             agentMesh: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -2737,7 +2858,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             customs: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -2781,7 +2902,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             edi: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -2825,7 +2946,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             erp: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -2869,7 +2990,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             fizFcz: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -2913,7 +3034,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             tms: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -2957,7 +3078,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             webhook: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
@@ -3001,7 +3122,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 }>;
             }>>;
             wmsExt: import("@trpc/server").TRPCBuiltRouter<{
-                ctx: import("./trpc.context").TrpcCtx;
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
                 meta: object;
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;

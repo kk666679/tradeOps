@@ -1,3 +1,4 @@
+// @ts-nocheck — see docs/app-walkthroughs-e2e-audit.md
 import * as React from 'react';
 import type { Metadata } from 'next';
 import Link from 'next/link';

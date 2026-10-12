@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const NAV_ITEMS = [
+type NavItem = { href: string; label: string; exact?: boolean };
+const NAV_ITEMS: NavItem[] = [
   { href: "/brokerage", label: "Overview", exact: true },
   { href: "/brokerage/workflow", label: "Workflow" },
   { href: "/brokerage/pipeline", label: "Pipeline" },
@@ -12,7 +13,7 @@ const NAV_ITEMS = [
   { href: "/brokerage/audit", label: "Audit" },
   { href: "/brokerage/governance", label: "Governance" },
   { href: "/brokerage/governance/section-90", label: "Section 90" },
-] as const;
+];
 
 export function BrokerageNav() {
   const pathname = usePathname();

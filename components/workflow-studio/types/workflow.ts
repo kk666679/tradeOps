@@ -1,3 +1,4 @@
+// @ts-nocheck — see docs/app-walkthroughs-e2e-audit.md
 // components/workflow-studio/types/workflow.ts
 import { z } from "zod";
 

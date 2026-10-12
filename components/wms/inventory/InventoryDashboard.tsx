@@ -175,7 +175,7 @@ export function InventoryDashboard({ zoneId, className }: InventoryDashboardProp
             empty={search ? 'No inventory matches this search.' : 'No inventory records yet.'}
             onSelect={beginEdit}
             onDelete={removeInventory}
-            deletingId={deleteInventory.isPending ? deleteInventory.variables?.id : undefined}
+            deletingId={deleteInventory.isPending ? ((deleteInventory.variables ?? undefined) as { id?: string } | undefined)?.id : undefined}
           />
         </div>
       )}

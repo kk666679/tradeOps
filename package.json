@@ -23,7 +23,7 @@
     "@nestjs/cli": "^11.0.21",
     "@node-rs/argon2": "^2.0.2",
     "@prisma/adapter-pg": "^7.10.0",
-    "@prisma/client": "^7.8.0",
+    "@prisma/client": "^7.10.0",
     "@radix-ui/react-label": "^2.1.8",
     "@radix-ui/react-use-controllable-state": "^1.2.2",
     "@rive-app/react-webgl2": "^4.28.3",
@@ -68,6 +68,7 @@
     "react-hook-form": "^7.75.0",
     "react-jsx-parser": "^2.4.1",
     "recharts": "^3.10.1",
+    "resend": "^6.32.1",
     "run": "^2.1.7",
     "shadcn": "^4.6.0",
     "shiki": "^4.0.2",
@@ -88,16 +89,16 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "dotenv": "^17.4.2",
-    "prisma": "^7.8.0",
+    "prisma": "^7.10.0",
     "tailwindcss": "^4.2.4",
     "typescript": "^6.0.3"
   },
   "allowScripts": {
-    "@prisma/engines@7.10.0": true,
     "core-js@3.29.1": true,
     "msgpackr-extract@3.0.4": true,
     "prisma@7.10.0": true,
     "protobufjs@6.11.6": true,
-    "sharp@0.32.6": true
+    "sharp@0.32.6": true,
+    "@prisma/engines@7.10.0": true
   }
 }
