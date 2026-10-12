@@ -77,3 +77,15 @@ Workflow per placeholder:
 | 38-42 | `brokerage/**` (5) | brokerage | ⬜ |
 | 43 | `ai-composites/cargo/hazmat-segregation-view` | cargo | ⬜ |
 | 44-46 | `ai-composites/digital-twin/**` (3) | digital-twin | ⬜ |
+
+## Type-suppressed files (2026-10-12)
+
+These files have `// @ts-nocheck` as of the baseline commit.
+Each must be un-suppressed and fixed when touched for real work:
+
+- `app/(marketing)/verify-email/page.tsx` — `result.reason` narrowing
+- `app/(marketing)/verify-email/resend-button.tsx` — `result.error` narrowing
+- `components/dashboard/RecentActivity.tsx` — socket payload types
+- `components/workflow-studio/edges/workflow-edge.tsx` — custom Edge props
+- `components/workflow-studio/types/workflow.ts` — function arity
+- `components/workflow-studio/ui/workflow-console.tsx` — args shape mismatch
