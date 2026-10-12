@@ -55,3 +55,8 @@ TODO/*
 .claude/settings.local.json
 .claude/logs/
 .claude/cache/
+node_modules/
+# MCP server build output
+backend/mcp/servers/*/dist/
+backend/scripts/mcp-launcher.js
+backend/scripts/mcp-launcher.d.ts
