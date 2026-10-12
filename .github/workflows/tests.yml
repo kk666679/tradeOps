@@ -106,7 +106,7 @@ jobs:
         run: |
           node -e "
             const fs = require('fs');
-            const src = fs.readFileSync('src/hs-code-data.ts','utf8');
+            const src = fs.readFileSync('backend/src/hs-code-data.ts','utf8');
             const codes = (src.match(/'[0-9]{6}'/g) || []).map(s => s.slice(1,-1));
             const dupes = codes.filter((c,i) => codes.indexOf(c) !== i);
             if (dupes.length) { console.error('Duplicate HS codes:', [...new Set(dupes)]); process.exit(1); }
@@ -117,7 +117,7 @@ jobs:
         run: |
           node -e "
             const fs = require('fs');
-            const src = fs.readFileSync('src/hs-code-data.ts','utf8');
+            const src = fs.readFileSync('backend/src/hs-code-data.ts','utf8');
             const hasChangelog = fs.existsSync('CHANGELOG-tariff.md') || src.includes('CHANGELOG');
             if (!hasChangelog) { console.warn('WARNING: no CHANGELOG-tariff.md — rate changes must be documented'); }
             console.log('Tariff changelog check complete');

@@ -64,7 +64,7 @@ jobs:
           sbom: false
 
       - name: Run Trivy vulnerability scan (web)
-        uses: aquasecurity/trivy-action@v0.30.4  # TODO: pin to full commit SHA
+        uses: aquasecurity/trivy-action@v0.36.0  # TODO: pin to full commit SHA
         with:
           image-ref: cfs-wms:web
           format: sarif
@@ -105,7 +105,7 @@ jobs:
           sbom: false
 
       - name: Run Trivy vulnerability scan (backend)
-        uses: aquasecurity/trivy-action@v0.30.4  # TODO: pin to full commit SHA
+        uses: aquasecurity/trivy-action@v0.36.0  # TODO: pin to full commit SHA
         with:
           image-ref: cfs-wms:backend
           format: sarif
