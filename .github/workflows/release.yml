@@ -91,7 +91,7 @@ jobs:
       - name: Setup Node env (root + backend)
         uses: ./.github/actions/setup-node-env
         with:
-          node-version-file: '.nvmrc'
+          node-version: '22.12.0'
           enable-backend: true
 
       - name: Build web
@@ -108,7 +108,7 @@ jobs:
         run: |
           VERSION="${{ needs.validate.outputs.version }}"
           mkdir -p release
-          ARCHIVE_PATHS=".next public next.config.ts backend/dist backend/package.json backend/tsconfig.build.json prisma prisma.config.ts package.json package-lock.json"
+          ARCHIVE_PATHS=".next public next.config.ts backend/dist backend/package.json backend/tsconfig.build.json prisma prisma.config.ts package.json pnpm-lock.yaml"
           [ -d "out" ] && ARCHIVE_PATHS="$ARCHIVE_PATHS out"
           tar -czf "release/cfs-wms-${VERSION}.tar.gz" $ARCHIVE_PATHS
 

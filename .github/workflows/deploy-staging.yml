@@ -77,7 +77,7 @@ jobs:
           echo "Running Prisma migrations against staging database..."
           # Integration point — replace with your actual migration runner.
           # Example:
-          #   cd /tmp/artifacts && npm ci --ignore-scripts && npx prisma migrate deploy
+          #   cd /tmp/artifacts && pppnpm install --frozen-lockfile --ignore-scripts && npx prisma migrate deploy
         env:
           DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
 

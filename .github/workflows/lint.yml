@@ -30,13 +30,13 @@ jobs:
         uses: actions/checkout@v4  # 11d5960a326750d5838078e36cf38b85af677262
 
       - name: Setup Node env (root + backend)
-        uses: ./.github/actions/setup-node-env@main
+        uses: ./.github/actions/setup-node-env
         with:
-          node-version-file: '.nvmrc'
+          node-version: '22.12.0'
           enable-backend: true
 
       - name: Install ESLint config
-        run: npm install --no-save --no-package-lock eslint@^9 @eslint/js typescript-eslint@^8
+        run: ppnpm install --no-save --no-package-lock eslint@^9 @eslint/js typescript-eslint@^8
 
       - name: Lint backend
         run: npx eslint "backend/src/**/*.ts" "backend/test/**/*.ts" --max-warnings=0
@@ -55,13 +55,13 @@ jobs:
         uses: actions/checkout@v4  # 11d5960a326750d5838078e36cf38b85af677262
 
       - name: Setup Node env (root + backend)
-        uses: ./.github/actions/setup-node-env@main
+        uses: ./.github/actions/setup-node-env
         with:
-          node-version-file: '.nvmrc'
+          node-version: '22.12.0'
           enable-backend: true
 
       - name: Install Prettier
-        run: npm install --no-save --no-package-lock prettier@^3
+        run: ppnpm install --no-save --no-package-lock prettier@^3
 
       - name: Check formatting
         run: npx prettier --check "**/*.{ts,tsx,js,mjs,json,prisma}" --ignore-path .gitignore

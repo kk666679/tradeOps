@@ -36,7 +36,7 @@ jobs:
           fail-on-non-prod: false
           allow-licenses: |
             MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC, 0BSD, Unlicense
-          path: backend/package-lock.json
+          path: backend/pnpm-lock.yaml
 
   license-compliance:
     name: License compliance
@@ -49,7 +49,7 @@ jobs:
       - name: Setup Node env (root + backend)
         uses: ./.github/actions/setup-node-env
         with:
-          node-version-file: '.nvmrc'
+          node-version: '22.12.0'
           enable-backend: true
 
       - name: Generate license report (root)
