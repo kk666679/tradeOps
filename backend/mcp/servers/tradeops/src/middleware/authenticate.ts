@@ -1,6 +1,6 @@
 // backend/mcp/servers/tradeops/src/middleware/authenticate.ts
 
-import type { RequestMeta } from "../types";
+import type { RequestMeta } from "../types/index.js";
 
 export function authenticate(meta: RequestMeta): void {
   if (!meta.tenantId) throw new Error("authenticate: missing tenantId in _meta");

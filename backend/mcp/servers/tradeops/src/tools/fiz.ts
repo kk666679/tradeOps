@@ -13,6 +13,6 @@ export type FizManufactureInput = z.infer<typeof FizManufactureInput>;
 export async function handleFizManufacture(raw: FizManufactureInput) {
   const input = FizManufactureInput.parse(raw);
   return {
-    content: [{ type: "text", text: JSON.stringify({ ok: true, ...input, at: new Date().toISOString() }) }],
+    content: [{ type: "text" as const, text: JSON.stringify({ ok: true, ...input, at: new Date().toISOString() }) }],
   };
 }

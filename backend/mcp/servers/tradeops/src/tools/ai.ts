@@ -13,7 +13,7 @@ export async function handleRagSearch(raw: RagSearchInput) {
   const input = RagSearchInput.parse(raw);
   return {
     content: [{
-      type: "text",
+      type: "text" as const,
       text: JSON.stringify({
         answer: null,
         sources: [],
@@ -36,7 +36,7 @@ export async function handleForecast(raw: ForecastInput) {
   const now = Date.now();
   return {
     content: [{
-      type: "text",
+      type: "text" as const,
       text: JSON.stringify({
         taskId: `task_${now}`,
         status: "pending",

@@ -2,7 +2,7 @@
 // Deprecated in favour of `subscriptions/listen` (see transport/subscriptions.ts).
 // This file remains a thin compatibility shim that forwards to the new path.
 
-import { broadcast } from "../transport/subscriptions";
+import { broadcast } from "../transport/subscriptions.js";
 
 export function broadcastTelemetry(tenantId: string, event: unknown): void {
   broadcast({

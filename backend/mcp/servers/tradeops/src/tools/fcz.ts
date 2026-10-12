@@ -13,6 +13,6 @@ export type FczTradeInput = z.infer<typeof FczTradeInput>;
 export async function handleFczTrade(raw: FczTradeInput) {
   const input = FczTradeInput.parse(raw);
   return {
-    content: [{ type: "text", text: JSON.stringify({ ok: true, ...input, at: new Date().toISOString() }) }],
+    content: [{ type: "text" as const, text: JSON.stringify({ ok: true, ...input, at: new Date().toISOString() }) }],
   };
 }

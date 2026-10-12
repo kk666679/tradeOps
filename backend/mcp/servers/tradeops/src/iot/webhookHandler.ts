@@ -1,8 +1,8 @@
 // backend/mcp/servers/tradeops/src/iot/webhookHandler.ts
 
-import { normalize, type RawTelemetry } from "./telemetryNormalizer";
-import { broadcastTelemetry } from "./sseBroadcaster";
-import { logger } from "../logger";
+import { normalize, type RawTelemetry } from "./telemetryNormalizer.js";
+import { broadcastTelemetry } from "./sseBroadcaster.js";
+import { logger } from "../logger.js";
 
 export async function handleIotWebhook(body: unknown): Promise<{ ok: true }> {
   const raw = body as RawTelemetry;

@@ -2,7 +2,7 @@
 // RFC 8707 resource indicators, S256 PKCE, CIMD client registration.
 
 import { createHash, randomBytes } from "node:crypto";
-import { config } from "../config";
+import { config } from "../config.js";
 
 export interface PkcePair { verifier: string; challenge: string; method: "S256"; }
 

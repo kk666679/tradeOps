@@ -4,8 +4,8 @@
 import type { Express, Request, Response } from "express";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
-import { config } from "../config";
-import { extractRequestMeta } from "./headers";
+import { config } from "../config.js";
+import { extractRequestMeta } from "./headers.js";
 
 export function installHttpTransport(app: Express, server: McpServer): void {
   app.post("/mcp", async (req: Request, res: Response) => {

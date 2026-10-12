@@ -1,6 +1,6 @@
-import { normalize } from "./telemetryNormalizer";
-import { broadcastTelemetry } from "./sseBroadcaster";
-import { logger } from "../logger";
+import { normalize } from "./telemetryNormalizer.js";
+import { broadcastTelemetry } from "./sseBroadcaster.js";
+import { logger } from "../logger.js";
 export async function handleIotWebhook(body) {
     const raw = body;
     if (!raw?.deviceId || !raw?.tenantId)

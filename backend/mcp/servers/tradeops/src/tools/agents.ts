@@ -1,7 +1,7 @@
 // backend/mcp/servers/tradeops/src/tools/agents.ts
 
 import { z } from "zod";
-import { listAgents } from "../resources/agents";
+import { listAgents } from "../resources/agents.js";
 
 export const ListAgentsInput = z.object({
   tenantId: z.string(),
@@ -11,5 +11,5 @@ export type ListAgentsInput = z.infer<typeof ListAgentsInput>;
 
 export async function handleListAgents(raw: ListAgentsInput) {
   const input = ListAgentsInput.parse(raw);
-  return { content: [{ type: "text", text: JSON.stringify(listAgents(input.tenantId)) }] };
+  return { content: [{ type: "text" as const, text: JSON.stringify(listAgents(input.tenantId)) }] };
 }

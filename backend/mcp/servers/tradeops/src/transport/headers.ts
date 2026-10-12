@@ -1,6 +1,6 @@
 // backend/mcp/servers/tradeops/src/transport/headers.ts
 
-import type { RequestMeta, LogLevel } from "../types";
+import type { RequestMeta, LogLevel } from "../types/index.js";
 
 export const META_KEY = {
   PROTOCOL_VERSION: "io.modelcontextprotocol/protocolVersion",

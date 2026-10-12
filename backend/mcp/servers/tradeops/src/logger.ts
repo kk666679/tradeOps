@@ -1,6 +1,6 @@
 // backend/mcp/servers/tradeops/src/logger.ts
 
-import { config } from "./config";
+import { config } from "./config.js";
 
 type Level = "debug" | "info" | "warn" | "error";
 

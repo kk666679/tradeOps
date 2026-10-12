@@ -1,7 +1,7 @@
 // backend/mcp/servers/tradeops/src/backend/client.ts
 // Thin wrapper for the internal TradeOps backend. Uses fetch, no session.
 
-import { config } from "../config";
+import { config } from "../config.js";
 
 export interface BackendRequest {
   path: string;

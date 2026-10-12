@@ -1,4 +1,4 @@
-import { config } from "./config";
+import { config } from "./config.js";
 const LEVEL_RANK = { debug: 10, info: 20, warn: 30, error: 40 };
 function currentLevel() {
     const raw = (process.env.MCP_LOG_LEVEL ?? "info").toLowerCase();

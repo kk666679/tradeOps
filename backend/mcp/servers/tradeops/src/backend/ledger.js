@@ -1,4 +1,4 @@
-import { callBackend } from "./client";
+import { callBackend } from "./client.js";
 export async function postLedgerEntry(input) {
     return callBackend({
         path: "/internal/ledger/entries",

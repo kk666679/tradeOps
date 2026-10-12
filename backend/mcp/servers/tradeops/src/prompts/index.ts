@@ -1,4 +1,4 @@
 // backend/mcp/servers/tradeops/src/prompts/index.ts
-export { PRE_CLEARANCE_PROMPT } from "./preClearance";
-export { ENTREPOT_RECONCILIATION_PROMPT } from "./entrepotReconciliation";
-export { EXCEPTION_INVESTIGATION_PROMPT } from "./exceptionInvestigation";
+export { PRE_CLEARANCE_PROMPT } from "./preClearance.js";
+export { ENTREPOT_RECONCILIATION_PROMPT } from "./entrepotReconciliation.js";
+export { EXCEPTION_INVESTIGATION_PROMPT } from "./exceptionInvestigation.js";

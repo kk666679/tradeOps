@@ -1,8 +1,8 @@
 // backend/mcp/servers/tradeops/src/tools/iot.ts
 
 import { z } from "zod";
-import { listDevices, getDevice } from "../iot/deviceRegistry";
-import { getZoneGraph } from "../iot/zoneGraphUpdater";
+import { listDevices, getDevice } from "../iot/deviceRegistry.js";
+import { getZoneGraph } from "../iot/zoneGraphUpdater.js";
 
 export const DeviceStatusInput = z.object({
   tenantId: z.string(),
@@ -16,7 +16,7 @@ export async function handleDeviceStatus(raw: DeviceStatusInput) {
   const payload = input.deviceId
     ? getDevice(input.tenantId, input.deviceId) ?? { error: "not found" }
     : listDevices(input.tenantId);
-  return { content: [{ type: "text", text: JSON.stringify(payload) }] };
+  return { content: [{ type: "text" as const, text: JSON.stringify(payload) }] };
 }
 
 export const ZoneGraphInput = z.object({
@@ -27,5 +27,5 @@ export type ZoneGraphInput = z.infer<typeof ZoneGraphInput>;
 
 export async function handleZoneGraph(raw: ZoneGraphInput) {
   const input = ZoneGraphInput.parse(raw);
-  return { content: [{ type: "text", text: JSON.stringify(getZoneGraph(input.tenantId)) }] };
+  return { content: [{ type: "text" as const, text: JSON.stringify(getZoneGraph(input.tenantId)) }] };
 }

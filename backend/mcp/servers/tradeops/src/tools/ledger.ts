@@ -1,7 +1,7 @@
 // backend/mcp/servers/tradeops/src/tools/ledger.ts
 
 import { z } from "zod";
-import { ledgerSummary } from "../resources/ledger";
+import { ledgerSummary } from "../resources/ledger.js";
 
 export const LedgerEntryInput = z.object({
   tenantId: z.string(),
@@ -20,7 +20,7 @@ export async function handleLedgerEntry(raw: LedgerEntryInput) {
   const input = LedgerEntryInput.parse(raw);
   return {
     content: [{
-      type: "text",
+      type: "text" as const,
       text: JSON.stringify({
         entryId: crypto.randomUUID(),
         ...input,
@@ -38,5 +38,5 @@ export type LedgerSummaryInput = z.infer<typeof LedgerSummaryInput>;
 
 export async function handleLedgerSummary(raw: LedgerSummaryInput) {
   const input = LedgerSummaryInput.parse(raw);
-  return { content: [{ type: "text", text: JSON.stringify(ledgerSummary(input.tenantId)) }] };
+  return { content: [{ type: "text" as const, text: JSON.stringify(ledgerSummary(input.tenantId)) }] };
 }

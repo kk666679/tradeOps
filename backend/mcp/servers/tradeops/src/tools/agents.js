@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { listAgents } from "../resources/agents";
+import { listAgents } from "../resources/agents.js";
 export const ListAgentsInput = z.object({
     tenantId: z.string(),
     _meta: z.record(z.unknown()).optional(),

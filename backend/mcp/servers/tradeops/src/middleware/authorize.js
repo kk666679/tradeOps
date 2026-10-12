@@ -1,4 +1,4 @@
-import { assertScope } from "../auth/rbac";
+import { assertScope } from "../auth/rbac.js";
 export function authorize(actor, requiredScope) {
     assertScope(actor, requiredScope);
 }

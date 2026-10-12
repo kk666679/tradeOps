@@ -1,7 +1,7 @@
 // backend/mcp/servers/tradeops/src/tools/customs.ts
 
 import { z } from "zod";
-import { lookupHs } from "../resources/hs";
+import { lookupHs } from "../resources/hs.js";
 
 export const ClassifyInput = z.object({
   tenantId: z.string(),
@@ -17,7 +17,7 @@ export async function handleClassify(raw: ClassifyInput) {
   const rec = lookupHs(code);
   return {
     content: [{
-      type: "text",
+      type: "text" as const,
       text: JSON.stringify({
         suggestion: code,
         confidence: 0.62,
@@ -45,7 +45,7 @@ export async function handleDuty(raw: DutyInput) {
   const sst = rec ? (rec.salesTax * input.cifValueMYR) / 100 : 0;
   return {
     content: [{
-      type: "text",
+      type: "text" as const,
       text: JSON.stringify({
         hsCode: input.hsCode,
         scheme: input.scheme,

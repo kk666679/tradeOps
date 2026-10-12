@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { lookupHs } from "../resources/hs";
+import { lookupHs } from "../resources/hs.js";
 export const ClassifyInput = z.object({
     tenantId: z.string(),
     description: z.string(),

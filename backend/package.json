@@ -8,13 +8,13 @@
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "concurrently --kill-others-on-fail --names BACKEND,MCP --prefix-colors blue,green \"npm: start:backend\" \"npm: start:mcp\"",
+    "start": "concurrently --kill-others-on-fail --names BACKEND,MCP --prefix-colors blue,green \"npm run start:backend\" \"npm run start:mcp\"",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "mcp:launch": "node scripts/mcp-launcher.js",
     "mcp:launch:ts": "tsx scripts/mcp-launcher.ts",
-    "start:backend": "nest start",
+    "start:backend": "node dist/main",
     "start:mcp": "node scripts/mcp-launcher.js",
     "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js",
     "test:watch": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --watch",
@@ -22,7 +22,8 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "test:mcp": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand src/mcp",
-    "tradeops": "node ./bin/tradeops.mjs"
+    "tradeops": "node ./bin/tradeops.mjs",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.32.1",
@@ -36,6 +37,7 @@
     "@nestjs/websockets": "^12.1.2",
     "@opentelemetry/api": "^1.9.0",
     "@prisma/adapter-pg": "^7.10.0",
+    "@prisma/client": "7.10.0",
     "@tanstack/ai": "^0.66.0",
     "@tanstack/ai-client": "^0.39.0",
     "@tanstack/ai-ollama": "^0.11.14",
@@ -50,6 +52,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.15.1",
     "figlet": "^1.12.0",
+    "module-alias": "2.3.4",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "reflect-metadata": "^0.2.2",
@@ -116,5 +119,9 @@
   "allowScripts": {
     "@parcel/watcher@2.6.0": true,
     "unrs-resolver@1.12.2": true
+  },
+  "type": "commonjs",
+  "_moduleAliases": {
+    "@prisma/client": "dist/generated/prisma/client"
   }
 }

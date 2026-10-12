@@ -1,6 +1,6 @@
 // backend/mcp/servers/tradeops/src/auth/rbac.ts
 
-import type { ActorContext } from "../types";
+import type { ActorContext } from "../types/index.js";
 
 export const ROLE_SCOPES: Record<ActorContext["role"], string[]> = {
   SUPER_ADMIN:     ["*"],

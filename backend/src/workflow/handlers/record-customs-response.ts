@@ -1,0 +1,122 @@
+// backend/src/workflow/handlers/record-customs-response.ts
+import { resolveJkdmAdapter, getJkdmConfig } from "../../integrations/jkdm";
+import type { PrismaClient } from "@prisma/client";
+
+export interface RecordCustomsResponseInput {
+  tenantId: string;
+  declarationId: string;
+  actorId: string;
+  source: "manual_observation" | "production_api";
+  outcome?: "query" | "inspection" | "released" | "rejected" | "amended";
+  externalRef?: string;
+  exceptionReason?: string;
+  officerName?: string;
+  officerId?: string;
+  observedAt?: string;
+  evidenceRef?: string;
+  additionalEvidenceRefs?: string[];
+  notes?: string;
+}
+
+export interface RecordCustomsResponseOutput {
+  status: "recorded" | "pending_review" | "synthetic_skipped";
+  provenance: "production_api" | "manual_observation";
+  reviewStatus?: "pending_review" | "reviewed";
+  reason?: string;
+}
+
+const STATE_FOR_OUTCOME: Record<string, string> = {
+  query: "additional_information_required",
+  inspection: "inspection_required",
+  released: "released",
+  rejected: "rejected",
+  amended: "acknowledged",
+};
+
+export async function handleRecordCustomsResponse(
+  input: RecordCustomsResponseInput,
+  db: PrismaClient,
+): Promise<RecordCustomsResponseOutput> {
+  const declaration = await db.declaration.findFirstOrThrow({
+    where: { id: input.declarationId, tenantId: input.tenantId },
+  });
+
+  const config = getJkdmConfig();
+  if (config.mode === "development" && input.source === "production_api") {
+    await db.declarationEvent.create({
+      data: {
+        tenantId: input.tenantId,
+        declarationId: declaration.id,
+        kind: "synthetic_response_skipped",
+        provenance: "synthetic",
+        payload: { source: input.source },
+        recordedBy: input.actorId,
+      },
+    });
+    return { status: "synthetic_skipped", provenance: "manual_observation", reason: "synthetic cannot advance real declaration" };
+  }
+
+  if (input.source === "manual_observation") {
+    if (!input.outcome) throw new Error("manual observation requires outcome");
+    if (!input.observedAt) throw new Error("manual observation requires observedAt");
+    if (!input.evidenceRef && !input.exceptionReason) throw new Error("evidenceRef or exceptionReason required");
+    if (!input.externalRef && !input.exceptionReason) throw new Error("externalRef or exceptionReason required");
+
+    const adapter = resolveJkdmAdapter();
+    const record = await adapter.recordManualResponse({
+      draftRef: declaration.draftRef,
+      idempotencyKey: `manual-${declaration.id}-${Date.now()}`,
+      tenantId: input.tenantId,
+      recordedBy: input.actorId,
+      outcome: input.outcome,
+      externalRef: input.externalRef,
+      exceptionReason: input.exceptionReason,
+      officerName: input.officerName,
+      officerId: input.officerId,
+      notes: input.notes,
+      observedAt: input.observedAt,
+      evidenceRef: input.evidenceRef,
+      additionalEvidenceRefs: input.additionalEvidenceRefs,
+    });
+
+    await db.declarationEvent.create({
+      data: {
+        tenantId: input.tenantId,
+        declarationId: declaration.id,
+        kind: "manual_observation",
+        provenance: "manual_observation",
+        externalRef: input.externalRef,
+        payload: { outcome: input.outcome, notes: input.notes, exceptionReason: input.exceptionReason },
+        evidenceRefs: [
+          ...(input.evidenceRef ? [input.evidenceRef] : []),
+          ...(input.additionalEvidenceRefs ?? []),
+        ],
+        recordedBy: input.actorId,
+        officerName: input.officerName,
+        officerId: input.officerId,
+        observedAt: new Date(input.observedAt),
+        reviewStatus: "pending_review",
+      },
+    });
+
+    return { status: "pending_review", provenance: "manual_observation", reviewStatus: "pending_review", reason: record.recordId };
+  }
+
+  const nextState = input.outcome ? STATE_FOR_OUTCOME[input.outcome] : undefined;
+  if (!nextState) throw new Error("production_api response requires outcome");
+
+  await db.declaration.update({ where: { id: declaration.id }, data: { state: nextState as never } });
+  await db.declarationEvent.create({
+    data: {
+      tenantId: input.tenantId,
+      declarationId: declaration.id,
+      kind: `production_api_${input.outcome}`,
+      provenance: "production_api",
+      externalRef: input.externalRef,
+      payload: { outcome: input.outcome },
+      evidenceRefs: input.additionalEvidenceRefs ?? [],
+      recordedBy: input.actorId,
+    },
+  });
+  return { status: "recorded", provenance: "production_api" };
+}

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ledgerSummary } from "../resources/ledger";
+import { ledgerSummary } from "../resources/ledger.js";
 export const LedgerEntryInput = z.object({
     tenantId: z.string(),
     containerId: z.string(),

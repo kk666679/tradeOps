@@ -1,6 +1,6 @@
 // backend/mcp/servers/tradeops/src/backend/ledger.ts
 
-import { callBackend } from "./client";
+import { callBackend } from "./client.js";
 
 export interface LedgerEntry {
   entryId: string;

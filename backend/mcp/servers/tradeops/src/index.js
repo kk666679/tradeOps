@@ -1,18 +1,18 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import express from "express";
-import { config } from "./config";
-import { logger } from "./logger";
-import { metrics } from "./metrics";
-import { installHttpTransport, handleSubscriptionsListen } from "./transport";
-import { authenticate } from "./middleware/authenticate";
-import { enrichContext } from "./middleware/context";
-import { recordAudit, hashInput } from "./middleware/audit";
-import { rateLimit } from "./middleware/rateLimit";
-import { sanitizeStrings } from "./middleware/sanitize";
-import { ulid } from "./util/ulid";
-import { ListAgentsInput, handleListAgents, RagSearchInput, handleRagSearch, ForecastInput, handleForecast, CrossZoneMoveInput, handleCrossZoneMove, ClassifyInput, handleClassify, DutyInput, handleDuty, FczTradeInput, handleFczTrade, FizManufactureInput, handleFizManufacture, DeviceStatusInput, handleDeviceStatus, ZoneGraphInput, handleZoneGraph, LedgerEntryInput, handleLedgerEntry, LedgerSummaryInput, handleLedgerSummary, } from "./tools";
-import { handleIotWebhook } from "./iot/webhookHandler";
+import { config } from "./config.js";
+import { logger } from "./logger.js";
+import { metrics } from "./metrics.js";
+import { installHttpTransport, handleSubscriptionsListen } from "./transport/index.js";
+import { authenticate } from "./middleware/authenticate.js";
+import { enrichContext } from "./middleware/context.js";
+import { recordAudit, hashInput } from "./middleware/audit.js";
+import { rateLimit } from "./middleware/rateLimit.js";
+import { sanitizeStrings } from "./middleware/sanitize.js";
+import { ulid } from "./util/ulid.js";
+import { ListAgentsInput, handleListAgents, RagSearchInput, handleRagSearch, ForecastInput, handleForecast, CrossZoneMoveInput, handleCrossZoneMove, ClassifyInput, handleClassify, DutyInput, handleDuty, FczTradeInput, handleFczTrade, FizManufactureInput, handleFizManufacture, DeviceStatusInput, handleDeviceStatus, ZoneGraphInput, handleZoneGraph, LedgerEntryInput, handleLedgerEntry, LedgerSummaryInput, handleLedgerSummary, } from "./tools/index.js";
+import { handleIotWebhook } from "./iot/webhookHandler.js";
 const server = new McpServer({ name: config.serverName, version: config.serverVersion }, { capabilities: {} });
 server.tool("server.discover", "Return protocol versions, capabilities, and a tool-list signature.", {}, async () => {
     const tools = [

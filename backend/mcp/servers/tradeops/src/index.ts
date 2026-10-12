@@ -3,16 +3,16 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import express from "express";
-import { config } from "./config";
-import { logger } from "./logger";
-import { metrics } from "./metrics";
-import { installHttpTransport, handleSubscriptionsListen, extractRequestMeta } from "./transport";
-import { authenticate } from "./middleware/authenticate";
-import { enrichContext } from "./middleware/context";
-import { recordAudit, hashInput } from "./middleware/audit";
-import { rateLimit } from "./middleware/rateLimit";
-import { sanitizeStrings } from "./middleware/sanitize";
-import { ulid } from "./util/ulid";
+import { config } from "./config.js";
+import { logger } from "./logger.js";
+import { metrics } from "./metrics.js";
+import { installHttpTransport, handleSubscriptionsListen, extractRequestMeta } from "./transport/index.js";
+import { authenticate } from "./middleware/authenticate.js";
+import { enrichContext } from "./middleware/context.js";
+import { recordAudit, hashInput } from "./middleware/audit.js";
+import { rateLimit } from "./middleware/rateLimit.js";
+import { sanitizeStrings } from "./middleware/sanitize.js";
+import { ulid } from "./util/ulid.js";
 
 // Tool handlers
 import {
@@ -23,9 +23,9 @@ import {
   FczTradeInput, handleFczTrade, FizManufactureInput, handleFizManufacture,
   DeviceStatusInput, handleDeviceStatus, ZoneGraphInput, handleZoneGraph,
   LedgerEntryInput, handleLedgerEntry, LedgerSummaryInput, handleLedgerSummary,
-} from "./tools";
+} from "./tools/index.js";
 
-import { handleIotWebhook } from "./iot/webhookHandler";
+import { handleIotWebhook } from "./iot/webhookHandler.js";
 
 const server = new McpServer(
   { name: config.serverName, version: config.serverVersion },

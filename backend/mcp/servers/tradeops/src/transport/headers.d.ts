@@ -1,4 +1,4 @@
-import type { RequestMeta } from "../types";
+import type { RequestMeta } from "../types/index.js";
 export declare const META_KEY: {
     readonly PROTOCOL_VERSION: "io.modelcontextprotocol/protocolVersion";
     readonly CLIENT_CAPABILITIES: "io.modelcontextprotocol/clientCapabilities";

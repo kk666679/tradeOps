@@ -15,7 +15,7 @@ export async function handleCrossZoneMove(raw: CrossZoneMoveInput) {
   const input = CrossZoneMoveInput.parse(raw);
   return {
     content: [{
-      type: "text",
+      type: "text" as const,
       text: JSON.stringify({
         ok: true,
         containerId: input.containerId,

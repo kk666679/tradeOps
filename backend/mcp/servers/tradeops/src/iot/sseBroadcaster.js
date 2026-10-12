@@ -1,4 +1,4 @@
-import { broadcast } from "../transport/subscriptions";
+import { broadcast } from "../transport/subscriptions.js";
 export function broadcastTelemetry(tenantId, event) {
     broadcast({
         kind: "resourceSubscriptions",

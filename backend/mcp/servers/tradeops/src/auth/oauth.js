@@ -1,5 +1,5 @@
 import { createHash, randomBytes } from "node:crypto";
-import { config } from "../config";
+import { config } from "../config.js";
 export function generatePkce() {
     const verifier = base64url(randomBytes(32));
     const challenge = base64url(createHash("sha256").update(verifier).digest());

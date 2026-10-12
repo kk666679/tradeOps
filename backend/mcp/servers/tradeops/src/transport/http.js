@@ -1,6 +1,6 @@
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
-import { config } from "../config";
-import { extractRequestMeta } from "./headers";
+import { config } from "../config.js";
+import { extractRequestMeta } from "./headers.js";
 export function installHttpTransport(app, server) {
     app.post("/mcp", async (req, res) => {
         const body = req.body;

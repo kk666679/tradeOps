@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { listDevices, getDevice } from "../iot/deviceRegistry";
-import { getZoneGraph } from "../iot/zoneGraphUpdater";
+import { listDevices, getDevice } from "../iot/deviceRegistry.js";
+import { getZoneGraph } from "../iot/zoneGraphUpdater.js";
 export const DeviceStatusInput = z.object({
     tenantId: z.string(),
     deviceId: z.string().optional(),

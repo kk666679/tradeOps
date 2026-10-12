@@ -1,4 +1,4 @@
-import type { RequestMeta, ActorContext, TenantContext } from "../types";
+import type { RequestMeta, ActorContext, TenantContext } from "../types/index.js";
 export interface RequestContext {
     meta: RequestMeta;
     tenant?: TenantContext;

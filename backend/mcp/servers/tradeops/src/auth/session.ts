@@ -2,7 +2,7 @@
 // Stateless core (2026-07-28): sessions do not exist. Each request carries
 // its own identity via _meta. This module provides per-request context.
 
-import type { RequestMeta, ActorContext, TenantContext } from "../types";
+import type { RequestMeta, ActorContext, TenantContext } from "../types/index.js";
 
 export interface RequestContext {
   meta: RequestMeta;
