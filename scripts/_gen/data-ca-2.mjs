@@ -1,0 +1,33 @@
+// custom-agents wiring data — part 2 (builder, customs-agents A–G)
+export const CA_2 = [
+  ['builder/page.tsx', { title: 'Agent Builder', description: 'Compose, test, and publish custom agents', components: [{ name: 'AgentBuilderExperience', path: '@/components/custom-agents/builder/AgentBuilderExperience' }] }],
+  ['builder/new/page.tsx', { title: 'New Agent', description: 'Create a new custom agent', components: [{ name: 'AgentBuilderExperience', path: '@/components/custom-agents/builder/AgentBuilderExperience' }] }],
+  ['builder/test/page.tsx', { title: 'Agent Test Bench', description: 'Run agents against sample inputs', components: [{ name: 'AgentTestBench', path: '@/components/custom-agents/builder/AgentTestBench' }] }],
+  ['builder/publish/page.tsx', { title: 'Publish Agent', description: 'Publish a validated agent to the registry', components: [{ name: 'AgentPublishPanel', path: '@/components/custom-agents/builder/AgentPublishPanel' }] }],
+
+  ['customs-agents/page.tsx', { title: 'Customs Agents', description: 'Specialized agents across the customs lifecycle', layout: 'grid2', components: [
+    { name: 'HsClassificationAgent', path: '@/components/custom-agents/customs-agents/HsClassificationAgent' },
+    { name: 'CustomsValuationAgent', path: '@/components/custom-agents/customs-agents/CustomsValuationAgent' },
+    { name: 'DutyOptimizationAgent', path: '@/components/custom-agents/customs-agents/DutyOptimizationAgent' },
+    { name: 'OriginDeterminationAgent', path: '@/components/custom-agents/customs-agents/OriginDeterminationAgent' },
+    { name: 'TariffChangeWatcherAgent', path: '@/components/custom-agents/customs-agents/TariffChangeWatcherAgent' },
+    { name: 'SanctionScreeningAgent', path: '@/components/custom-agents/customs-agents/SanctionScreeningAgent' },
+    { name: 'DeclarationFilingAgent', path: '@/components/custom-agents/customs-agents/DeclarationFilingAgent' },
+    { name: 'DocumentExtractionAgent', path: '@/components/custom-agents/customs-agents/DocumentExtractionAgent' },
+    { name: 'ClearanceFollowUpAgent', path: '@/components/custom-agents/customs-agents/ClearanceFollowUpAgent' },
+    { name: 'PermitSourcingAgent', path: '@/components/custom-agents/customs-agents/PermitSourcingAgent' },
+    { name: 'BondedLedgerAgent', path: '@/components/custom-agents/customs-agents/BondedLedgerAgent' },
+    { name: 'ExemptionReconciliationAgent', path: '@/components/custom-agents/customs-agents/ExemptionReconciliationAgent' },
+    { name: 'DrawbackRecoveryAgent', path: '@/components/custom-agents/customs-agents/DrawbackRecoveryAgent' },
+    { name: 'PostAuditAgent', path: '@/components/custom-agents/customs-agents/PostAuditAgent' },
+    { name: 'ZoneGateAgent', path: '@/components/custom-agents/customs-agents/ZoneGateAgent' },
+  ] }],
+  ['customs-agents/classification/page.tsx', { title: 'HS Classification Agent', description: 'Classify goods to HS codes', components: [{ name: 'HsClassificationAgent', path: '@/components/custom-agents/customs-agents/HsClassificationAgent' }] }],
+  ['customs-agents/valuation/page.tsx', { title: 'Valuation Agent', description: 'Customs valuation assistance', components: [{ name: 'CustomsValuationAgent', path: '@/components/custom-agents/customs-agents/CustomsValuationAgent' }] }],
+  ['customs-agents/duty/page.tsx', { title: 'Duty Optimization Agent', description: 'Minimize duty and tax exposure', components: [{ name: 'DutyOptimizationAgent', path: '@/components/custom-agents/customs-agents/DutyOptimizationAgent' }] }],
+  ['customs-agents/origin/page.tsx', { title: 'Origin Determination Agent', description: 'Determine preferential origin', components: [{ name: 'OriginDeterminationAgent', path: '@/components/custom-agents/customs-agents/OriginDeterminationAgent' }] }],
+  ['customs-agents/tariff/page.tsx', { title: 'Tariff Watcher Agent', description: 'Monitor tariff changes', components: [{ name: 'TariffChangeWatcherAgent', path: '@/components/custom-agents/customs-agents/TariffChangeWatcherAgent' }] }],
+  ['customs-agents/screening/page.tsx', { title: 'Sanction Screening Agent', description: 'Screen parties against sanctions lists', components: [{ name: 'SanctionScreeningAgent', path: '@/components/custom-agents/customs-agents/SanctionScreeningAgent' }] }],
+  ['customs-agents/filing/page.tsx', { title: 'Declaration Filing Agent', description: 'Prepare and file declarations', components: [{ name: 'DeclarationFilingAgent', path: '@/components/custom-agents/customs-agents/DeclarationFilingAgent' }] }],
+  ['customs-agents/documents/page.tsx', { title: 'Document Extraction Agent', description: 'Extract data from trade documents', components: [{ name: 'DocumentExtractionAgent', path: '@/components/custom-agents/customs-agents/DocumentExtractionAgent' }] }],
+];
