@@ -18,8 +18,8 @@ export function AgentNode({ data }: NodeProps<AgentFlowNode>) {
     <div className="agent-card" data-dimmed={dimmed ? "true" : undefined}>
       <div className="agent-name">{name}</div>
       <div className="agent-role">{role}</div>
-      <Handle key="handle-top" type="target" position={Position.Top} id="t" className="rf-hidden-handle" />
-      <Handle key="handle-left" type="target" position={Position.Left} id="l" className="rf-hidden-handle" />
+      <Handle key="handle-top" type="target" position={Position.Top} id="t-in" className="rf-hidden-handle" />
+      <Handle key="handle-left" type="target" position={Position.Left} id="l-in" className="rf-hidden-handle" />
       <Handle key="handle-bottom" type="source" position={Position.Bottom} id="b" className="rf-hidden-handle" />
       <Handle key="handle-right" type="source" position={Position.Right} id="r" className="rf-hidden-handle" />
     </div>
