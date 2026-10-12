@@ -1,11 +1,12 @@
 import 'dotenv/config';
-import { defineConfig, env } from 'prisma/config';
+import { defineConfig } from 'prisma/config';
 
 export default defineConfig({
   schema: 'prisma/schema.prisma',
   migrations: { path: 'prisma/migrations' },
-  // `classic` engine is required in v7 for the Rust schema engine
   datasource: {
-    url: env('DATABASE_URL'),
+    // process.env does NOT throw when unset — allows prisma generate
+    // to run during postinstall without a live database URL.
+    url: process.env.DATABASE_URL ?? 'postgresql://postgres:password@localhost:5432/cfs_wms',
   },
 });

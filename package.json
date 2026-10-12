@@ -25,6 +25,7 @@
     "@prisma/adapter-pg": "^7.10.0",
     "@prisma/client": "^7.10.0",
     "@radix-ui/react-label": "^2.1.8",
+    "@radix-ui/react-tooltip": "^1.4.0",
     "@radix-ui/react-use-controllable-state": "^1.2.2",
     "@rive-app/react-webgl2": "^4.28.3",
     "@streamdown/cjk": "^1.0.3",

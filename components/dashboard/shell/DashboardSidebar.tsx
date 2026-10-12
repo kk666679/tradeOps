@@ -91,10 +91,11 @@ function ancestors(pathname: string, items: NavItem[], trail: string[] = []): st
 }
 
 function Row({
-  item, depth, pathname, open, toggle,
+  item, depth, pathname, open, toggle, collapsed,
 }: {
   item: NavItem; depth: number; pathname: string;
   open: Set<string>; toggle: (k: string) => void;
+  collapsed: boolean;
 }) {
   const key = item.href ?? item.label;
   const hasKids = !!item.children?.length;
@@ -122,6 +123,7 @@ function Row({
         {item.href ? (
           <Link
             href={item.href}
+            title={collapsed ? item.label : undefined}
             className="flex flex-1 items-center gap-2 py-1.5 pl-2 pr-1"
             style={{ paddingLeft: 8 + depth * 12 }}
           >
@@ -132,7 +134,9 @@ function Row({
                 className="h-1 w-1 shrink-0 rounded-full bg-current opacity-40"
               />
             )}
-            <span className="truncate">{item.label}</span>
+            <span className={collapsed && depth === 0 ? 'sr-only' : 'truncate'}>
+              {item.label}
+            </span>
           </Link>
         ) : (
           <button
@@ -142,10 +146,12 @@ function Row({
             style={{ paddingLeft: 8 + depth * 12 }}
           >
             {depth === 0 && <Icon name={item.icon} />}
-            <span className="truncate">{item.label}</span>
+            <span className={collapsed && depth === 0 ? 'sr-only' : 'truncate'}>
+              {item.label}
+            </span>
           </button>
         )}
-        {hasKids && (
+        {hasKids && !collapsed && (
           <button
             type="button"
             aria-label={isOpen ? 'Collapse' : 'Expand'}
@@ -160,7 +166,7 @@ function Row({
           </button>
         )}
       </div>
-      {hasKids && isOpen && (
+      {hasKids && isOpen && !collapsed && (
         <ul className="mt-0.5 space-y-0.5">
           {item.children!.map((c) => (
             <Row
@@ -170,6 +176,7 @@ function Row({
               pathname={pathname}
               open={open}
               toggle={toggle}
+              collapsed={collapsed}
             />
           ))}
         </ul>
@@ -179,10 +186,11 @@ function Row({
 }
 
 function Group({
-  section, pathname, open, toggle,
+  section, pathname, open, toggle, collapsed,
 }: {
   section: NavSection; pathname: string;
   open: Set<string>; toggle: (k: string) => void;
+  collapsed: boolean;
 }) {
   const key = `__section__:${section.label}`;
   const isOpen = open.has(key);
@@ -194,11 +202,13 @@ function Group({
         aria-expanded={isOpen}
         className="flex w-full items-center justify-between rounded-md px-2 py-1.5 text-[11px] font-medium uppercase tracking-wider text-[var(--text-muted)] hover:bg-[var(--bg-subtle)]"
       >
-        <span>{section.label}</span>
-        <Icon
-          name="chevron"
-          className={'h-3 w-3 transition-transform ' + (isOpen ? '' : '-rotate-90')}
-        />
+        <span className={collapsed ? 'sr-only' : ''}>{section.label}</span>
+        {!collapsed && (
+          <Icon
+            name="chevron"
+            className={'h-3 w-3 transition-transform ' + (isOpen ? '' : '-rotate-90')}
+          />
+        )}
       </button>
       {isOpen && (
         <ul className="mt-1 space-y-0.5">
@@ -210,6 +220,7 @@ function Group({
               pathname={pathname}
               open={open}
               toggle={toggle}
+              collapsed={collapsed}
             />
           ))}
         </ul>
@@ -218,7 +229,13 @@ function Group({
   );
 }
 
-export function DashboardSidebar() {
+export function DashboardSidebar({
+  isCollapsed = false,
+  isMobileOpen = false,
+}: {
+  isCollapsed?: boolean;
+  isMobileOpen?: boolean;
+} = {}) {
   const pathname = usePathname() ?? '';
   const { open, toggle, add } = useOpen();
 
@@ -242,7 +259,12 @@ export function DashboardSidebar() {
   }, [pathname, add]);
 
   return (
-    <nav aria-label="Primary" className="flex h-full flex-col overflow-y-auto">
+    <nav
+      aria-label="Primary"
+      data-collapsed={isCollapsed}
+      data-mobile-open={isMobileOpen}
+      className="flex h-full flex-col overflow-y-auto"
+    >
       <div className="flex-1 py-2">
         {NAV_SECTIONS.map((section) => (
           <Group
@@ -251,6 +273,7 @@ export function DashboardSidebar() {
             pathname={pathname}
             open={open}
             toggle={toggle}
+            collapsed={isCollapsed}
           />
         ))}
       </div>
