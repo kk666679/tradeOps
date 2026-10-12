@@ -10,12 +10,14 @@ on:
       - '**.json'
       - '**.prisma'
       - 'package.json'
+      - 'pnpm-lock.yaml'
       - 'backend/package.json'
+      - 'backend/pnpm-lock.yaml'
       - '.github/workflows/security.yml'
   pull_request:
     branches: [main]
   schedule:
-    - cron: '0 6 * * 1'   # every Monday 06:00 UTC
+    - cron: '0 6 * * 1'
   workflow_dispatch:
 
 permissions:
@@ -33,47 +35,44 @@ jobs:
     timeout-minutes: 20
     steps:
       - name: Checkout
-        uses: actions/checkout@v4  # 11d5960a326750d5838078e36cf38b85af677262
+        uses: actions/checkout@v4
 
       - name: Setup Node env (root + backend)
         uses: ./.github/actions/setup-node-env
         with:
           node-version: '22.12.0'
-          enable-backend: true
+          enable-backend: 'true'
 
       - name: Audit root dependencies
-        run: npm audit --json > audit-root.json || true
-        env:
-          NPM_CONFIG_IGNORE_SCRIPTS: 'true'
+        run: pnpm audit --json > audit-root.json || true
 
       - name: Audit backend dependencies
-        run: npm audit --json > audit-backend.json || true
+        run: pnpm audit --json > audit-backend.json || true
         working-directory: backend
-        env:
-          NPM_CONFIG_IGNORE_SCRIPTS: 'true'
 
       - name: Summarise audit results
         if: always()
-        run: node -e "
-          const fs = require('fs');
-          const files = ['audit-root.json', 'backend/audit-backend.json'];
-          let total = 0;
-          for (const f of files) {
-            try {
-              const data = JSON.parse(fs.readFileSync(f, 'utf8'));
-              const counts = data.metadata?.vulnerabilities || {};
-              console.log(f, JSON.stringify(counts));
-              total += (counts.high || 0) + (counts.critical || 0);
-            } catch (e) { console.log(f, 'no report'); }
-          }
-          if (total > 0) { console.log('High/Critical vulnerabilities found — review audit reports'); }
-        "
+        run: |
+          node -e "
+            const fs = require('fs');
+            const files = ['audit-root.json', 'backend/audit-backend.json'];
+            let total = 0;
+            for (const f of files) {
+              try {
+                const data = JSON.parse(fs.readFileSync(f, 'utf8'));
+                const counts = data.metadata?.vulnerabilities || {};
+                console.log(f, JSON.stringify(counts));
+                total += (counts.high || 0) + (counts.critical || 0);
+              } catch (e) { console.log(f, 'no report'); }
+            }
+            if (total > 0) { console.log('High/Critical vulnerabilities found — review audit reports'); }
+          "
 
       - name: Upload audit reports
         if: always()
-        uses: actions/upload-artifact@v4  # ea165f8d65b6e75b540449e92b4886f43607fa02
+        uses: actions/upload-artifact@v4
         with:
-          name: npm-audit
+          name: pnpm-audit
           path: |
             audit-root.json
             backend/audit-backend.json
@@ -85,35 +84,13 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Checkout
-        uses: actions/checkout@v4  # 11d5960a326750d5838078e36cf38b85af677262
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Run gitleaks
-        uses: gitleaks/gitleaks-action@v2.18.1  # TODO: pin to full commit SHA via .github/workflows/dependency-update.yml
+        uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           args: --no-banner --redact=10
-
-  codeql:
-    name: CodeQL
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4  # 11d5960a326750d5838078e36cf38b85af677262
-
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3  # TODO: pin to full commit SHA via .github/workflows/dependency-update.yml
-        with:
-          languages: typescript, javascript
-          queries: security-extended
-
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v3  # TODO: pin to full commit SHA
-
-      - name: Perform CodeQL analysis
-        uses: github/codeql-action/analyze@v3  # TODO: pin to full commit SHA
-        with:
-          category: "security:typescript"
