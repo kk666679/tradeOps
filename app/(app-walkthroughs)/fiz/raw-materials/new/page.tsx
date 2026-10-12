@@ -1,0 +1,15 @@
+import * as React from 'react';
+import type { Metadata } from 'next';
+import { PageHeader } from '@/components/dashboard/page/PageHeader';
+import { FizUnavailable } from '../../_components/FizRouteViews';
+
+export const metadata: Metadata = { title: 'New Raw Material Entry' };
+
+export default function Page() {
+  return (
+    <div className="space-y-6">
+      <PageHeader title="New Raw Material Entry" description="Record new raw material intake" />
+      <FizUnavailable entity="Raw material" />
+    </div>
+  );
+}
