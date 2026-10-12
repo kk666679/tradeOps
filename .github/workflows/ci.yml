@@ -11,7 +11,9 @@ on:
       - '**.json'
       - '**.prisma'
       - 'package.json'
+      - 'pnpm-lock.yaml'
       - 'backend/package.json'
+      - 'backend/pnpm-lock.yaml'
       - 'docker-compose*.yml'
       - 'prisma/**'
       - '.github/workflows/ci.yml'
@@ -48,25 +50,41 @@ jobs:
     timeout-minutes: 20
     steps:
       - name: Checkout
-        uses: actions/checkout@v4  # 11d5960a326750d5838078e36cf38b85af677262
+        uses: actions/checkout@v4
 
-      - name: Setup Node env (root)
-        uses: ./.github/actions/setup-node-env
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node-version || '22.12.0' }}
+          cache: 'pnpm'
+          cache-dependency-path: |
+            pnpm-lock.yaml
+            backend/pnpm-lock.yaml
+
+      - name: Install root dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install backend dependencies
+        run: pnpm install --frozen-lockfile
+        working-directory: backend
 
       - name: Build Next.js web app
-        run: npm run build
+        run: pnpm run build
         env:
           NEXT_PUBLIC_TRPC_URL: /api/trpc
           NEXTAUTH_URL: http://localhost:3000
 
       - name: Build NestJS backend
-        run: npm run build:backend
+        run: pnpm run build
         working-directory: backend
 
       - name: Upload web build artifact
-        uses: actions/upload-artifact@v4  # ea165f8d65b6e75b540449e92b4886f43607fa02
+        uses: actions/upload-artifact@v4
         with:
           name: web-build
           path: |
@@ -77,7 +95,7 @@ jobs:
           retention-days: 7
 
       - name: Upload backend build artifact
-        uses: actions/upload-artifact@v4  # ea165f8d65b6e75b540449e92b4886f43607fa02
+        uses: actions/upload-artifact@v4
         with:
           name: backend-build
           path: |
@@ -92,21 +110,36 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout
-        uses: actions/checkout@v4  # 11d5960a326750d5838078e36cf38b85af677262
+        uses: actions/checkout@v4
 
-      - name: Setup Node env (root + backend)
-        uses: ./.github/actions/setup-node-env
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node-version || '22.12.0' }}
-          enable-backend: true
+          cache: 'pnpm'
+          cache-dependency-path: |
+            pnpm-lock.yaml
+            backend/pnpm-lock.yaml
+
+      - name: Install root dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install backend dependencies
+        run: pnpm install --frozen-lockfile
+        working-directory: backend
 
       - name: Type check web (tsc --noEmit)
-        run: npx tsc --noEmit -p tsconfig.json
+        run: pnpm exec tsc --noEmit -p tsconfig.json
         env:
           NEXT_TELEMETRY_DISABLED: '1'
 
       - name: Type check backend (tsc --noEmit)
-        run: npx tsc --noEmit -p backend/tsconfig.json
+        run: pnpm exec tsc --noEmit -p backend/tsconfig.json
 
   lint:
     name: Lint & format
@@ -115,27 +148,39 @@ jobs:
     needs: build
     steps:
       - name: Checkout
-        uses: actions/checkout@v4  # 11d5960a326750d5838078e36cf38b85af677262
+        uses: actions/checkout@v4
 
-      - name: Setup Node env (root + backend)
-        uses: ./.github/actions/setup-node-env
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node-version || '22.12.0' }}
-          enable-backend: true
+          cache: 'pnpm'
+          cache-dependency-path: |
+            pnpm-lock.yaml
+            backend/pnpm-lock.yaml
 
-      - name: Install ESLint + Prettier (project dev tools)
-        run: npm install --no-save --no-package-lock eslint@^9 prettier@^3 typescript-eslint@^8 @eslint/js
+      - name: Install root dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install backend dependencies
+        run: pnpm install --frozen-lockfile
+        working-directory: backend
 
       - name: Lint backend
-        run: npx eslint "backend/src/**/*.ts" "backend/test/**/*.ts" --max-warnings=0
+        run: pnpm exec eslint "backend/src/**/*.ts" "backend/test/**/*.ts" --max-warnings=0
         continue-on-error: false
 
       - name: Check backend formatting
-        run: npx prettier --check "backend/src/**/*.ts" "backend/test/**/*.ts"
+        run: pnpm exec prettier --check "backend/src/**/*.ts" "backend/test/**/*.ts"
 
       - name: Lint web (Next.js ESLint)
-        run: npx next lint --dir . --max-warnings=0
+        run: pnpm exec next lint --dir . --max-warnings=0
         continue-on-error: false
 
       - name: Check web formatting
-        run: npx prettier --check "app/**/*.tsx" "app/**/*.ts" "lib/**/*.ts" "components/**/*.tsx" "components/**/*.ts" "hooks/**/*.ts" "providers/**/*.ts" "server/**/*.ts" "workers/**/*.ts" "prisma/**/*.ts" 2>/dev/null || true
+        run: pnpm exec prettier --check "app/**/*.tsx" "app/**/*.ts" "lib/**/*.ts" "components/**/*.tsx" "components/**/*.ts" "hooks/**/*.ts" "providers/**/*.ts" "server/**/*.ts" "workers/**/*.ts" "prisma/**/*.ts"
