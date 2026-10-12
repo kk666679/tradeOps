@@ -1,11 +1,11 @@
 name: Setup Node Env
-description: Install Node, restore npm cache, install root (and optionally backend) dependencies.
+description: Install Node, restore pnpm cache, install root (and optionally backend) dependencies.
 
 inputs:
   node-version:
     description: Node.js version
     required: false
-    default: '20.18.1'
+    default: '22.12.0'
   enable-backend:
     description: Also install backend dependencies
     required: false
@@ -14,21 +14,26 @@ inputs:
 runs:
   using: composite
   steps:
+    - name: Set up pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 9
+
     - name: Set up Node.js ${{ inputs.node-version }}
       uses: actions/setup-node@v4
       with:
         node-version: ${{ inputs.node-version }}
-        cache: npm
+        cache: pnpm
         cache-dependency-path: |
-          package-lock.json
-          backend/package-lock.json
+          pnpm-lock.yaml
+          backend/pnpm-lock.yaml
 
     - name: Install root dependencies
       shell: bash
-      run: npm ci
+      run: pnpm install --frozen-lockfile
 
     - name: Install backend dependencies
       if: ${{ inputs.enable-backend == 'true' }}
       shell: bash
       working-directory: backend
-      run: npm ci
+      run: pnpm install --frozen-lockfile
