@@ -51,7 +51,7 @@ jobs:
         uses: actions/checkout@v4  # 11d5960a326750d5838078e36cf38b85af677262
 
       - name: Setup Node env (root)
-        uses: ./.github/actions/setup-node-env@main
+        uses: ./.github/actions/setup-node-env
         with:
           node-version: ${{ inputs.node-version || '20.18.1' }}
 
@@ -95,7 +95,7 @@ jobs:
         uses: actions/checkout@v4  # 11d5960a326750d5838078e36cf38b85af677262
 
       - name: Setup Node env (root + backend)
-        uses: ./.github/actions/setup-node-env@main
+        uses: ./.github/actions/setup-node-env
         with:
           node-version: ${{ inputs.node-version || '20.18.1' }}
           enable-backend: true
@@ -118,7 +118,7 @@ jobs:
         uses: actions/checkout@v4  # 11d5960a326750d5838078e36cf38b85af677262
 
       - name: Setup Node env (root + backend)
-        uses: ./.github/actions/setup-node-env@main
+        uses: ./.github/actions/setup-node-env
         with:
           node-version: ${{ inputs.node-version || '20.18.1' }}
           enable-backend: true
