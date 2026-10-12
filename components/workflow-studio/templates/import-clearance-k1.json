@@ -1,0 +1,47 @@
+{
+  "id": "template.import-clearance-k1",
+  "name": "Import clearance (K1)",
+  "description": "End-to-end K1 import clearance. Stops at integration_required if JKDM is not configured.",
+  "definition": {
+    "viewport": { "x": 0, "y": 0, "zoom": 0.8 },
+    "nodes": [
+      { "id": "n-trigger", "type": "trigger.shipment.created", "position": { "x": 0, "y": 0 }, "config": {} },
+      { "id": "n-checklist", "type": "action.generate_checklist", "position": { "x": 260, "y": 0 }, "config": { "template": "K1_import" } },
+      { "id": "n-check-docs", "type": "logic.document_missing", "position": { "x": 520, "y": 0 }, "config": { "documentTypes": ["commercial_invoice","packing_list","bl","insurance_cert"] } },
+      { "id": "n-request-docs", "type": "action.request_documents", "position": { "x": 780, "y": -120 }, "config": { "documentTypes": ["commercial_invoice","packing_list","bl"] } },
+      { "id": "n-wait-docs", "type": "logic.wait_for_event", "position": { "x": 1040, "y": -120 }, "config": { "eventKinds": ["document.uploaded"], "timeoutHours": 168 } },
+      { "id": "n-validate", "type": "data.validate_required", "position": { "x": 780, "y": 120 }, "config": { "required": ["importerName","blNumber","invoiceNumber","lineItems"] } },
+      { "id": "n-permit-check", "type": "logic.permit_required", "position": { "x": 1040, "y": 120 }, "config": {} },
+      { "id": "n-prepare", "type": "action.prepare_declaration", "position": { "x": 1300, "y": 120 }, "config": { "formCode": "K1" } },
+      { "id": "n-approval", "type": "action.request_approval", "position": { "x": 1560, "y": 120 }, "config": { "role": "CUSTOMS_BROKER", "thresholdRole": "SENIOR_BROKER" } },
+      { "id": "n-threshold", "type": "logic.value_threshold", "position": { "x": 1820, "y": 120 }, "config": { "thresholdMYR": 250000 } },
+      { "id": "n-submit", "type": "action.submit_declaration", "position": { "x": 2080, "y": 120 }, "config": {} },
+      { "id": "n-await", "type": "logic.wait_for_event", "position": { "x": 2340, "y": 120 }, "config": { "eventKinds": ["jkdm.response"], "timeoutHours": 72 } },
+      { "id": "n-record", "type": "action.record_customs_response", "position": { "x": 2600, "y": 120 }, "config": {} },
+      { "id": "n-released", "type": "logic.customs_rejected", "position": { "x": 2860, "y": 120 }, "config": {} },
+      { "id": "n-update-release", "type": "action.update_shipment_status", "position": { "x": 3120, "y": 0 }, "config": { "toStatus": "released" } },
+      { "id": "n-update-rejected", "type": "action.create_task", "position": { "x": 3120, "y": 240 }, "config": { "title": "Amend rejected declaration", "assigneeRole": "CUSTOMS_BROKER", "dueInHours": 24 } },
+      { "id": "n-output", "type": "output", "position": { "x": 3380, "y": 120 }, "config": { "value": "nodes.n-record.output" } }
+    ],
+    "edges": [
+      { "id": "e1", "source": "n-trigger", "target": "n-checklist", "sourceHandle": "out", "targetHandle": "in" },
+      { "id": "e2", "source": "n-checklist", "target": "n-check-docs", "sourceHandle": "out", "targetHandle": "in" },
+      { "id": "e3", "source": "n-check-docs", "target": "n-request-docs", "sourceHandle": "true", "targetHandle": "in" },
+      { "id": "e4", "source": "n-check-docs", "target": "n-validate", "sourceHandle": "false", "targetHandle": "in" },
+      { "id": "e5", "source": "n-request-docs", "target": "n-wait-docs", "sourceHandle": "out", "targetHandle": "in" },
+      { "id": "e6", "source": "n-wait-docs", "target": "n-check-docs", "sourceHandle": "out", "targetHandle": "in" },
+      { "id": "e7", "source": "n-validate", "target": "n-permit-check", "sourceHandle": "out", "targetHandle": "in" },
+      { "id": "e8", "source": "n-permit-check", "target": "n-prepare", "sourceHandle": "out", "targetHandle": "in" },
+      { "id": "e9", "source": "n-prepare", "target": "n-approval", "sourceHandle": "out", "targetHandle": "in" },
+      { "id": "e10", "source": "n-approval", "target": "n-threshold", "sourceHandle": "out", "targetHandle": "in" },
+      { "id": "e11", "source": "n-threshold", "target": "n-submit", "sourceHandle": "out", "targetHandle": "in" },
+      { "id": "e12", "source": "n-submit", "target": "n-await", "sourceHandle": "out", "targetHandle": "in" },
+      { "id": "e13", "source": "n-await", "target": "n-record", "sourceHandle": "out", "targetHandle": "in" },
+      { "id": "e14", "source": "n-record", "target": "n-released", "sourceHandle": "out", "targetHandle": "in" },
+      { "id": "e15", "source": "n-released", "target": "n-update-rejected", "sourceHandle": "true", "targetHandle": "in" },
+      { "id": "e16", "source": "n-released", "target": "n-update-release", "sourceHandle": "false", "targetHandle": "in" },
+      { "id": "e17", "source": "n-update-release", "target": "n-output", "sourceHandle": "out", "targetHandle": "in" },
+      { "id": "e18", "source": "n-update-rejected", "target": "n-output", "sourceHandle": "out", "targetHandle": "in" }
+    ]
+  }
+}

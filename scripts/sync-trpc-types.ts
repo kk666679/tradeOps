@@ -4,7 +4,7 @@ import { spawnSync } from 'node:child_process';
 
 const ROOT = process.cwd();
 const BACKEND = resolve(ROOT, 'backend');
-const OUT = resolve(ROOT, 'server', 'trpc', 'router.ts');
+const OUT = resolve(ROOT, 'lib', 'trpc', 'router.ts');
 
 function run(cmd: string, args: string[], cwd: string) {
   return spawnSync(cmd, args, {
@@ -16,7 +16,7 @@ function run(cmd: string, args: string[], cwd: string) {
 
 function main() {
   // 1. Regenerate the Prisma client so backend types reflect the schema.
-  run('npx', ['prisma', 'generate'], resolve(BACKEND, 'prisma'));
+  run('npx', ['prisma', 'generate', '--schema', resolve(ROOT, 'prisma', 'schema.prisma')], ROOT);
 
   // 2. Compile the backend (build config excludes tests/scripts) so the
   //    emitted AppRouter type declaration is fresh.
@@ -65,7 +65,8 @@ function main() {
   }
   const typeExpr = slice.slice(0, lastSemicolon).trim();
 
-  mkdirSync(resolve(ROOT, 'server', 'trpc'), { recursive: true });
+  mkdirSync(resolve(ROOT, 'lib', 'trpc'), { recursive: true });
+  const frontendTypeExpr = typeExpr.replaceAll('import("./trpc.context")', 'import("../../backend/src/trpc/trpc.context")');
   writeFileSync(
     OUT,
     `/**
@@ -75,10 +76,10 @@ function main() {
  * so the Next.js app gets end-to-end types for every procedure without a
  * duplicate router definition. Regenerate with: \`npm run trpc:types\`.
  */
-export type AppRouter = ${typeExpr};
+export type AppRouter = ${frontendTypeExpr};
 `,
   );
-  console.log('Wrote', resolve(ROOT, 'server/trpc/router.ts'));
+  console.log('Wrote', OUT);
 }
 
 main();

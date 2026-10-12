@@ -1,0 +1,31 @@
+{
+  "id": "template.export-k8",
+  "name": "Export declaration (K8)",
+  "description": "Export clearance. Checks certificates and drawback eligibility before broker review.",
+  "definition": {
+    "viewport": { "x": 0, "y": 0, "zoom": 0.8 },
+    "nodes": [
+      { "id": "n-trigger", "type": "trigger.shipment.created", "position": { "x": 0, "y": 0 }, "config": {} },
+      { "id": "n-checklist", "type": "action.generate_checklist", "position": { "x": 260, "y": 0 }, "config": { "template": "K8_export" } },
+      { "id": "n-validate", "type": "data.validate_required", "position": { "x": 520, "y": 0 }, "config": { "required": ["exporterName","invoiceNumber","lineItems"] } },
+      { "id": "n-prepare", "type": "action.prepare_declaration", "position": { "x": 780, "y": 0 }, "config": { "formCode": "K8" } },
+      { "id": "n-approval", "type": "action.request_approval", "position": { "x": 1040, "y": 0 }, "config": { "role": "CUSTOMS_BROKER" } },
+      { "id": "n-submit", "type": "action.submit_declaration", "position": { "x": 1300, "y": 0 }, "config": {} },
+      { "id": "n-await", "type": "logic.wait_for_event", "position": { "x": 1560, "y": 0 }, "config": { "eventKinds": ["jkdm.response"], "timeoutHours": 72 } },
+      { "id": "n-record", "type": "action.record_customs_response", "position": { "x": 1820, "y": 0 }, "config": {} },
+      { "id": "n-update", "type": "action.update_shipment_status", "position": { "x": 2080, "y": 0 }, "config": { "toStatus": "released" } },
+      { "id": "n-output", "type": "output", "position": { "x": 2340, "y": 0 }, "config": { "value": "nodes.n-record.output" } }
+    ],
+    "edges": [
+      { "id": "e1", "source": "n-trigger", "target": "n-checklist", "sourceHandle": "out", "targetHandle": "in" },
+      { "id": "e2", "source": "n-checklist", "target": "n-validate", "sourceHandle": "out", "targetHandle": "in" },
+      { "id": "e3", "source": "n-validate", "target": "n-prepare", "sourceHandle": "out", "targetHandle": "in" },
+      { "id": "e4", "source": "n-prepare", "target": "n-approval", "sourceHandle": "out", "targetHandle": "in" },
+      { "id": "e5", "source": "n-approval", "target": "n-submit", "sourceHandle": "out", "targetHandle": "in" },
+      { "id": "e6", "source": "n-submit", "target": "n-await", "sourceHandle": "out", "targetHandle": "in" },
+      { "id": "e7", "source": "n-await", "target": "n-record", "sourceHandle": "out", "targetHandle": "in" },
+      { "id": "e8", "source": "n-record", "target": "n-update", "sourceHandle": "out", "targetHandle": "in" },
+      { "id": "e9", "source": "n-update", "target": "n-output", "sourceHandle": "out", "targetHandle": "in" }
+    ]
+  }
+}

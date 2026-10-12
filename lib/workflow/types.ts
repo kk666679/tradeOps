@@ -133,9 +133,11 @@ export interface WorkflowTrigger {
 
 /** The persisted, validated graph definition. */
 export interface WorkflowDefinition {
+  schemaVersion: number
   nodes: WorkflowNode[]
   edges: WorkflowEdge[]
   trigger: WorkflowTrigger
+  viewport?: { x: number; y: number; zoom: number }
   variables?: { key: string; type: 'text' | 'number' | 'boolean' | 'json'; default?: unknown }[]
 }
 

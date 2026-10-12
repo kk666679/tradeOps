@@ -1,0 +1,24 @@
+{
+  "id": "template.missing-document-escalation",
+  "name": "Missing-document escalation",
+  "description": "Watches for missing documents and escalates on deadline.",
+  "definition": {
+    "viewport": { "x": 0, "y": 0, "zoom": 0.8 },
+    "nodes": [
+      { "id": "n-trigger", "type": "trigger.document.uploaded", "position": { "x": 0, "y": 0 }, "config": {} },
+      { "id": "n-check", "type": "logic.document_missing", "position": { "x": 260, "y": 0 }, "config": { "documentTypes": [] } },
+      { "id": "n-request", "type": "action.request_documents", "position": { "x": 520, "y": -80 }, "config": { "documentTypes": [] } },
+      { "id": "n-wait", "type": "logic.wait_for_event", "position": { "x": 780, "y": -80 }, "config": { "eventKinds": ["document.uploaded"], "timeoutHours": 72 } },
+      { "id": "n-escalate", "type": "action.create_task", "position": { "x": 520, "y": 120 }, "config": { "title": "Escalate missing documents", "assigneeRole": "SENIOR_BROKER", "dueInHours": 4 } },
+      { "id": "n-done", "type": "output", "position": { "x": 780, "y": 0 }, "config": { "value": "nodes.n-check.output" } }
+    ],
+    "edges": [
+      { "id": "e1", "source": "n-trigger", "target": "n-check", "sourceHandle": "out", "targetHandle": "in" },
+      { "id": "e2", "source": "n-check", "target": "n-request", "sourceHandle": "true", "targetHandle": "in" },
+      { "id": "e3", "source": "n-check", "target": "n-done", "sourceHandle": "false", "targetHandle": "in" },
+      { "id": "e4", "source": "n-request", "target": "n-wait", "sourceHandle": "out", "targetHandle": "in" },
+      { "id": "e5", "source": "n-wait", "target": "n-escalate", "sourceHandle": "out", "targetHandle": "in" },
+      { "id": "e6", "source": "n-escalate", "target": "n-done", "sourceHandle": "out", "targetHandle": "in" }
+    ]
+  }
+}
