@@ -12,15 +12,13 @@
 // =============================================================================
 
 generator client {
-  provider        = "prisma-client"
-  output          = "../src/generated/prisma"
+  provider        = "prisma-client-js"
+  output          = "../node_modules/.prisma/client"
   previewFeatures = ["postgresqlExtensions"]
-  moduleFormat        = "cjs"
 }
 
 datasource db {
   provider   = "postgresql"
-  url        = env("DATABASE_URL")
   extensions = [pg_trgm, uuid_ossp(map: "uuid-ossp"), vector]
 }
 

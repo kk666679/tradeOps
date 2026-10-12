@@ -1,7 +1,7 @@
 // backend/src/workflow/handlers/submit-declaration.ts
 import { randomUUID } from "node:crypto";
 import type { PrismaClient } from "@prisma/client";
-import { resolveJkdmAdapter, getJkdmConfig } from "../../integrations/jkdm";
+import { resolveJkdmAdapter, getJkdmConfig } from "../../integration/jkdm";
 
 export interface SubmitDeclarationInput {
   tenantId: string;

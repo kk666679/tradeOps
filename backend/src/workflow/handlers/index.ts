@@ -1,5 +1,6 @@
-export { handleSubmitDeclaration } from "./submit-declaration";
-export { handleRecordCustomsResponse } from "./record-customs-response";
-export { handleRequestApproval } from "./request-approval";
-export { handlePrepareDeclaration } from "./prepare-declaration";
-export { handleCreateTask } from "./create-task";
+// backend/src/workflow/handlers/index.ts
+//
+// Brokerage handlers are deferred until the schema append for Shipment,
+// DeclarationEvent, BrokerageTask, and ApprovalRequest lands. See
+// src/workflow/handlers/_deferred/ for the implementations.
+export {};

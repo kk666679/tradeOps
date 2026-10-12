@@ -14,7 +14,7 @@
     "start:prod": "node dist/main",
     "mcp:launch": "node scripts/mcp-launcher.js",
     "mcp:launch:ts": "tsx scripts/mcp-launcher.ts",
-    "start:backend": "node dist/main",
+    "start:backend": "node --max-old-space-size=2048 dist/main",
     "start:mcp": "node scripts/mcp-launcher.js",
     "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js",
     "test:watch": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --watch",
@@ -76,6 +76,7 @@
     "concurrently": "^10.0.6",
     "globals": "^17.13.0",
     "jest": "^30.5.2",
+    "prisma": "7.10.0",
     "source-map-support": "^0.5.21",
     "supertest": "^7.3.1",
     "ts-jest": "^29.4.14",
@@ -121,7 +122,14 @@
     "unrs-resolver@1.12.2": true
   },
   "type": "commonjs",
-  "_moduleAliases": {
-    "@prisma/client": "dist/generated/prisma/client"
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@parcel/watcher",
+      "@prisma/client",
+      "@prisma/engines",
+      "esbuild",
+      "prisma",
+      "unrs-resolver"
+    ]
   }
 }

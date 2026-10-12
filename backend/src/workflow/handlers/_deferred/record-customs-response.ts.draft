@@ -1,5 +1,5 @@
 // backend/src/workflow/handlers/record-customs-response.ts
-import { resolveJkdmAdapter, getJkdmConfig } from "../../integrations/jkdm";
+import { resolveJkdmAdapter, getJkdmConfig } from "../../integration/jkdm";
 import type { PrismaClient } from "@prisma/client";
 
 export interface RecordCustomsResponseInput {
