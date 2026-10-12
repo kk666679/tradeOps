@@ -1,299 +1,261 @@
 'use client';
+
 import * as React from 'react';
 import Link from 'next/link';
-import { BrandLogo } from '@/components/branding/BrandLogo';
-import { ChevronDown, LayoutDashboard, Warehouse, ShoppingCart, Package, Globe, Zap, Cpu, Plug, Factory, Store, Bot, BookOpen, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
-import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
-import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
+import { NAV_SECTIONS, type NavItem, type NavSection } from './nav-config';
 
-interface NavLeaf { label: string; href: string }
-
-const GROUP_ICONS: Record<string, React.ElementType> = {
-  Operations: Package,
-  Zones: Globe,
-  Intelligence: Cpu,
-  Integrations: Plug,
-  Walkthroughs: BookOpen,
-};
-
-const ITEM_ICONS: Record<string, React.ElementType> = {
-  'Trade OPS': LayoutDashboard,
-  WMS: Warehouse,
-  'Order Mgmt': ShoppingCart,
-  FIZ: Factory,
-  FCZ: Store,
-  Bonded: Package,
-  'Bonded Workflow': Zap,
-  Dashboard: LayoutDashboard,
-  'Digital Twin': Cpu,
-  'Custom Agents': Bot,
-  Integrations: Plug,
-  'All Walkthroughs': BookOpen,
-  'Admin guide': BookOpen,
-  'Bonded guide': BookOpen,
-  'Cargo guide': BookOpen,
-  'Custom Agents guide': BookOpen,
-  'Digital Twin guide': BookOpen,
-  'FCZ guide': BookOpen,
-  'FIZ guide': BookOpen,
-  'Integration guide': BookOpen,
-  'Order Management guide': BookOpen,
-  'Search guide': BookOpen,
-  'Settings guide': BookOpen,
-  'Trade OPS guide': BookOpen,
-  'WMS guide': BookOpen,
-};
-
-const GROUPS: [string, [string, string][]][] = [
-  ['Operations', [['Trade OPS', '/trade-ops'], ['WMS', '/wms'], ['Order Mgmt', '/order-management']]],
-  ['Zones', [['FIZ', '/fiz'], ['FCZ', '/fcz'], ['Bonded', '/bonded'], ['Bonded Workflow', '/bonded-workflow']]],
-  ['Intelligence', [['Dashboard', '/dashboard'], ['Digital Twin', '/digital-twin'], ['Custom Agents', '/custom-agents']]],
-  ['Integrations', [['Integrations', '/integration']]],
-  ['Walkthroughs', [
-    ['All Walkthroughs', '/walkthrough'],
-    ['Admin guide', '/admin/walkthrough'],
-    ['Bonded guide', '/bonded/walkthrough'],
-    ['Cargo guide', '/cargo/walkthrough'],
-    ['Custom Agents guide', '/custom-agents/walkthrough'],
-    ['Digital Twin guide', '/digital-twin/walkthrough'],
-    ['FCZ guide', '/fcz/walkthrough'],
-    ['FIZ guide', '/fiz/walkthrough'],
-    ['Integration guide', '/integration/walkthrough'],
-    ['Order Management guide', '/order-management/walkthrough'],
-    ['Search guide', '/search/walkthrough'],
-    ['Settings guide', '/settings/walkthrough'],
-    ['Trade OPS guide', '/trade-ops/walkthrough'],
-    ['WMS guide', '/wms/walkthrough'],
-  ]],
-];
-
-// Per-feature sub-page dropdowns. Every href below maps to a real route under app/(app)/.
-const SUBPAGES: Record<string, NavLeaf[]> = {
-  'Trade OPS': [
-    { label: 'Overview', href: '/trade-ops' },
-    { label: 'Declarations', href: '/trade-ops/declarations' },
-    { label: 'Clearance', href: '/trade-ops/clearance' },
-    { label: 'Compliance', href: '/trade-ops/compliance' },
-    { label: 'HS Classification', href: '/trade-ops/hs-classification' },
-    { label: 'Duty Calculator', href: '/trade-ops/duty-calculator' },
-    { label: 'Permits & Licenses', href: '/trade-ops/permits' },
-    { label: 'Documents', href: '/trade-ops/documents' },
-    { label: 'Trade Finance', href: '/trade-ops/trade-finance' },
-    { label: 'Analytics', href: '/trade-ops/analytics' },
-  ],
-  WMS: [
-    { label: 'Overview', href: '/wms' },
-    { label: 'Gate', href: '/wms/gate' },
-    { label: 'Inbound', href: '/wms/inbound' },
-    { label: 'Inventory', href: '/wms/inventory' },
-    { label: 'Outbound', href: '/wms/outbound' },
-    { label: 'Movement', href: '/wms/movement' },
-    { label: 'Slotting', href: '/wms/slotting' },
-    { label: 'Bonded Ledger', href: '/wms/bonded' },
-    { label: 'Exemption', href: '/wms/exemption' },
-    { label: 'Forecasting', href: '/wms/forecasting' },
-    { label: 'Logistics', href: '/wms/logistics' },
-  ],
-  'Order Mgmt': [
-    { label: 'Overview', href: '/order-management' },
-    { label: 'Purchase', href: '/order-management/purchase' },
-    { label: 'Manufacturing', href: '/order-management/manufacturing' },
-    { label: 'Fulfilment', href: '/order-management/fulfilment' },
-    { label: 'Customs', href: '/order-management/customs' },
-    { label: 'Trading', href: '/order-management/trading' },
-    { label: 'Transhipment', href: '/order-management/transhipment' },
-    { label: 'Approvals', href: '/order-management/approvals' },
-    { label: 'Analytics', href: '/order-management/analytics' },
-  ],
-  FIZ: [
-    { label: 'Overview', href: '/fiz' },
-    { label: 'Raw Materials', href: '/fiz/raw-materials' },
-    { label: 'Machinery', href: '/fiz/machinery' },
-    { label: 'Production Inputs', href: '/fiz/production-inputs' },
-    { label: 'Finished Goods', href: '/fiz/finished-goods' },
-    { label: 'Wastage', href: '/fiz/wastage' },
-    { label: 'Subcontract', href: '/fiz/subcontract' },
-    { label: 'Operators', href: '/fiz/operators' },
-    { label: 'Approvals', href: '/fiz/approvals' },
-    { label: 'Analytics', href: '/fiz/analytics' },
-  ],
-  FCZ: [
-    { label: 'Overview', href: '/fcz' },
-    { label: 'Transhipment', href: '/fcz/transhipment' },
-    { label: 'Break-bulk', href: '/fcz/break-bulk' },
-    { label: 'Repackaging', href: '/fcz/repackaging' },
-    { label: 'Re-export', href: '/fcz/reexport' },
-    { label: 'Entrepot', href: '/fcz/entrepot' },
-    { label: 'Value-add', href: '/fcz/value-add' },
-    { label: 'Trading Houses', href: '/fcz/trading-houses' },
-    { label: 'Analytics', href: '/fcz/analytics' },
-  ],
-  Dashboard: [
-    { label: 'Overview', href: '/dashboard' },
-    { label: 'Operations', href: '/dashboard/operations' },
-    { label: 'Customs', href: '/dashboard/customs' },
-    { label: 'Agents', href: '/dashboard/agents' },
-    { label: 'Alerts', href: '/dashboard/alerts' },
-    { label: 'SLA', href: '/dashboard/sla' },
-  ],
-  'Digital Twin': [
-    { label: 'Overview', href: '/digital-twin' },
-    { label: 'Simulation', href: '/digital-twin/simulation' },
-    { label: 'Graph', href: '/digital-twin/graph' },
-    { label: 'Live', href: '/digital-twin/live' },
-    { label: 'Reasoning', href: '/digital-twin/reasoning' },
-    { label: 'Agents', href: '/digital-twin/agents' },
-    { label: 'Tasks', href: '/digital-twin/tasks' },
-    { label: 'Zones', href: '/digital-twin/zones' },
-    { label: 'Analytics', href: '/digital-twin/analytics' },
-  ],
-  'Custom Agents': [
-    { label: 'Overview', href: '/custom-agents' },
-    { label: 'Builder', href: '/custom-agents/builder' },
-    { label: 'Customs Agents', href: '/custom-agents/customs-agents' },
-    { label: 'Orchestration', href: '/custom-agents/orchestration' },
-    { label: 'Supervision', href: '/custom-agents/supervision' },
-    { label: 'Registry', href: '/custom-agents/registry' },
-    { label: 'Policy', href: '/custom-agents/policy' },
-    { label: 'Memory', href: '/custom-agents/memory' },
-    { label: 'Monitoring', href: '/custom-agents/monitoring' },
-    { label: 'Analytics', href: '/custom-agents/analytics' },
-    { label: 'Audit', href: '/custom-agents/audit' },
-    { label: 'AI', href: '/custom-agents/ai' },
-  ],
-  Integrations: [
-    { label: 'Overview', href: '/integration' },
-    { label: 'ERP', href: '/integration/erp' },
-    { label: 'WMS', href: '/integration/wms' },
-    { label: 'TMS', href: '/integration/tms' },
-    { label: 'EDI', href: '/integration/edi' },
-    { label: 'Customs', href: '/integration/customs' },
-    { label: 'Auth', href: '/integration/auth' },
-    { label: 'Webhook', href: '/integration/webhook' },
-    { label: 'Agent Mesh', href: '/integration/agent-mesh' },
-    { label: 'FIZ-FCZ', href: '/integration/fiz-fcz' },
-    { label: 'Health', href: '/integration/health' },
-  ],
-};
-
-interface SidebarProps {
-  isCollapsed?: boolean;
-  isMobileOpen?: boolean;
-}
-
-export function DashboardSidebar({ isCollapsed: isCollapsedProp, isMobileOpen = false }: SidebarProps) {
-  const pathname = usePathname();
-  // Internal collapse state so the built-in toggle works even when no prop is passed.
-  const [collapsedInternal, setCollapsedInternal] = React.useState(false);
-  const isCollapsed = isMobileOpen ? false : (isCollapsedProp ?? collapsedInternal);
-  const [openGroups, setOpenGroups] = React.useState<string[]>(['Operations']);
-  // Per-feature dropdown open state, keyed by feature label.
-  const [openFeatures, setOpenFeatures] = React.useState<string[]>([]);
-
-  const toggleGroup = (group: string) => {
-    setOpenGroups((prev) => (prev.includes(group) ? prev.filter((g) => g !== group) : [...prev, group]));
-  };
-
-  const toggleFeature = (label: string) => {
-    setOpenFeatures((prev) => (prev.includes(label) ? prev.filter((f) => f !== label) : [...prev, label]));
-  };
-
-  const isActive = (href: string) => pathname === href || (href !== '/dashboard' && pathname.startsWith(href + '/'));
-
-  // Auto-expand the group + feature that own the current route so deep links open in context.
-  React.useEffect(() => {
-    if (!pathname) return;
-    const activeFeature = GROUPS.flatMap(([g, items]) =>
-      items.map(([label, href]) => ({ group: g, label, href }))
-    ).find((f) => isActive(f.href));
-    if (!activeFeature) return;
-    setOpenGroups((prev) => (prev.includes(activeFeature.group) ? prev : [...prev, activeFeature.group]));
-    setOpenFeatures((prev) => (prev.includes(activeFeature.label) ? prev : [...prev, activeFeature.label]));
-  }, [pathname]);
-
+type IconProps = React.SVGProps<SVGSVGElement>;
+function I({ children, ...p }: IconProps & { children: React.ReactNode }) {
   return (
-    <aside className={cn(
-      'z-50 flex h-full shrink-0 flex-col border-r bg-background transition-[width,transform] duration-200 md:sticky md:top-0 md:z-20 md:h-dvh md:translate-x-0',
-      isMobileOpen ? 'fixed inset-y-0 left-0 w-72 shadow-xl md:relative md:shadow-none' : 'hidden md:flex',
-      isCollapsed ? 'md:w-16' : 'md:w-60',
-    )} id="dashboard-sidebar" aria-label="Application navigation">
-      <div className="p-3">
-        <Link href="/dashboard" className="flex items-center" aria-label="TradeOps Dashboard">
-          {!isCollapsed && <BrandLogo size="md" variant="full" />}
-          {isCollapsed && <BrandLogo size="md" variant="compact" />}
-        </Link>
-      </div>
-      <nav className="min-h-0 flex-1 space-y-2 overflow-y-auto p-2 text-sm" aria-label="Primary">
-        {GROUPS.map(([group, items]) => {
-          const GroupIcon = GROUP_ICONS[group];
-          const isOpen = openGroups.includes(group);
-
-          return (
-            <div key={group}>
-              {!isCollapsed && (
-                <Collapsible open={isOpen} onOpenChange={(open) => toggleGroup(group)}>
-                  <CollapsibleTrigger className="flex w-full items-center gap-2 px-2 py-1.5 text-xs uppercase text-muted-foreground hover:text-foreground transition-colors">
-                    <GroupIcon className="h-4 w-4 shrink-0" />
-                    <span className="truncate">{group}</span>
-                    <span className="ml-auto transition-transform duration-200" style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}>
-                      <ChevronDown className="h-3 w-3" />
-                    </span>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent className="overflow-hidden data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
-                    <div className="space-y-1 pt-1">
-                      {items.map(([label, href]) => {
-                        const ItemIcon = ITEM_ICONS[label];
-                        const active = isActive(href);
-                        return (
-                          <Link
-                            key={href}
-                            href={href}
-                            className={cn(
-                              'flex items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors',
-                              active ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
-                            )}
-                          >
-                            <ItemIcon className="h-4 w-4 shrink-0" />
-                            <span className="truncate">{label}</span>
-                          </Link>
-                        );
-                      })}
-                    </div>
-                  </CollapsibleContent>
-                </Collapsible>
-              )}
-              {isCollapsed && (
-                <div className="relative group">
-                  <button className="flex w-full items-center gap-2 px-2 py-1.5 rounded-md text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors" aria-label={group}>
-                    <GroupIcon className="h-4 w-4 shrink-0 mx-auto" />
-                  </button>
-                  <div className="absolute left-full top-0 ml-2 w-48 rounded-md border bg-popover p-1 shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                    {items.map(([label, href]) => {
-                      const ItemIcon = ITEM_ICONS[label];
-                      const active = isActive(href);
-                      return (
-                        <Link
-                          key={href}
-                          href={href}
-                          className={cn(
-                            'flex items-center gap-2 rounded px-2 py-1.5 text-sm transition-colors',
-                            active ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
-                          )}
-                        >
-                          <ItemIcon className="h-4 w-4 shrink-0" />
-                          <span>{label}</span>
-                        </Link>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </nav>
-    </aside>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75}
+         strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...p}>
+      {children}
+    </svg>
   );
 }
+
+const ICONS: Record<string, (p: IconProps) => React.ReactElement> = {
+  file:      (p) => <I {...p}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></I>,
+  warehouse: (p) => <I {...p}><path d="M2 20V9l10-5 10 5v11"/><path d="M6 20v-8h12v8"/></I>,
+  cart:      (p) => <I {...p}><circle cx="9" cy="20" r="2"/><circle cx="18" cy="20" r="2"/><path d="M3 3h2l2 12h12l2-8H6"/></I>,
+  globe:     (p) => <I {...p}><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20z"/></I>,
+  factory:   (p) => <I {...p}><path d="M3 21h18V10l-6 4V10l-6 4V10l-6 4z"/></I>,
+  container: (p) => <I {...p}><rect x="3" y="6" width="18" height="12" rx="1"/><path d="M7 6v12M12 6v12M17 6v12"/></I>,
+  cpu:       (p) => <I {...p}><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/></I>,
+  plug:      (p) => <I {...p}><path d="M12 22v-5M9 8V2M15 8V2M18 8v3a6 6 0 0 1-12 0V8z"/></I>,
+  building:  (p) => <I {...p}><path d="M3 21h18V7l-9-4-9 4v14z"/><path d="M9 21V11h6v10"/></I>,
+  users:     (p) => <I {...p}><circle cx="9" cy="8" r="3"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></I>,
+  shield:    (p) => <I {...p}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></I>,
+  card:      (p) => <I {...p}><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M2 10h20"/></I>,
+  clock:     (p) => <I {...p}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></I>,
+  book:      (p) => <I {...p}><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></I>,
+  chevron:   (p) => <I {...p}><path d="m6 9 6 6 6-6"/></I>,
+};
+
+function Icon({ name, className = 'h-4 w-4' }: { name?: string; className?: string }) {
+  const C = name ? ICONS[name] : null;
+  return C ? <C className={className} /> : null;
+}
+
+const STORAGE_KEY = 'tradeops.nav.open';
+
+function useOpen() {
+  const [open, setOpen] = React.useState<Set<string>>(new Set());
+  const ready = React.useRef(false);
+
+  React.useEffect(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) setOpen(new Set(JSON.parse(raw) as string[]));
+    } catch {}
+    ready.current = true;
+  }, []);
+
+  React.useEffect(() => {
+    if (!ready.current) return;
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify([...open])); } catch {}
+  }, [open]);
+
+  const toggle = React.useCallback((k: string) => {
+    setOpen((prev) => {
+      const next = new Set(prev);
+      next.has(k) ? next.delete(k) : next.add(k);
+      return next;
+    });
+  }, []);
+
+  const add = React.useCallback((keys: string[]) => {
+    setOpen((prev) => {
+      const next = new Set(prev);
+      keys.forEach((k) => next.add(k));
+      return next;
+    });
+  }, []);
+
+  return { open, toggle, add };
+}
+
+function ancestors(pathname: string, items: NavItem[], trail: string[] = []): string[] {
+  for (const item of items) {
+    const next = item.href ? [...trail, item.href] : trail;
+    if (item.href && (pathname === item.href || pathname.startsWith(item.href + '/'))) {
+      return next;
+    }
+    if (item.children) {
+      const deeper = ancestors(pathname, item.children, next);
+      if (deeper.length) return deeper;
+    }
+  }
+  return [];
+}
+
+function Row({
+  item, depth, pathname, open, toggle,
+}: {
+  item: NavItem; depth: number; pathname: string;
+  open: Set<string>; toggle: (k: string) => void;
+}) {
+  const key = item.href ?? item.label;
+  const hasKids = !!item.children?.length;
+  const isOpen = open.has(key);
+  const isActive =
+    item.href != null && (pathname === item.href || pathname.startsWith(item.href + '/'));
+  const childActive = hasKids
+    ? item.children!.some((c) =>
+        c.href != null && (pathname === c.href || pathname.startsWith(c.href + '/')),
+      )
+    : false;
+
+  return (
+    <li>
+      <div
+        className={[
+          'group flex items-center gap-1 rounded-md text-sm transition-colors',
+          isActive && !hasKids
+            ? 'bg-[var(--bg-subtle)] text-[var(--text)]'
+            : childActive
+              ? 'text-[var(--text)]'
+              : 'text-[var(--text-muted)] hover:bg-[var(--bg-subtle)] hover:text-[var(--text)]',
+        ].join(' ')}
+      >
+        {item.href ? (
+          <Link
+            href={item.href}
+            className="flex flex-1 items-center gap-2 py-1.5 pl-2 pr-1"
+            style={{ paddingLeft: 8 + depth * 12 }}
+          >
+            {depth === 0 && <Icon name={item.icon} />}
+            {depth > 0 && (
+              <span
+                aria-hidden
+                className="h-1 w-1 shrink-0 rounded-full bg-current opacity-40"
+              />
+            )}
+            <span className="truncate">{item.label}</span>
+          </Link>
+        ) : (
+          <button
+            type="button"
+            onClick={() => toggle(key)}
+            className="flex flex-1 items-center gap-2 py-1.5 pr-1 text-left"
+            style={{ paddingLeft: 8 + depth * 12 }}
+          >
+            {depth === 0 && <Icon name={item.icon} />}
+            <span className="truncate">{item.label}</span>
+          </button>
+        )}
+        {hasKids && (
+          <button
+            type="button"
+            aria-label={isOpen ? 'Collapse' : 'Expand'}
+            aria-expanded={isOpen}
+            onClick={() => toggle(key)}
+            className="mr-1 rounded p-1 hover:bg-[var(--bg-subtle)]"
+          >
+            <Icon
+              name="chevron"
+              className={'h-3 w-3 transition-transform ' + (isOpen ? '' : '-rotate-90')}
+            />
+          </button>
+        )}
+      </div>
+      {hasKids && isOpen && (
+        <ul className="mt-0.5 space-y-0.5">
+          {item.children!.map((c) => (
+            <Row
+              key={c.href ?? c.label}
+              item={c}
+              depth={depth + 1}
+              pathname={pathname}
+              open={open}
+              toggle={toggle}
+            />
+          ))}
+        </ul>
+      )}
+    </li>
+  );
+}
+
+function Group({
+  section, pathname, open, toggle,
+}: {
+  section: NavSection; pathname: string;
+  open: Set<string>; toggle: (k: string) => void;
+}) {
+  const key = `__section__:${section.label}`;
+  const isOpen = open.has(key);
+  return (
+    <div className="px-2 py-1.5">
+      <button
+        type="button"
+        onClick={() => toggle(key)}
+        aria-expanded={isOpen}
+        className="flex w-full items-center justify-between rounded-md px-2 py-1.5 text-[11px] font-medium uppercase tracking-wider text-[var(--text-muted)] hover:bg-[var(--bg-subtle)]"
+      >
+        <span>{section.label}</span>
+        <Icon
+          name="chevron"
+          className={'h-3 w-3 transition-transform ' + (isOpen ? '' : '-rotate-90')}
+        />
+      </button>
+      {isOpen && (
+        <ul className="mt-1 space-y-0.5">
+          {section.items.map((item) => (
+            <Row
+              key={item.href ?? item.label}
+              item={item}
+              depth={0}
+              pathname={pathname}
+              open={open}
+              toggle={toggle}
+            />
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+export function DashboardSidebar() {
+  const pathname = usePathname() ?? '';
+  const { open, toggle, add } = useOpen();
+
+  React.useEffect(() => {
+    if (!pathname) return;
+    const flat = NAV_SECTIONS.flatMap((s) => s.items);
+    const trail = ancestors(pathname, flat);
+    const section = NAV_SECTIONS.find((s) =>
+      s.items.some(
+        (i) =>
+          (i.href && (pathname === i.href || pathname.startsWith(i.href + '/'))) ||
+          i.children?.some(
+            (c) => c.href && (pathname === c.href || pathname.startsWith(c.href + '/')),
+          ),
+      ),
+    );
+    add([
+      ...trail,
+      ...(section ? [`__section__:${section.label}`] : []),
+    ]);
+  }, [pathname, add]);
+
+  return (
+    <nav aria-label="Primary" className="flex h-full flex-col overflow-y-auto">
+      <div className="flex-1 py-2">
+        {NAV_SECTIONS.map((section) => (
+          <Group
+            key={section.label}
+            section={section}
+            pathname={pathname}
+            open={open}
+            toggle={toggle}
+          />
+        ))}
+      </div>
+    </nav>
+  );
+}
+
 export default DashboardSidebar;
