@@ -1,5 +1,0 @@
-# pnpm build-script approval (pnpm 11+ / 12).
-# esbuild ships its native binary via a postinstall script; it must be allowed
-# to build or tsx/esbuild-based tooling crashes. Value must be a real boolean.
-allowBuilds:
-  esbuild: true
