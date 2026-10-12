@@ -100,5 +100,8 @@
     "protobufjs@6.11.6": true,
     "sharp@0.32.6": true,
     "@prisma/engines@7.10.0": true
+  },
+  "engines": {
+    "node": "^20.19 || ^22.12 || >=24.0"
   }
 }

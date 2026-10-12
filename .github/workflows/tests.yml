@@ -58,7 +58,7 @@ jobs:
       - name: Setup Node env (root + backend)
         uses: ./.github/actions/setup-node-env@main
         with:
-          node-version: '20.18.1'
+          node-version-file: '.nvmrc'
           enable-backend: true
 
       - name: Prisma migrate + generate
@@ -101,7 +101,7 @@ jobs:
       - name: Setup Node env
         uses: ./.github/actions/setup-node-env@main
         with:
-          node-version: '20.18.1'
+          node-version-file: '.nvmrc'
 
       - name: Run tariff validation suite
         run: node -e "
