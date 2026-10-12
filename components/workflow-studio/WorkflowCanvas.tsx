@@ -25,12 +25,16 @@ export function WorkflowCanvas() {
   const guides = useStudio((s) => s.guides);
   const edgeStyle = useStudio((s) => s.edgeStyle);
   const spaceDown = useStudio((s) => s.spaceDown);
-  const banner = useStudio((s) => {
-    if (s.mode === 'development') return { cls: 'dev', text: '⚠ DEVELOPMENT SIMULATION — NOT CONNECTED TO JKDM' };
-    if (s.mode === 'production' && !(s.prodEnabled && s.transport)) return { cls: 'block', text: '⚠ PRODUCTION INTEGRATION UNAVAILABLE — MANUAL PROCESSING REQUIRED' };
-    if (s.mode === 'production') return { cls: 'block', text: '⚠ LIVE CONNECTION NOT PROBED — DO NOT TREAT AS CONNECTED' };
+  const mode = useStudio((s) => s.mode);
+  const prodEnabled = useStudio((s) => s.prodEnabled);
+  const transport = useStudio((s) => s.transport);
+
+  const banner = useMemo(() => {
+    if (mode === 'development') return { cls: 'dev', text: '⚠ DEVELOPMENT SIMULATION — NOT CONNECTED TO JKDM' };
+    if (mode === 'production' && !(prodEnabled && transport)) return { cls: 'block', text: '⚠ PRODUCTION INTEGRATION UNAVAILABLE — MANUAL PROCESSING REQUIRED' };
+    if (mode === 'production') return { cls: 'block', text: '⚠ LIVE CONNECTION NOT PROBED — DO NOT TREAT AS CONNECTED' };
     return null;
-  });
+  }, [mode, prodEnabled, transport]);
 
   const { onWheel, onCanvasMouseDown, onNodeMouseDown, onStartLink, onPortEnter, onPortLeave,
           onCanvasDragOver, onCanvasDrop } = useStudioInteractions(canvasRef);

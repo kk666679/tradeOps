@@ -1,15 +1,12 @@
-import * as React from 'react';
-import type { Metadata } from 'next';
-import { PageHeader } from '@/components/dashboard/page/PageHeader';
-import { AgentBuilderWizard } from '@/components/custom-agents/builder';
+import AgentBuilderWizard, {
+  type AgentBuilderWizardValues,
+} from '@/components/custom-agents/builder/AgentBuilderWizard';
 
-export const metadata: Metadata = { title: 'New' };
+export default function NewAgentBuilderPage() {
+  const handleSubmit = async (values: AgentBuilderWizardValues) => {
+    // TODO: persist / navigate / call API
+    console.log('submitted', values);
+  };
 
-export default function Page() {
-  return (
-    <div className="space-y-6">
-      <PageHeader title="New" description="Route: /custom-agents/builder/new" />
-      <AgentBuilderWizard onSubmit={() => undefined} />
-    </div>
-  );
+  return <AgentBuilderWizard onSubmit={handleSubmit} />;
 }
