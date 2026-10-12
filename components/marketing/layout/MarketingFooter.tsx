@@ -20,9 +20,8 @@ const COLS: { title: string; links: [string, string][] }[] = [
   ]},
   { title: 'Resources', links: [
     ['API docs', '/api-docs'],
-    ['API', '/api-docs'],
     ['Changelog', '/changelog'],
-    ['Newsletter', '/newletters'],
+    ['Newsletter', '/newsletters'],
     ['Customers', '/customers'],
   ]},
   { title: 'Company', links: [
@@ -45,6 +44,7 @@ export function MarketingFooter() {
     <footer className="border-t bg-muted">
       <div className="mx-auto max-w-7xl px-4 py-12">
         <div className="grid gap-8 md:grid-cols-[1.4fr_repeat(5,1fr)]">
+          {/* Brand column — logo + description left-aligned, newsletter centered */}
           <div>
             <Link href="/" className="flex items-center" aria-label="TradeOps Home">
               <BrandLogo size="md" variant="full" />
@@ -53,29 +53,48 @@ export function MarketingFooter() {
               AI-native CFS platform for Free Industrial Zones and Free Commercial Zones.
               Trade OPS · WMS · Orders · Digital twin · Customs agents.
             </p>
-            <form className="mt-4 flex gap-2" aria-label="Newsletter">
+
+            {/* Newsletter form — centered within the column */}
+            <form
+              className="mx-auto mt-4 flex w-full max-w-sm gap-2"
+              aria-label="Newsletter"
+            >
               <input
                 type="email"
                 placeholder="Work email"
                 className="min-w-0 flex-1 rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground"
                 aria-label="Work email"
               />
-              <button className="rounded-md bg-foreground px-3 py-2 text-sm font-medium text-background">Join</button>
+              <button
+                type="submit"
+                className="rounded-md bg-foreground px-3 py-2 text-sm font-medium text-background"
+              >
+                Join
+              </button>
             </form>
           </div>
+
           {COLS.map((col) => (
             <div key={col.title}>
-              <div className="text-xs uppercase tracking-wide text-muted-foreground">{col.title}</div>
+              <div className="text-xs uppercase tracking-wide text-muted-foreground">
+                {col.title}
+              </div>
               <ul className="mt-2 space-y-1 text-sm">
                 {col.links.map(([label, href]) => (
                   <li key={href}>
-                    <Link className="text-muted-foreground transition hover:text-foreground" href={href}>{label}</Link>
+                    <Link
+                      className="text-muted-foreground transition hover:text-foreground"
+                      href={href}
+                    >
+                      {label}
+                    </Link>
                   </li>
                 ))}
               </ul>
             </div>
           ))}
         </div>
+
         <div className="mt-10 flex flex-col items-start justify-between gap-2 border-t pt-4 text-xs text-muted-foreground md:flex-row md:items-center">
           <span>© {year} TradeOps. 📧 kk@kurnia-kadir.xyz  All rights reserved.</span>
           <span className="flex gap-4">
@@ -89,4 +108,5 @@ export function MarketingFooter() {
     </footer>
   );
 }
+
 export default MarketingFooter;

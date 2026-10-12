@@ -10,6 +10,7 @@ const LINKS: [string, string][] = [
   ['Workflow', MARKETING_ROUTES.workflow],
   ['FIZ', '/solutions/fiz'],
   ['FCZ', '/solutions/fcz'],
+  ['Studio', '/brokerage/workflow-studio'],
   ['Pricing', MARKETING_ROUTES.pricing],
   ['API docs', MARKETING_ROUTES.apiDocs],
   ['Customers', MARKETING_ROUTES.customers],
