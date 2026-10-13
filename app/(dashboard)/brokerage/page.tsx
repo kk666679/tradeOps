@@ -3,8 +3,8 @@ import {
   SAMPLE_ACCREDITATION,
   SAMPLE_CLIENT,
   SAMPLE_DECLARATION,
-} from "@/components/brokerage/workflow/brokerageWorkflowGraph";
-import { RegulatoryHealthPanel } from "@/components/brokerage/workflow/RegulatoryHealthPanel";
+} from "@/components/workflow-studio/brokerage/workflow/brokerageWorkflowGraph";
+import { RegulatoryHealthPanel } from "@/components/workflow-studio/brokerage/workflow/RegulatoryHealthPanel";
 import { BrokerageHeader } from "./_components";
 
 export const dynamic = "force-dynamic";

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import type { BrokerClient } from "@/components/brokerage/types";
+import type { BrokerClient } from "@/components/workflow-studio/brokerage/types";
 import {
   BrokerageHeader,
   BrokerageBreadcrumbs,

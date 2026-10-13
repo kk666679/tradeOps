@@ -1,6 +1,6 @@
-import { SAMPLE_ACCREDITATION } from "@/components/brokerage/workflow/brokerageWorkflowGraph";
-import { Section90Checklist } from "@/components/brokerage/workflow/Section90Checklist";
-import { RegulatoryHealthPanel } from "@/components/brokerage/workflow/RegulatoryHealthPanel";
+import { SAMPLE_ACCREDITATION } from "@/components/workflow-studio/brokerage/workflow/brokerageWorkflowGraph";
+import { Section90Checklist } from "@/components/workflow-studio/brokerage/workflow/Section90Checklist";
+import { RegulatoryHealthPanel } from "@/components/workflow-studio/brokerage/workflow/RegulatoryHealthPanel";
 import { BrokerageHeader, BrokerageBreadcrumbs } from "../../_components";
 
 export const metadata = {

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { BrokerClient } from "@/components/brokerage/types";
+import type { BrokerClient } from "@/components/workflow-studio/brokerage/types";
 import { BrokerageHeader, BrokerageBreadcrumbs } from "../_components";
 
 export const metadata = {

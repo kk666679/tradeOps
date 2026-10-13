@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { BorangCTrace } from "@/components/brokerage/workflow/BorangCTrace";
+import { BorangCTrace } from "@/components/workflow-studio/brokerage/workflow/BorangCTrace";
 import {
   SAMPLE_ACCREDITATION,
-} from "@/components/brokerage/workflow/brokerageWorkflowGraph";
-import type { Declaration } from "@/components/brokerage/types";
+} from "@/components/workflow-studio/brokerage/workflow/brokerageWorkflowGraph";
+import type { Declaration } from "@/components/workflow-studio/brokerage/types";
 import {
   BrokerageHeader,
   BrokerageBreadcrumbs,

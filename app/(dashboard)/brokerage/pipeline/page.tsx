@@ -1,5 +1,5 @@
-import { BrokeragePipeline } from "@/components/brokerage/pipeline";
-import type { Declaration } from "@/components/brokerage/types";
+import { BrokeragePipeline } from "@/components/workflow-studio/brokerage/pipeline";
+import type { Declaration } from "@/components/workflow-studio/brokerage/types";
 import { BrokerageHeader, BrokerageBreadcrumbs } from "../_components";
 
 export const metadata = {
