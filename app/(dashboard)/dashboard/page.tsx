@@ -460,9 +460,9 @@ function Section({
 function PageHeader() {
   return (
     <header className="border-b border-border/60 bg-background">
-      <div className="mx-auto flex max-w-7xl flex-col gap-5 px-4 py-5 sm:gap-4 sm:py-6 lg:flex-row lg:items-center lg:justify-between lg:px-6">
+      <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-6 lg:flex-row lg:items-center lg:justify-between lg:px-6">
         <div>
-<div className="grid w-full grid-cols-1 gap-2 sm:flex sm:w-auto sm:flex-wrap sm:items-center">
+          <div className="flex flex-wrap items-center gap-2">
             <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
             <span className="rounded-full border border-border/60 bg-muted/40 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
               live
@@ -476,21 +476,21 @@ function PageHeader() {
         <div className="flex flex-wrap items-center gap-2">
           <Link
             href="/trade-ops/declarations/new"
-            className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-lg bg-foreground px-3.5 py-2 text-sm font-medium text-background transition-opacity hover:opacity-90 sm:min-h-10"
+            className="inline-flex items-center gap-1.5 rounded-lg bg-foreground px-3.5 py-2 text-sm font-medium text-background transition-opacity hover:opacity-90"
           >
             <Icon.File className="h-4 w-4" />
             New declaration
           </Link>
           <Link
             href="/cargo/new"
-            className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-lg border border-border/60 px-3.5 py-2 text-sm font-medium transition-colors hover:bg-muted sm:min-h-10"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-border/60 px-3.5 py-2 text-sm font-medium transition-colors hover:bg-muted"
           >
             <Icon.Container className="h-4 w-4" />
             New cargo
           </Link>
           <Link
             href="/order-management/purchase/new"
-            className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-lg border border-border/60 px-3.5 py-2 text-sm font-medium transition-colors hover:bg-muted sm:min-h-10"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-border/60 px-3.5 py-2 text-sm font-medium transition-colors hover:bg-muted"
           >
             <Icon.Truck className="h-4 w-4" />
             New order
@@ -520,7 +520,7 @@ function SampleDataBanner() {
 
 function KpiStrip() {
   return (
-    <div className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
+    <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
       {KPIS.map((kpi) => {
         const KIcon = Icon[kpi.icon];
         const TrendIcon = kpi.trend?.direction === 'down' ? Icon.ArrowDown : Icon.ArrowUp;
@@ -610,7 +610,7 @@ function OpsTable({ title, rows, href, cta }: { title: string; rows: readonly Op
           <li key={row.id}>
             <Link
               href={row.href}
-              className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-3 transition-colors hover:bg-muted/40 sm:px-5"
+              className="flex items-center justify-between gap-4 px-5 py-3 transition-colors hover:bg-muted/40"
             >
               <span className="text-sm text-foreground/90">{row.label}</span>
               <span className="flex items-center gap-3">
@@ -642,7 +642,7 @@ function AgentsCard() {
             <li key={row.id}>
               <Link
                 href={row.href}
-                className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 px-4 py-3 transition-colors hover:bg-muted/40 sm:px-5"
+                className="flex items-center justify-between gap-3 px-5 py-3 transition-colors hover:bg-muted/40"
               >
                 <span className="text-sm text-foreground/90">{row.label}</span>
                 <span className="flex items-center gap-3">
@@ -672,7 +672,7 @@ function ActivityCard() {
           <li key={entry.id}>
             <Link
               href={entry.href}
-              className="flex items-start gap-3 px-4 py-3 transition-colors hover:bg-muted/40 sm:px-5"
+              className="flex items-start gap-3 px-5 py-3 transition-colors hover:bg-muted/40"
             >
               <span
                 className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${ACTIVITY_TONE_STYLES[entry.tone]}`}
@@ -764,7 +764,7 @@ export default function Page() {
       <PageHeader />
       <SampleDataBanner />
 
-      <main className="mx-auto max-w-7xl space-y-8 px-4 py-6 sm:space-y-10 sm:py-8 lg:px-6">
+      <main className="mx-auto max-w-7xl space-y-10 px-4 py-8 lg:px-6">
         <KpiStrip />
 
         <AttentionRequired />

@@ -16,37 +16,23 @@ export function BondedLedgerEventInspector() {
   const [chain, setChain] = React.useState<BondedLedgerEvent[]>([])
 
   React.useEffect(() => {
-    let cancelled = false
-
-    async function buildChain() {
-      let prevHash = "genesis"
-      const events: BondedLedgerEvent[] = []
-
-      for (const step of WORKFLOW_STEPS) {
-        const event = await buildLedgerEvent(step, {
-          eventId: `evt_${step.id}`,
-          timestamp: new Date().toISOString(),
-          actor: "system",
-          refs: [`PO-${step.step}`, `ASN-${step.step}`, `DECL-${step.step}`],
-          qty: step.step === 1 || step.step === 3 ? 100 : undefined,
-          uom: step.step === 1 || step.step === 3 ? "PCS" : undefined,
-          value: step.step === 1 || step.step === 5 ? 5000 : undefined,
-          prevHash,
-        })
-        events.push(event)
-        prevHash = event.hash
-      }
-
-      if (!cancelled) {
-        setChain(events)
-      }
+    let prevHash = "genesis"
+    const events: BondedLedgerEvent[] = []
+    for (const step of WORKFLOW_STEPS) {
+      const event = buildLedgerEvent(step, {
+        eventId: `evt_${step.id}`,
+        timestamp: new Date().toISOString(),
+        actor: "system",
+        refs: [`PO-${step.step}`, `ASN-${step.step}`, `DECL-${step.step}`],
+        qty: step.step === 1 || step.step === 3 ? 100 : undefined,
+        uom: step.step === 1 || step.step === 3 ? "PCS" : undefined,
+        value: step.step === 1 || step.step === 5 ? 5000 : undefined,
+        prevHash,
+      })
+      events.push(event)
+      prevHash = event.hash
     }
-
-    void buildChain()
-
-    return () => {
-      cancelled = true
-    }
+    setChain(events)
   }, [])
 
   return (

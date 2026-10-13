@@ -22,7 +22,7 @@ export function BrokerageNav() {
   return (
     <nav
       aria-label="Brokerage module navigation"
-      className="sticky top-0 z-20 flex min-h-12 items-center gap-1 overflow-x-auto overscroll-x-contain border-b border-[var(--border-subtle)] bg-[var(--bg-elev)]/95 px-3 py-2 backdrop-blur supports-[backdrop-filter]:bg-[var(--bg-elev)]/80 sm:px-4"
+      className="flex items-center gap-1 overflow-x-auto border-b border-[var(--border-subtle)] bg-[var(--bg-elev)] px-4 py-1.5"
     >
       {NAV_ITEMS.map((item) => {
         const active = item.exact

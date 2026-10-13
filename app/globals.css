@@ -636,19 +636,8 @@
   animation: var(--animate-shimmer);
 }
 
-  /* ---- Responsive primitives ---------------------------------------------- */
-  @utility touch-target {
-    min-width: 2.75rem;
-    min-height: 2.75rem;
-  }
-
-  @utility safe-inline {
-    padding-inline: max(1rem, env(safe-area-inset-left));
-    padding-right: max(1rem, env(safe-area-inset-right));
-  }
-
-  /* ---- Scroll behaviours --------------------------------------------------- */
-  @utility no-scrollbar {
+/* ---- Scroll behaviours --------------------------------------------------- */
+@utility no-scrollbar {
   scrollbar-width: none;
   &::-webkit-scrollbar {
     display: none;

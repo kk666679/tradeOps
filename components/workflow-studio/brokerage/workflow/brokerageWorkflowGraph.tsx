@@ -4,6 +4,8 @@ import { useQuery } from '@tanstack/react-query';
 import { trpc } from '@/lib/trpc/client';
 import type { Accreditation, BrokerageWorkflow } from '@/components/workflow-studio/brokerage/types';
 import { Nodes, Edges, useReactFlow, Connection, Edge, Node, addEdge } from '@xyflow/react';
+import { AccreditationStatusBadge } from '@/components/trade-ops/brokerage/AccreditationStatusBadge';
+
 const DEFAULT_NODES: Nodes = [];
 const DEFAULT_EDGES: Edges = [];
 
@@ -88,7 +90,7 @@ function ReactFlow() {
 }
 
 import { Background, Controls, MiniMap } from '@xyflow/react';
-import { ReactFlow as ReactFlowCanvas } from '@xyflow/react';
+import { ReactFlow, Background as ReactFlowBackground, Controls as ReactFlowControls, MiniMap as ReactFlowMiniMap } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
 const AccreditationStatusBadge = ({ accreditation }: { accreditation: Accreditation }) => {
