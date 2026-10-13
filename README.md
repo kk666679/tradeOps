@@ -1,7 +1,7 @@
 # TRADE OPS
 
 <div align="center">
-  <img src="./public/TradeOps-logo.png" alt="TradeOps Container Freight System" width="600"/>
+  <img src="./TradeOps-Logo.png" alt="TradeOps Container Freight System" width="600"/>
 </div>
 
 **A multi-tenant warehouse and customs platform for Container Freight Stations, Free Industrial Zones, and Free Commercial Zones.**
