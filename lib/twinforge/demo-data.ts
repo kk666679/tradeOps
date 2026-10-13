@@ -70,3 +70,6 @@ export const DEMO_TENANT_ONBOARDING: TenantOnboardingStage[] = [
   { stage: 'deploy',     label: 'Twin core deployment',     daysElapsed: 0,  daysBudget: 14,  status: 'pending' },
   { stage: 'operate',    label: 'Twin Operations Centre handover', daysElapsed: 0, daysBudget: 7, status: 'pending' },
 ];
+
+// Auto-added stub to satisfy @/app/(dashboard)/twinforge/labs/page.tsx
+export const DEMO_LABS = [] as const;
