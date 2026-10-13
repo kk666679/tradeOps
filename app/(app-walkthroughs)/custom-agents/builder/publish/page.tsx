@@ -9,7 +9,7 @@ export default function Page() {
   return (
     <div className="space-y-6">
       <PageHeader title="Publish" description="Route: /custom-agents/builder/publish" />
-      <AgentPublishPanel onSubmit={() => undefined} />
+      <AgentPublishPanel />
     </div>
   );
 }

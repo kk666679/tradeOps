@@ -14,7 +14,7 @@ export type JurisdictionSelectorValues = Record<string, unknown>;
 export interface JurisdictionSelectorProps {
   initial?: JurisdictionSelectorValues;
   submitting?: boolean;
-  onSubmit: (v: JurisdictionSelectorValues) => void | Promise<void>;
+  onSubmit?: (v: JurisdictionSelectorValues) => void | Promise<void>;
   onCancel?: () => void;
 }
 
@@ -22,7 +22,7 @@ export function JurisdictionSelector({ initial = {}, submitting, onSubmit, onCan
   const [values, setValues] = React.useState<JurisdictionSelectorValues>(initial);
   const set = (k: string) => (e: React.ChangeEvent<HTMLInputElement>) => setValues((v) => ({ ...v, [k]: e.target.value }));
   return (
-    <form className="space-y-4 p-4" onSubmit={(e) => { e.preventDefault(); void onSubmit(values); }}>
+    <form className="space-y-4 p-4" onSubmit={(e) => { e.preventDefault(); void onSubmit?.(values); }}>
       <div className="space-y-1">
         <Label htmlFor="ref">Reference</Label>
         <Input id="ref" value={String(values.ref ?? '')} onChange={set('ref')} />

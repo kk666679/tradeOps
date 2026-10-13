@@ -14,7 +14,7 @@ export type AgentScheduleEditorValues = Record<string, unknown>;
 export interface AgentScheduleEditorProps {
   initial?: AgentScheduleEditorValues;
   submitting?: boolean;
-  onSubmit: (v: AgentScheduleEditorValues) => void | Promise<void>;
+  onSubmit?: (v: AgentScheduleEditorValues) => void | Promise<void>;
   onCancel?: () => void;
 }
 
@@ -22,7 +22,7 @@ export function AgentScheduleEditor({ initial = {}, submitting, onSubmit, onCanc
   const [values, setValues] = React.useState<AgentScheduleEditorValues>(initial);
   const set = (k: string) => (e: React.ChangeEvent<HTMLInputElement>) => setValues((v) => ({ ...v, [k]: e.target.value }));
   return (
-    <form className="space-y-4 p-4" onSubmit={(e) => { e.preventDefault(); void onSubmit(values); }}>
+    <form className="space-y-4 p-4" onSubmit={(e) => { e.preventDefault(); void onSubmit?.(values); }}>
       <div className="space-y-1">
         <Label htmlFor="ref">Reference</Label>
         <Input id="ref" value={String(values.ref ?? '')} onChange={set('ref')} />

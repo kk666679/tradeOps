@@ -14,7 +14,7 @@ export type AgentGuardrailEditorValues = Record<string, unknown>;
 export interface AgentGuardrailEditorProps {
   initial?: AgentGuardrailEditorValues;
   submitting?: boolean;
-  onSubmit: (v: AgentGuardrailEditorValues) => void | Promise<void>;
+  onSubmit?: (v: AgentGuardrailEditorValues) => void | Promise<void>;
   onCancel?: () => void;
 }
 
@@ -22,7 +22,7 @@ export function AgentGuardrailEditor({ initial = {}, submitting, onSubmit, onCan
   const [values, setValues] = React.useState<AgentGuardrailEditorValues>(initial);
   const set = (k: string) => (e: React.ChangeEvent<HTMLInputElement>) => setValues((v) => ({ ...v, [k]: e.target.value }));
   return (
-    <form className="space-y-4 p-4" onSubmit={(e) => { e.preventDefault(); void onSubmit(values); }}>
+    <form className="space-y-4 p-4" onSubmit={(e) => { e.preventDefault(); void onSubmit?.(values); }}>
       <div className="space-y-1">
         <Label htmlFor="ref">Reference</Label>
         <Input id="ref" value={String(values.ref ?? '')} onChange={set('ref')} />

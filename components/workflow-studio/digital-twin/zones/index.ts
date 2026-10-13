@@ -1,6 +1,5 @@
-// components/digital-twin/zones barrel
-export * from './TwinBondedLayer';
-export * from './TwinFczLayer';
-export * from './TwinFizLayer';
-export * from './TwinGateLayer';
-export * from './TwinMovementLayer';
+export { TwinBondedLayer, LayerHeader, StatusPill, EmptyLayer } from './TwinBondedLayer';
+export { TwinGateLayer } from './TwinGateLayer';
+export { TwinFizLayer } from './TwinFizLayer';
+export { TwinFczLayer } from './TwinFczLayer';
+export { TwinMovementLayer } from './TwinMovementLayer';

@@ -14,7 +14,7 @@ export type AgentKnowledgeBinderValues = Record<string, unknown>;
 export interface AgentKnowledgeBinderProps {
   initial?: AgentKnowledgeBinderValues;
   submitting?: boolean;
-  onSubmit: (v: AgentKnowledgeBinderValues) => void | Promise<void>;
+  onSubmit?: (v: AgentKnowledgeBinderValues) => void | Promise<void>;
   onCancel?: () => void;
 }
 
@@ -22,7 +22,7 @@ export function AgentKnowledgeBinder({ initial = {}, submitting, onSubmit, onCan
   const [values, setValues] = React.useState<AgentKnowledgeBinderValues>(initial);
   const set = (k: string) => (e: React.ChangeEvent<HTMLInputElement>) => setValues((v) => ({ ...v, [k]: e.target.value }));
   return (
-    <form className="space-y-4 p-4" onSubmit={(e) => { e.preventDefault(); void onSubmit(values); }}>
+    <form className="space-y-4 p-4" onSubmit={(e) => { e.preventDefault(); void onSubmit?.(values); }}>
       <div className="space-y-1">
         <Label htmlFor="ref">Reference</Label>
         <Input id="ref" value={String(values.ref ?? '')} onChange={set('ref')} />

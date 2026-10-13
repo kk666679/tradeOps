@@ -2,9 +2,9 @@ import * as React from 'react';
 import type { Metadata } from 'next';
 import { PageHeader } from '@/components/dashboard/page/PageHeader';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { TwinAgentHandoffView } from '@/components/digital-twin/agents/TwinAgentHandoffView';
-import { TwinAgentInspector } from '@/components/digital-twin/agents/TwinAgentInspector';
-import { TwinAgentRunTimeline } from '@/components/digital-twin/agents/TwinAgentRunTimeline';
+import { TwinAgentHandoffView } from '@/components/workflow-studio/digital-twin/agents/TwinAgentHandoffView';
+import { TwinAgentInspector } from '@/components/workflow-studio/digital-twin/agents/TwinAgentInspector';
+import { TwinAgentRunTimeline } from '@/components/workflow-studio/digital-twin/agents/TwinAgentRunTimeline';
 
 interface PageProps {
   params: Promise<{ runId: string }>;

@@ -9,7 +9,7 @@ export default function Page() {
   return (
     <div className="space-y-6">
       <PageHeader title="Jurisdiction" description="Route: /custom-agents/policy/jurisdiction" />
-      <JurisdictionSelector onSubmit={() => undefined} />
+      <JurisdictionSelector />
     </div>
   );
 }

@@ -1,25 +1,63 @@
 'use client';
-import * as React from 'react';
-export interface TwinFczLayerNode { id: string; label: string; x?: number; y?: number; zone?: 'FIZ' | 'FCZ' | 'BONDED'; }
-export interface TwinFczLayerProps { nodes?: TwinFczLayerNode[]; edges?: { from: string; to: string }[]; className?: string; }
-export function TwinFczLayer({ nodes = [], edges = [], className }: TwinFczLayerProps) {
-  const tint = (z?: string) => z === 'FIZ' ? 'bg-sky-50 border-sky-200' : z === 'FCZ' ? 'bg-amber-50 border-amber-200' : z === 'BONDED' ? 'bg-violet-50 border-violet-200' : 'bg-background';
+
+import { useMemo } from 'react';
+import { useDigitalTwinStore } from '../store/useDigitalTwinStore';
+import { LayerHeader, StatusPill, EmptyLayer } from './TwinBondedLayer';
+
+export function TwinFczLayer({ zoneId }: { zoneId: string }) {
+  const nodes = useDigitalTwinStore((s) => s.nodes);
+  const selectNode = useDigitalTwinStore((s) => s.selectNode);
+
+  const fczNodes = useMemo(
+    () => nodes.filter((n) => {
+      const t = String(n.data.meta?.semanticType ?? '');
+      return t.includes('Fcz') ||
+        /transhipment|reexport|re-export|break-bulk|entrepot|value-add/i.test(n.data.label);
+    }),
+    [nodes],
+  );
+
+  if (fczNodes.length === 0) {
+    return <EmptyLayer title="FCZ Commercial" message="No commercial flows mapped." zoneId={zoneId} />;
+  }
+
   return (
-    <div className={className ?? 'relative h-[420px] w-full overflow-hidden rounded border bg-muted/30'}>
-      <svg className="absolute inset-0 h-full w-full" aria-hidden>
-        {edges.map((e, i) => {
-          const a = nodes.find((n) => n.id === e.from);
-          const b = nodes.find((n) => n.id === e.to);
-          if (!a || !b) return null;
-          return <line key={i} x1={a.x ?? 0} y1={a.y ?? 0} x2={b.x ?? 0} y2={b.y ?? 0} stroke="currentColor" strokeOpacity={0.3} />;
+    <section className="space-y-2" aria-label="FCZ commercial layer">
+      <LayerHeader
+        title="FCZ Commercial Layer"
+        count={fczNodes.length}
+        subtitle="Transhipment · re-export · entrepot"
+      />
+
+      <div className="grid gap-2">
+        {fczNodes.map((n) => {
+          const m = (n.data.metrics ?? {}) as Record<string, number>;
+          const entries = Object.entries(m).slice(0, 3);
+          return (
+            <button
+              key={n.id}
+              onClick={() => selectNode(n.id)}
+              className="w-full rounded-lg border border-slate-700 bg-slate-900/50 p-2.5 text-left hover:border-blue-500/50 transition"
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold text-slate-200 truncate">
+                  {n.data.label}
+                </span>
+                <StatusPill status={n.data.status} />
+              </div>
+              {entries.length > 0 && (
+                <div className="mt-1.5 flex flex-wrap gap-2.5 text-[10px] text-slate-500">
+                  {entries.map(([k, v]) => (
+                    <span key={k}>
+                      {k}: <span className="font-mono text-slate-300">{v}</span>
+                    </span>
+                  ))}
+                </div>
+              )}
+            </button>
+          );
         })}
-      </svg>
-      {nodes.length === 0 ? (
-        <div className="flex h-full items-center justify-center text-sm text-muted-foreground">No nodes</div>
-      ) : nodes.map((n) => (
-        <div key={n.id} className={'absolute rounded border px-2 py-1 text-xs shadow ' + tint(n.zone)} style={{ left: n.x ?? 20, top: n.y ?? 20 }}>{n.label}</div>
-      ))}
-    </div>
+      </div>
+    </section>
   );
 }
-export default TwinFczLayer;

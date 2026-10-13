@@ -1,9 +1,9 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach } from "@jest/globals";
 import {
   resolveJkdmAdapter, __resetJkdmAdapterForTests,
-} from "../../src/integrations/jkdm";
-import type { AuditSink, JkdmAuditEvent } from "../../src/integrations/jkdm";
-import { SAMPLE_K1 } from "../../src/integrations/jkdm/fixtures/sample-k1";
+} from "../../src/integration/jkdm";
+import type { AuditSink, JkdmAuditEvent } from "../../src/integration/jkdm";
+import { SAMPLE_K1 } from "../../src/integration/jkdm/fixtures/sample-k1";
 
 function captureSink(): { events: JkdmAuditEvent[]; sink: AuditSink } {
   const events: JkdmAuditEvent[] = [];

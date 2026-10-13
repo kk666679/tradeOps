@@ -14,7 +14,7 @@ export type AgentInterventionPanelValues = Record<string, unknown>;
 export interface AgentInterventionPanelProps {
   initial?: AgentInterventionPanelValues;
   submitting?: boolean;
-  onSubmit: (v: AgentInterventionPanelValues) => void | Promise<void>;
+  onSubmit?: (v: AgentInterventionPanelValues) => void | Promise<void>;
   onCancel?: () => void;
 }
 
@@ -22,7 +22,7 @@ export function AgentInterventionPanel({ initial = {}, submitting, onSubmit, onC
   const [values, setValues] = React.useState<AgentInterventionPanelValues>(initial);
   const set = (k: string) => (e: React.ChangeEvent<HTMLInputElement>) => setValues((v) => ({ ...v, [k]: e.target.value }));
   return (
-    <form className="space-y-4 p-4" onSubmit={(e) => { e.preventDefault(); void onSubmit(values); }}>
+    <form className="space-y-4 p-4" onSubmit={(e) => { e.preventDefault(); void onSubmit?.(values); }}>
       <div className="space-y-1">
         <Label htmlFor="ref">Reference</Label>
         <Input id="ref" value={String(values.ref ?? '')} onChange={set('ref')} />

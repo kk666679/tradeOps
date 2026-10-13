@@ -1,0 +1,17 @@
+{
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "rootDir": "..",
+  "extensionsToTreatAsEsm": [".ts"],
+  "testEnvironment": "node",
+  "testRegex": "test/integrations/.*\\.spec\\.ts$",
+  "transform": {
+    "^.+\\.(t|j)s$": [
+      "ts-jest",
+      {
+        "useESM": true,
+        "tsconfig": { "module": "ESNext" }
+      }
+    ]
+  },
+  "moduleNameMapper": { "^(\\.{1,2}/.*)\\.js$": "$1" }
+}

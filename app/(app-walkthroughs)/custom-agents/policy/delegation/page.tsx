@@ -9,7 +9,7 @@ export default function Page() {
   return (
     <div className="space-y-6">
       <PageHeader title="Delegation" description="Route: /custom-agents/policy/delegation" />
-      <DelegationLimits onSubmit={() => undefined} />
+      <DelegationLimits />
     </div>
   );
 }

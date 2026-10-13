@@ -9,7 +9,7 @@ export default function Page() {
   return (
     <div className="space-y-6">
       <PageHeader title="Data Access" description="Route: /custom-agents/policy/data-access" />
-      <DataAccessScope onSubmit={() => undefined} />
+      <DataAccessScope />
     </div>
   );
 }

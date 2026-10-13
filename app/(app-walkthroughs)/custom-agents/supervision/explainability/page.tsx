@@ -9,7 +9,7 @@ export default function Page() {
   return (
     <div className="space-y-6">
       <PageHeader title="Explainability" description="Route: /custom-agents/supervision/explainability" />
-      <AgentExplainabilityPanel onSubmit={() => undefined} />
+      <AgentExplainabilityPanel />
     </div>
   );
 }

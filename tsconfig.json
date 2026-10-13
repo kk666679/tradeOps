@@ -1,44 +1,60 @@
 {
   "compilerOptions": {
-    "target": "ES2017",
+    "target": "ES2024",
     "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
+      "ES2024",
+      "DOM",
+      "DOM.Iterable"
     ],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": false,
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "moduleDetection": "force",
+    "verbatimModuleSyntax": true,
     "noEmit": true,
     "incremental": true,
-    "module": "esnext",
-    "esModuleInterop": true,
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
     "isolatedModules": true,
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "forceConsistentCasingInFileNames": true,
+    "exactOptionalPropertyTypes": false,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
     "jsx": "react-jsx",
-    "paths": {
-      "@/*": ["./*"],
-      "@common/*": ["./components/common/*"]
-    },
+    "allowJs": true,
     "plugins": [
       {
         "name": "next"
       }
-    ]
+    ],
+    "baseUrl": ["."]
+    "paths": {
+      "@/*": ["./*"],
+      "@common/*": ["./common/*"],
+      "@server/*": ["./server/*"]
+    },
+    "importHelpers": false,
+    "noErrorTruncation": true,
+    "experimentalDecorators": false,
+    "emitDecoratorMetadata": false,
+    "useDefineForClassFields": true
   },
   "include": [
     "next-env.d.ts",
-    ".next/types/**/*.ts",
-    "**/*.mts",
     "**/*.ts",
     "**/*.tsx",
+    ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
   ],
   "exclude": [
     "node_modules",
-    "backend",
     "dist",
-    "build"
+    "backend",
+    ".next",
+    "out"
   ]
 }

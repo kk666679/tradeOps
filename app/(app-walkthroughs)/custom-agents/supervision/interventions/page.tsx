@@ -9,7 +9,7 @@ export default function Page() {
   return (
     <div className="space-y-6">
       <PageHeader title="Interventions" description="Route: /custom-agents/supervision/interventions" />
-      <AgentInterventionPanel onSubmit={() => undefined} />
+      <AgentInterventionPanel />
     </div>
   );
 }

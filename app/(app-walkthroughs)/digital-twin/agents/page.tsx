@@ -1,8 +1,8 @@
 import * as React from 'react';
 import type { Metadata } from 'next';
 import { PageHeader } from '@/components/dashboard/page/PageHeader';
-import { TwinAgentList } from '@/components/digital-twin/agents/TwinAgentList';
-import { TwinAgentInspector } from '@/components/digital-twin/agents/TwinAgentInspector';
+import { TwinAgentList } from '@/components/workflow-studio/digital-twin/agents/TwinAgentList';
+import { TwinAgentInspector } from '@/components/workflow-studio/digital-twin/agents/TwinAgentInspector';
 
 export const metadata: Metadata = { title: 'Digital Twin Agents' };
 

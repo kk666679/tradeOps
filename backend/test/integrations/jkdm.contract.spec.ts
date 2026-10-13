@@ -1,15 +1,15 @@
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach } from "@jest/globals";
 import {
   resolveJkdmConfig, resolveJkdmAdapter, __resetJkdmAdapterForTests,
   IntegrationNotConfiguredError, IntegrationUnavailableError,
   DevAdapterRefusedError, UnsupportedOperationError,
   canTransition,
-} from "../../src/integrations/jkdm";
-import { SAMPLE_K1 } from "../../src/integrations/jkdm/fixtures/sample-k1";
+} from "../../src/integration/jkdm";
+import { SAMPLE_K1 } from "../../src/integration/jkdm/fixtures/sample-k1";
 import {
   DeclarationSubmissionSchema,
   ManualResponseSchema,
-} from "../../src/integrations/jkdm/schemas/declaration.schema";
+} from "../../src/integration/jkdm/schemas/declaration.schema";
 
 const savedEnv = { ...process.env };
 
@@ -105,7 +105,7 @@ describe("manual adapter", () => {
     });
     expect(r.provenance).toBe("manual_observation");
     expect(r.reviewStatus).toBe("pending_review");
-    expect(r.externalRef).toBe("JKDM/PG/2026-0000123");
+    expect(r.externalRef).toBe("JKDM/PG/2026/0000123");
   });
 
   it("accepts a manual response with an exception", async () => {

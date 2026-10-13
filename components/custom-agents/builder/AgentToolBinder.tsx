@@ -14,7 +14,7 @@ export type AgentToolBinderValues = Record<string, unknown>;
 export interface AgentToolBinderProps {
   initial?: AgentToolBinderValues;
   submitting?: boolean;
-  onSubmit: (v: AgentToolBinderValues) => void | Promise<void>;
+  onSubmit?: (v: AgentToolBinderValues) => void | Promise<void>;
   onCancel?: () => void;
 }
 
@@ -22,7 +22,7 @@ export function AgentToolBinder({ initial = {}, submitting, onSubmit, onCancel }
   const [values, setValues] = React.useState<AgentToolBinderValues>(initial);
   const set = (k: string) => (e: React.ChangeEvent<HTMLInputElement>) => setValues((v) => ({ ...v, [k]: e.target.value }));
   return (
-    <form className="space-y-4 p-4" onSubmit={(e) => { e.preventDefault(); void onSubmit(values); }}>
+    <form className="space-y-4 p-4" onSubmit={(e) => { e.preventDefault(); void onSubmit?.(values); }}>
       <div className="space-y-1">
         <Label htmlFor="ref">Reference</Label>
         <Input id="ref" value={String(values.ref ?? '')} onChange={set('ref')} />

@@ -41,7 +41,7 @@ export interface ExceptionPath {
 }
 
 /** Hash-chain helper — produces a deterministic SHA-256 over the canonical JSON. */
-export function computeEventHash(event: Omit<BondedLedgerEvent, "hash">): string {
+export async function computeEventHash(event: Omit<BondedLedgerEvent, "hash">): Promise<string> {
   const canonical = JSON.stringify({
     eventId: event.eventId,
     eventType: event.eventType,
@@ -59,16 +59,17 @@ export function computeEventHash(event: Omit<BondedLedgerEvent, "hash">): string
     dutyStatus: event.dutyStatus,
     prevHash: event.prevHash,
   })
-  // Deterministic placeholder hash — replace with a real SHA-256 in production.
-  // base64url is not universally available (Node <16, browsers, edge runtimes);
-  // convert from standard base64 by replacing the differing characters.
-  const b64 = Buffer.from(canonical).toString("base64")
-  const b64url = b64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "")
-  return `sha256:${b64url.slice(0, 48)}`
+
+  const encoder = new TextEncoder()
+  const data = encoder.encode(canonical)
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data)
+  const hashArray = Array.from(new Uint8Array(hashBuffer))
+  const hashHex = hashArray.map((b) => b.toString(16).padStart(2, "0")).join("")
+  return `sha256:${hashHex}`
 }
 
 /** Build a complete ledger event from a workflow step definition + inputs. */
-export function buildLedgerEvent(
+export async function buildLedgerEvent(
   step: WorkflowStepDefinition,
   input: {
     eventId: string
@@ -80,7 +81,7 @@ export function buildLedgerEvent(
     value?: number
     prevHash: string
   },
-): BondedLedgerEvent {
+): Promise<BondedLedgerEvent> {
   const base: Omit<BondedLedgerEvent, "hash"> = {
     eventId: input.eventId,
     eventType: step.event,
@@ -98,7 +99,7 @@ export function buildLedgerEvent(
     dutyStatus: step.dutyStatus,
     prevHash: input.prevHash,
   }
-  return { ...base, hash: computeEventHash(base) }
+  return { ...base, hash: await computeEventHash(base) }
 }
 
 /** The ten exception paths that must be designed early. */

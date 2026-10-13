@@ -1,10 +1,10 @@
 import * as React from 'react';
 import type { Metadata } from 'next';
 import { PageHeader } from '@/components/dashboard/page/PageHeader';
-import { TwinBondedLayer } from '@/components/digital-twin/zones/TwinBondedLayer';
-import { TwinFczLayer } from '@/components/digital-twin/zones/TwinFczLayer';
-import { TwinFizLayer } from '@/components/digital-twin/zones/TwinFizLayer';
-import { TwinGateLayer } from '@/components/digital-twin/zones/TwinGateLayer';
+import { TwinBondedLayer } from '@/components/workflow-studio/digital-twin/zones/TwinBondedLayer';
+import { TwinFczLayer } from '@/components/workflow-studio/digital-twin/zones/TwinFczLayer';
+import { TwinFizLayer } from '@/components/workflow-studio/digital-twin/zones/TwinFizLayer';
+import { TwinGateLayer } from '@/components/workflow-studio/digital-twin/zones/TwinGateLayer';
 
 export const metadata: Metadata = { title: 'Zone Overview' };
 

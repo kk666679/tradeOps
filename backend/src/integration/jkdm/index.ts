@@ -11,6 +11,13 @@ export { resolveJkdmConfig } from "./config";
 export type { JkdmConfig } from "./config";
 export * from "./audit/audit-events";
 export * from "./state/declaration-state";
+export { JkdmService } from "./jkdm.service";
+export type {
+  JkdmCapabilitySnapshot,
+  SubmitDeclarationArgs,
+  RecordManualArgs,
+} from "./jkdm.service";
+export { JkdmRouter } from "./jkdm.router";
 
 let cached: JkdmAdapter | null = null;
 let cachedConfig: JkdmConfig | null = null;

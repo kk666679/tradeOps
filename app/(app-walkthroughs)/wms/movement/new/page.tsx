@@ -2,7 +2,7 @@ import { WmsCrudSurface } from '@/app/(app-walkthroughs)/wms/_components/WmsCrud
 import * as React from 'react';
 import type { Metadata } from 'next';
 import { PageHeader } from '@/components/dashboard/page/PageHeader';
-import { TwinMovementLayer } from '@/components/digital-twin/zones/TwinMovementLayer';
+import { TwinMovementLayer } from '@/components/workflow-studio/digital-twin/zones/TwinMovementLayer';
 
 export const metadata: Metadata = { title: 'New Movement' };
 

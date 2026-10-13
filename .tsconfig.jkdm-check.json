@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "ignoreDeprecations": "6.0",
+    "noEmit": true,
+    "skipLibCheck": true,
+    "types": ["node", "react"]
+  },
+  "include": [
+    "components/workflow-studio/lib/trpc-executor-client.ts",
+    "components/workflow-studio/lib/workflow-executor.ts",
+    "components/workflow-studio/types/workflow.ts",
+    "components/workflow-studio/index.ts",
+    "lib/trpc/index.ts"
+  ]
+}

@@ -9,7 +9,7 @@ export default function Page() {
   return (
     <div className="space-y-6">
       <PageHeader title="Disagreements" description="Route: /custom-agents/supervision/disagreements" />
-      <AgentDisagreementResolver onSubmit={() => undefined} />
+      <AgentDisagreementResolver />
     </div>
   );
 }

@@ -87,6 +87,8 @@ import { FizFczRouter } from '../integration/fiz-fcz/fiz-fcz.router';
 import { TmsRouter } from '../integration/tms/tms.router';
 import { WebhookRouter } from '../integration/webhook/webhook.router';
 import { WmsExtRouter } from '../integration/wms-ext/wms-ext.router';
+import { JkdmRouter } from '../integration/jkdm/jkdm.router';
+import { JkdmService } from '../integration/jkdm/jkdm.service';
 
 /**
  * The single source of truth for the API surface.
@@ -102,6 +104,7 @@ export class TrpcRouter {
     private readonly trpc: TrpcService,
     private readonly auth: AuthService,
     private readonly userService: UserService,
+    private readonly jkdmService: JkdmService,
   ) {}
 
   get appRouter() {
@@ -207,6 +210,7 @@ export class TrpcRouter {
         tms: new TmsRouter(this.trpc).router,
         webhook: new WebhookRouter(this.trpc).router,
         wmsExt: new WmsExtRouter(this.trpc).router,
+        jkdm: new JkdmRouter(this.trpc, this.jkdmService).router,
       }),
     });
   }

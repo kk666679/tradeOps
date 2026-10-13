@@ -1,46 +1,72 @@
-/**
- * tRPC server init — shim.
- *
- * When @trpc/server is installed, this file exports real `initTRPC`,
- * `router`, `publicProcedure`, `protectedProcedure`, `middleware`.
- *
- * When it isn't, safe stubs are exported so imports don't fail.
- *
- * Upgrade path:
- *   npm i @trpc/server
- *   Then replace this file with your real init:
- *     import { initTRPC, TRPCError } from "@trpc/server";
- *     import { db } from "@/lib/db";
- *     export const createContext = async (opts: any) => ({ db, ... });
- *     const t = initTRPC.context<Awaited<ReturnType<typeof createContext>>>().create();
- *     export const router = t.router;
- *     export const publicProcedure = t.procedure;
- *     export const protectedProcedure = t.procedure.use(authMiddleware);
- */
-
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import { initTRPC, TRPCError } from "@trpc/server";
+import { ZodError } from "zod";
+import { db } from "@/lib/db";
+import { logger } from "@/lib/logger";
+import superjson from "superjson";
 
 export interface TRPCContext {
-  db: any;
+  db: typeof db;
   userId?: string;
   tenantId?: string;
   role?: string;
 }
 
-export async function createContext(_opts?: unknown): Promise<TRPCContext> {
-  const { db } = await import("@/lib/db");
-  return { db };
+export async function createContext(opts?: {
+  headers?: Headers;
+}): Promise<TRPCContext> {
+  const userId = opts?.headers?.get("x-user-id") ?? undefined;
+  const tenantId = opts?.headers?.get("x-tenant-id") ?? undefined;
+  const role = opts?.headers?.get("x-user-role") ?? undefined;
+
+  return {
+    db,
+    userId,
+    tenantId,
+    role,
+  };
 }
 
-/* -- Stub surface -------------------------------------------------- */
+const t = initTRPC.context<TRPCContext>().create({
+  transformer: superjson,
+  errorFormatter({ shape, error }) {
+    return {
+      ...shape,
+      data: {
+        ...shape.data,
+        zodError: error.cause instanceof ZodError ? error.cause.flatten() : null,
+      },
+    };
+  },
+});
 
-export const router: any = (routes: any) => routes;
-export const publicProcedure: any = new Proxy({} as any, {
-  get: () => publicProcedure,
+export const router = t.router;
+export const publicProcedure = t.procedure;
+
+export const protectedProcedure = t.procedure.use(async ({ ctx, next }) => {
+  if (!ctx.userId) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "Authentication required",
+    });
+  }
+  return next({ ctx: { ...ctx, userId: ctx.userId } });
 });
-export const protectedProcedure: any = new Proxy({} as any, {
-  get: () => protectedProcedure,
+
+export const tenantProcedure = protectedProcedure.use(async ({ ctx, next }) => {
+  if (!ctx.tenantId) {
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message: "Tenant context required",
+    });
+  }
+  return next({ ctx: { ...ctx, tenantId: ctx.tenantId } });
 });
-export const middleware: any = (fn: any) => fn;
-export const mergeRouters: any = (...routers: any[]) =>
-  Object.assign({}, ...routers);
+
+export const middleware = t.middleware;
+export const mergeRouters = t.mergeRouters;
+
+export function createCallerFactory<TRouter extends t.router>(router: TRouter) {
+  return t.createCallerFactory(router);
+}
+
+export { TRPCError };

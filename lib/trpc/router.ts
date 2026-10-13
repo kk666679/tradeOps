@@ -69,12 +69,12 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
             list: import("@trpc/server").TRPCQueryProcedure<{
                 input: void;
                 output: {
-                    id: string;
-                    email: string;
                     tenantId: string;
-                    emailVerified: Date | null;
+                    email: string;
                     password: string;
                     name: string | null;
+                    id: string;
+                    emailVerified: Date | null;
                     avatarUrl: string | null;
                     phone: string | null;
                     locale: string;
@@ -96,12 +96,12 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                     role?: "SUPER_ADMIN" | "ADMIN" | "OPS_MANAGER" | "WAREHOUSE_STAFF" | "CUSTOMER" | "AGENT" | "AUDITOR" | undefined;
                 };
                 output: {
-                    id: string;
-                    email: string;
                     tenantId: string;
-                    emailVerified: Date | null;
+                    email: string;
                     password: string;
                     name: string | null;
+                    id: string;
+                    emailVerified: Date | null;
                     avatarUrl: string | null;
                     phone: string | null;
                     locale: string;
@@ -3161,6 +3161,127 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                     input: {
                         id: string;
                     };
+                    output: any;
+                    meta: object;
+                }>;
+            }>>;
+            jkdm: import("@trpc/server").TRPCBuiltRouter<{
+                ctx: import("../../backend/src/trpc/trpc.context").TrpcCtx;
+                meta: object;
+                errorShape: import("@trpc/server").TRPCDefaultErrorShape;
+                transformer: true;
+            }, import("@trpc/server").TRPCDecorateCreateRouterOptions<{
+                capabilities: import("@trpc/server").TRPCQueryProcedure<{
+                    input: void;
+                    output: import("../integration/jkdm/jkdm.service").JkdmCapabilitySnapshot;
+                    meta: object;
+                }>;
+                submitDeclaration: import("@trpc/server").TRPCMutationProcedure<{
+                    input: {
+                        idempotencyKey: string;
+                        submission: {
+                            draftRef: string;
+                            idempotencyKey: string;
+                            tenantId: string;
+                            brokerCode: string;
+                            formCode: "K1" | "K2" | "K3" | "K7" | "K8" | "K9";
+                            procedureCode: string;
+                            portOfEntry: string;
+                            importerName: string;
+                            importerRegistration: string;
+                            exporterName: string;
+                            exporterCountry: string;
+                            blNumber: string;
+                            invoiceNumber: string;
+                            invoiceDate: string;
+                            currency: string;
+                            totalFOB: number;
+                            totalFreight: number;
+                            totalInsurance: number;
+                            totalCIFMYR: number;
+                            lineItems: {
+                                lineNumber: number;
+                                hsCode: string;
+                                description: string;
+                                quantity: number;
+                                uom: string;
+                                unitValueMYR: number;
+                                countryOfOrigin: string;
+                                preferenceScheme?: "ATIGA" | "ACFTA" | "RCEP" | "CPTPP" | "MJEPA" | "MCFTA" | "MFN" | undefined;
+                                permitRefs?: string[] | undefined;
+                            }[];
+                        };
+                        declarationId?: string | undefined;
+                    };
+                    output: {
+                        provenance: import("../integration/jkdm").Provenance;
+                        synthetic: boolean;
+                        acknowledged: boolean;
+                        externalRef?: string;
+                        channel?: import("../integration/jkdm").CustomsChannel;
+                        submittedAt: string;
+                        correlationId: string;
+                        errors?: Array<{
+                            code: string;
+                            message: string;
+                            field?: string;
+                        }>;
+                        operationId: string;
+                        duplicate: boolean;
+                    };
+                    meta: object;
+                }>;
+                queryDeclarationStatus: import("@trpc/server").TRPCQueryProcedure<{
+                    input: {
+                        declarationRef: string;
+                    };
+                    output: import("../integration/jkdm").DeclarationStatus;
+                    meta: object;
+                }>;
+                recordManualResponse: import("@trpc/server").TRPCMutationProcedure<{
+                    input: {
+                        draftRef: string;
+                        idempotencyKey: string;
+                        tenantId: string;
+                        recordedBy: string;
+                        outcome: "query" | "inspection" | "released" | "rejected" | "amended";
+                        observedAt: string;
+                        externalRef?: string | undefined;
+                        exceptionReason?: string | undefined;
+                        officerName?: string | undefined;
+                        officerId?: string | undefined;
+                        notes?: string | undefined;
+                        evidenceRef?: string | undefined;
+                        additionalEvidenceRefs?: string[] | undefined;
+                        declarationId?: string | undefined;
+                    };
+                    output: import("../integration/jkdm").ManualResponseRecord;
+                    meta: object;
+                }>;
+                reviewManualResponse: import("@trpc/server").TRPCMutationProcedure<{
+                    input: {
+                        recordId: string;
+                        decision: "rejected" | "reviewed";
+                    };
+                    output: {
+                        id: string;
+                        reviewStatus: string;
+                    };
+                    meta: object;
+                }>;
+                listOperations: import("@trpc/server").TRPCQueryProcedure<{
+                    input: {
+                        take?: number | undefined;
+                        declarationId?: string | undefined;
+                    } | undefined;
+                    output: any;
+                    meta: object;
+                }>;
+                listManualResponses: import("@trpc/server").TRPCQueryProcedure<{
+                    input: {
+                        take?: number | undefined;
+                        declarationId?: string | undefined;
+                    } | undefined;
                     output: any;
                     meta: object;
                 }>;

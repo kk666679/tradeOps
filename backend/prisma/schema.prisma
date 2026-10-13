@@ -133,6 +133,8 @@ model Tenant {
   workflowRuns       WorkflowRun[]
   autoclawSnapshots  AutoclawSnapshot[]
   serviceHealth      ServiceHealth[]
+  jkdmOperations     JkdmOperation[]
+  jkdmManualResponses JkdmManualResponse[]
 
   @@index([slug])
   @@index([status, plan])
@@ -584,6 +586,8 @@ model Declaration {
   valuation            Valuation?
   documents            TradeDocument[]
   drawbackClaims       DrawbackClaim[]
+  jkdmOperations       JkdmOperation[]
+  jkdmManualResponses  JkdmManualResponse[]
 
   @@unique([tenantId, ref])
   @@index([tenantId, status])
@@ -2692,3 +2696,117 @@ model ServiceHealth {
 // =============================================================================
 // END
 // =============================================================================
+
+
+// =============================================================================
+// JKDM customs integration (Royal Malaysian Customs Department)
+//
+// These models persist the durable, tenant-scoped state the JKDM adapter
+// needs: idempotent submission operations and evidence-backed manual
+// observations. Nothing here represents a "verified" JKDM API response —
+// provenance is recorded explicitly on every row and synthetic results are
+// never written to an authoritative declaration status.
+// =============================================================================
+
+enum JkdmProvenance {
+  production_api
+  manual_observation
+  synthetic
+}
+
+enum JkdmOperationKind {
+  submit_declaration
+  query_declaration_status
+  submit_manifest
+  query_manifest
+}
+
+enum JkdmOperationStatus {
+  pending
+  succeeded
+  failed
+  ambiguous // network outcome unknown → reconcile, never blind-retry
+}
+
+/// One durable record per logical JKDM operation. The (tenantId, idempotencyKey)
+/// unique constraint is the persistent guard against duplicate external
+/// submissions — it does not rely on an in-memory set or a disabled UI button.
+model JkdmOperation {
+  id             String              @id @default(cuid())
+  tenantId       String
+  tenant         Tenant              @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  kind           JkdmOperationKind
+  status         JkdmOperationStatus @default(pending)
+  idempotencyKey String
+  correlationId  String?
+  /// Broker-side draft reference (our system), not a JKDM reference.
+  draftRef       String?
+  declarationId  String?
+  declaration    Declaration?        @relation(fields: [declarationId], references: [id], onDelete: SetNull)
+  /// External reference returned by JKDM. Set only on a verified response.
+  externalRef    String?
+  provenance     JkdmProvenance
+  attemptNumber  Int                 @default(1)
+  requestAt      DateTime            @default(now())
+  respondedAt    DateTime?
+  errorCode      String?
+  errorMessage   String?
+  /// Redacted result payload (no credentials, no officer PII beyond what the
+  /// broker recorded). Full bodies are never logged.
+  result         Json?
+
+  @@unique([tenantId, idempotencyKey])
+  @@index([tenantId, kind, status])
+  @@index([tenantId, declarationId])
+  @@index([tenantId, requestAt])
+}
+
+enum JkdmManualOutcome {
+  query
+  inspection
+  released
+  rejected
+  amended
+}
+
+enum JkdmReviewStatus {
+  pending_review
+  reviewed
+  rejected
+}
+
+/// A customs response a broker recorded after submitting out-of-band. This is a
+/// manual observation, NOT a digitally verified JKDM API response. It carries
+/// evidence (or a documented exception) and stays pending_review until a second
+/// user confirms it.
+model JkdmManualResponse {
+  id                    String            @id @default(cuid())
+  tenantId              String
+  tenant                Tenant            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  draftRef              String
+  declarationId         String?
+  declaration           Declaration?      @relation(fields: [declarationId], references: [id], onDelete: SetNull)
+  outcome               JkdmManualOutcome
+  externalRef           String?
+  /// Required unless externalRef is present. Explains why a reference is missing.
+  exceptionReason       String?
+  officerName           String?
+  officerId             String?
+  notes                 String?
+  observedAt            DateTime
+  /// Evidence pointer. Required unless an exception is recorded. A filename or
+  /// arbitrary upload is NOT verified evidence without the review process.
+  evidenceRef           String?
+  additionalEvidenceRefs String[]         @default([])
+  recordedBy            String
+  recordedAt            DateTime          @default(now())
+  reviewStatus          JkdmReviewStatus  @default(pending_review)
+  reviewedBy            String?
+  reviewedAt            DateTime?
+
+  @@index([tenantId, draftRef])
+  @@index([tenantId, declarationId])
+  @@index([tenantId, reviewStatus])
+  @@index([tenantId, recordedAt])
+}
+

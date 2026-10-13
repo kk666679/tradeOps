@@ -1,12 +1,12 @@
 import * as React from 'react';
 import type { Metadata } from 'next';
 import { PageHeader } from '@/components/dashboard/page/PageHeader';
-import { TwinKpiStrip } from '@/components/digital-twin/analytics/TwinKpiStrip';
-import { TwinThroughputChart } from '@/components/digital-twin/analytics/TwinThroughputChart';
-import { TwinDwellChart } from '@/components/digital-twin/analytics/TwinDwellChart';
-import { TwinUtilizationHeatmap } from '@/components/digital-twin/analytics/TwinUtilizationHeatmap';
-import { TwinBottleneckPareto } from '@/components/digital-twin/analytics/TwinBottleneckPareto';
-import { TwinCostBreakdown } from '@/components/digital-twin/analytics/TwinCostBreakdown';
+import { TwinKpiStrip } from '@/components/workflow-studio/digital-twin/analytics/TwinKpiStrip';
+import { TwinThroughputChart } from '@/components/workflow-studio/digital-twin/analytics/TwinThroughputChart';
+import { TwinDwellChart } from '@/components/workflow-studio/digital-twin/analytics/TwinDwellChart';
+import { TwinUtilizationHeatmap } from '@/components/workflow-studio/digital-twin/analytics/TwinUtilizationHeatmap';
+import { TwinBottleneckPareto } from '@/components/workflow-studio/digital-twin/analytics/TwinBottleneckPareto';
+import { TwinCostBreakdown } from '@/components/workflow-studio/digital-twin/analytics/TwinCostBreakdown';
 
 export const metadata: Metadata = { title: 'Digital Twin Analytics' };
 

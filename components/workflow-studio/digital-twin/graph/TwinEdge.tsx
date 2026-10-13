@@ -1,25 +1,63 @@
 'use client';
-import * as React from 'react';
-export interface TwinEdgeNode { id: string; label: string; x?: number; y?: number; zone?: 'FIZ' | 'FCZ' | 'BONDED'; }
-export interface TwinEdgeProps { nodes?: TwinEdgeNode[]; edges?: { from: string; to: string }[]; className?: string; }
-export function TwinEdge({ nodes = [], edges = [], className }: TwinEdgeProps) {
-  const tint = (z?: string) => z === 'FIZ' ? 'bg-sky-50 border-sky-200' : z === 'FCZ' ? 'bg-amber-50 border-amber-200' : z === 'BONDED' ? 'bg-violet-50 border-violet-200' : 'bg-background';
+
+import { memo } from 'react';
+import {
+  BaseEdge, EdgeLabelRenderer, getBezierPath,
+  type EdgeProps,
+} from '@xyflow/react';
+import type { TwinEdgeData } from '@/lib/digital-twin/types';
+
+const KIND_STROKE: Record<string, string> = {
+  flow:       '#3b82f6',
+  handoff:    '#a855f7',
+  dependency: '#f59e0b',
+  semantic:   '#14b8a6',
+};
+
+function TwinEdgeInner({
+  id, sourceX, sourceY, targetX, targetY,
+  sourcePosition, targetPosition, data, selected,
+}: EdgeProps) {
+  const d = (data ?? {}) as TwinEdgeData;
+  const [edgePath, labelX, labelY] = getBezierPath({
+    sourceX, sourceY, targetX, targetY,
+    sourcePosition, targetPosition,
+  });
+
+  const stroke = KIND_STROKE[d.kind] ?? KIND_STROKE.flow;
+
   return (
-    <div className={className ?? 'relative h-[420px] w-full overflow-hidden rounded border bg-muted/30'}>
-      <svg className="absolute inset-0 h-full w-full" aria-hidden>
-        {edges.map((e, i) => {
-          const a = nodes.find((n) => n.id === e.from);
-          const b = nodes.find((n) => n.id === e.to);
-          if (!a || !b) return null;
-          return <line key={i} x1={a.x ?? 0} y1={a.y ?? 0} x2={b.x ?? 0} y2={b.y ?? 0} stroke="currentColor" strokeOpacity={0.3} />;
-        })}
-      </svg>
-      {nodes.length === 0 ? (
-        <div className="flex h-full items-center justify-center text-sm text-muted-foreground">No nodes</div>
-      ) : nodes.map((n) => (
-        <div key={n.id} className={'absolute rounded border px-2 py-1 text-xs shadow ' + tint(n.zone)} style={{ left: n.x ?? 20, top: n.y ?? 20 }}>{n.label}</div>
-      ))}
-    </div>
+    <>
+      <BaseEdge
+        id={id}
+        path={edgePath}
+        style={{
+          stroke,
+          strokeWidth: selected ? 3 : 1.75,
+          strokeDasharray: d.kind === 'semantic' ? '4 4' : undefined,
+        }}
+        markerEnd={`url(#twin-arrow-${d.kind ?? 'flow'})`}
+      />
+      {d.label && (
+        <EdgeLabelRenderer>
+          <div
+            style={{
+              position: 'absolute',
+              transform: `translate(-50%, -50%) translate(${labelX}px, ${labelY}px)`,
+              pointerEvents: 'all',
+            }}
+            className="px-2 py-0.5 rounded bg-slate-900/90 border border-slate-700 text-[10px] text-slate-300 whitespace-nowrap"
+          >
+            {d.label}
+            {d.volume != null && (
+              <span className="ml-1 text-slate-500 font-mono">{d.volume}</span>
+            )}
+          </div>
+        </EdgeLabelRenderer>
+      )}
+    </>
   );
 }
+
+export const TwinEdge = memo(TwinEdgeInner);
 export default TwinEdge;

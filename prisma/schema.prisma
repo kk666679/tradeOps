@@ -307,3 +307,306 @@ model AuditEntry {
   @@index([tenantId, entityType, entityId])
   @@index([at])
 }
+
+// ─────────────────────────────────────────────────────────
+// DIGITAL TWIN — Core entities
+// Aligned with GB/T 46237-2025 maturity levels and
+// Gartner 2026 DTO capabilities (agentic, closed-loop,
+// governed, real-time) [citation:3][citation:15]
+// ─────────────────────────────────────────────────────────
+
+model Zone {
+  id            String   @id @default(cuid())
+  code          String   @unique        // "FIZ-01", "FCZ-02"
+  name          String
+  kind          ZoneKind
+  parentId      String?
+  parent        Zone?    @relation("ZoneHierarchy", fields: [parentId], references: [id])
+  children      Zone[]   @relation("ZoneHierarchy")
+
+  // 2026 additions — semantic + governance layers
+  geojson       Json?                    // boundary polygon
+  jurisdiction  String   @default("MY")
+  operatingHours Json?
+  maturityLevel MaturityLevel @default(L1_CONNECTED)
+
+  nodes         TwinNode[]
+  scenarios     Scenario[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+enum ZoneKind {
+  FIZ          // Free Industrial Zone
+  FCZ          // Free Commercial Zone
+  BONDED       // Licensed bonded warehouse
+  GATE         // Port / airport gate
+  CFS          // Container freight station
+  MISC
+}
+
+enum MaturityLevel {
+  L0_MANUAL
+  L1_CONNECTED       // sensors → dashboard
+  L2_INTELLIGENT     // AI-assisted decisions [citation:2]
+  L3_AUTONOMOUS      // closed-loop agents [citation:4]
+}
+
+// ─────────────────────────────────────────────────────────
+// TWIN NODES — the graph vertices
+// ─────────────────────────────────────────────────────────
+
+model TwinNode {
+  id            String   @id @default(cuid())
+  zoneId        String
+  zone          Zone     @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+
+  kind          NodeKind
+  label         String
+  positionX     Float
+  positionY     Float
+
+  // Live state — 2026: real-time sync via Prisma Pulse [citation:15]
+  status        NodeStatus @default(IDLE)
+  metrics       Json?                    // { throughput, dwell, utilization, cost }
+  lastPulseAt   DateTime?
+  semanticType  String?                  // knowledge-graph type [citation:14]
+
+  // Agent binding — 2026: semi-autonomous agents per node [citation:4]
+  agentId       String?
+  agent         TwinAgent? @relation(fields: [agentId], references: [id])
+
+  // Policy binding
+  policyId      String?
+  policy        Policy?    @relation(fields: [policyId], references: [id])
+
+  edgesFrom     TwinEdge[] @relation("EdgeSource")
+  edgesTo       TwinEdge[] @relation("EdgeTarget")
+  events        TwinEvent[]
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([zoneId, kind])
+  @@index([status])
+}
+
+enum NodeKind {
+  ZONE
+  AGENT
+  TASK
+  GATE
+  MOVEMENT
+  RESOURCE      // 2026: discrete resources (forklifts, inspectors) [citation:16]
+  BUFFER        // 2026: continuous quantities (fuel, inventory) [citation:5]
+}
+
+enum NodeStatus {
+  IDLE
+  ACTIVE
+  BLOCKED
+  DONE
+  ERROR
+}
+
+// ─────────────────────────────────────────────────────────
+// TWIN EDGES — the graph connections
+// ─────────────────────────────────────────────────────────
+
+model TwinEdge {
+  id            String   @id @default(cuid())
+  sourceId      String
+  source        TwinNode @relation("EdgeSource", fields: [sourceId], references: [id], onDelete: Cascade)
+  targetId      String
+  target        TwinNode @relation("EdgeTarget", fields: [targetId], references: [id], onDelete: Cascade)
+
+  kind          EdgeKind @default(FLOW)
+  label         String?
+  volume        Float?
+  semanticRel   String?                  // knowledge-graph predicate [citation:14]
+
+  createdAt     DateTime @default(now())
+
+  @@unique([sourceId, targetId])
+  @@index([sourceId])
+  @@index([targetId])
+}
+
+enum EdgeKind {
+  FLOW          // material / data movement
+  HANDOFF       // agent-to-agent [citation:15]
+  DEPENDENCY    // task depends on task
+  SEMANTIC      // knowledge-graph relation
+}
+
+// ─────────────────────────────────────────────────────────
+// SCENARIOS — what-if simulation configurations
+// ─────────────────────────────────────────────────────────
+
+model Scenario {
+  id            String   @id @default(cuid())
+  zoneId        String
+  zone          Zone     @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+
+  name          String
+  description   String?
+  parameters    Json     // { demandMultiplier: 1.2, gateCapacity: 8, ... }
+  tags          String[]
+
+  runs          Run[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([zoneId])
+}
+
+// ─────────────────────────────────────────────────────────
+// RUNS — execution instances
+// ─────────────────────────────────────────────────────────
+
+model Run {
+  id            String   @id @default(cuid())
+  scenarioId    String
+  scenario      Scenario @relation(fields: [scenarioId], references: [id], onDelete: Cascade)
+
+  status        RunStatus @default(RUNNING)
+  startedAt     DateTime @default(now())
+  endedAt       DateTime?
+
+  stepIndex     Int      @default(0)
+  totalSteps    Int      @default(240)
+
+  // Aggregated metrics at end of run
+  finalMetrics  Json?
+
+  events        TwinEvent[]
+  agentRuns     AgentRun[]
+
+  @@index([scenarioId, status])
+}
+
+enum RunStatus {
+  RUNNING
+  PAUSED
+  COMPLETED
+  FAILED
+}
+
+// ─────────────────────────────────────────────────────────
+// TWIN EVENTS — append-only event log
+// 2026: feeds audit + agent learning loop [citation:15]
+// ─────────────────────────────────────────────────────────
+
+model TwinEvent {
+  id            String   @id @default(cuid())
+  nodeId        String?
+  node          TwinNode? @relation(fields: [nodeId], references: [id], onDelete: SetNull)
+  runId         String?
+  run           Run?     @relation(fields: [runId], references: [id], onDelete: SetNull)
+
+  kind          EventKind
+  severity      Severity @default(INFO)
+  message       String
+  payload       Json?
+  occurredAt    DateTime @default(now())
+
+  @@index([nodeId, occurredAt])
+  @@index([runId, occurredAt])
+  @@index([severity, occurredAt])
+}
+
+enum EventKind {
+  LOG
+  ALERT
+  METRIC
+  AGENT_ACTION
+  POLICY_DECISION
+  HUMAN_INTERVENTION
+}
+
+enum Severity {
+  INFO
+  WARN
+  ERROR
+  CRITICAL
+}
+
+// ─────────────────────────────────────────────────────────
+// TWIN AGENTS — semi-autonomous actors [citation:4][citation:15]
+// ─────────────────────────────────────────────────────────
+
+model TwinAgent {
+  id            String   @id @default(cuid())
+  name          String
+  role          String                    // "gate-dispatcher", "dwell-optimizer"
+  kind          AgentKind
+
+  // Registry — 2026: versioned, governed agent lifecycle [citation:15]
+  version       String   @default("1.0.0")
+  status        AgentStatus @default(ACTIVE)
+
+  // Capability model
+  capabilities  String[]
+  guardrails    Json?                    // { maxSpend: 1000, jurisdictions: ["MY"] }
+
+  // Bindings
+  nodes         TwinNode[]
+  agentRuns     AgentRun[]
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+enum AgentKind {
+  SUPERVISOR
+  WORKER
+  CRITIC
+  ROUTER
+}
+
+enum AgentStatus {
+  ACTIVE
+  SUSPENDED
+  DEPRECATED
+}
+
+// ─────────────────────────────────────────────────────────
+// AGENT RUNS — auditable agent executions [citation:15]
+// ─────────────────────────────────────────────────────────
+
+model AgentRun {
+  id            String   @id @default(cuid())
+  agentId       String
+  agent         TwinAgent @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  runId         String?
+  run           Run?     @relation(fields: [runId], references: [id], onDelete: SetNull)
+
+  status        RunStatus @default(RUNNING)
+  startedAt     DateTime @default(now())
+  endedAt       DateTime?
+
+  input         Json?
+  output        Json?
+  reasoning     Json?                    // explainability payload [citation:2]
+
+  @@index([agentId, startedAt])
+}
+
+// ─────────────────────────────────────────────────────────
+// POLICY — governance layer [citation:15]
+// ─────────────────────────────────────────────────────────
+
+model Policy {
+  id            String   @id @default(cuid())
+  name          String
+  description   String?
+
+  rulePack      Json                     // structured rules
+  jurisdiction  String   @default("MY")
+  severity      Severity @default(WARN)
+
+  nodes         TwinNode[]
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
