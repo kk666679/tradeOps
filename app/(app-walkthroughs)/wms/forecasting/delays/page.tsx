@@ -2,7 +2,7 @@ import { WmsCrudSurface } from '@/app/(app-walkthroughs)/wms/_components/WmsCrud
 import * as React from 'react';
 import type { Metadata } from 'next';
 import { PageHeader } from '@/components/dashboard/page/PageHeader';
-import { TwinLiveMetrics } from '@/components/digital-twin/live/TwinLiveMetrics';
+import { TwinLiveMetrics } from '@/components/workflow-studio/digital-twin/live/TwinLiveMetrics';
 
 export const metadata: Metadata = { title: 'Delay Prediction' };
 
