@@ -2,7 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { trpc } from '@/lib/trpc/client';
-import type { Accreditation, BrokerageWorkflow } from '@/components/brokerage/types';
+import type { Accreditation, BrokerageWorkflow } from '@/components/workflow-studio/brokerage/types';
 import { Nodes, Edges, useReactFlow, Connection, Edge, Node, addEdge } from '@xyflow/react';
 import { AccreditationStatusBadge } from '@/components/trade-ops/brokerage/AccreditationStatusBadge';
 
