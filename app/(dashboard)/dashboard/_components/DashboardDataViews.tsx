@@ -26,7 +26,7 @@ function QueryState({
   children: React.ReactNode;
 }) {
   if (loading) {
-    return <p role="status" className="rounded-md border p-4 text-sm text-muted-foreground">Loading live dashboard data…</p>;
+    return <p role="status" className="rounded-lg border bg-card p-4 text-sm text-muted-foreground sm:p-5">Loading live dashboard data…</p>;
   }
 
   if (error) {

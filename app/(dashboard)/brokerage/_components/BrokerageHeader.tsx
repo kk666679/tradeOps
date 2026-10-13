@@ -16,7 +16,7 @@ export function BrokerageHeader({
   meta,
 }: BrokerageHeaderProps) {
   return (
-    <header className="flex flex-col gap-3 px-4 pt-4 pb-3">
+    <header className="flex flex-col gap-4 px-4 pb-4 pt-5 sm:px-6 sm:pb-5 sm:pt-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="flex flex-col gap-1">
           {eyebrow && (
