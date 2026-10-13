@@ -2,8 +2,6 @@
 
 import * as React from 'react';
 import { usePathname } from 'next/navigation';
-import { createTrpcExecutorClient } from '@/components/workflow-studio';
-
 interface WalkthroughState {
   visitedRoutes: string[];
   data: Record<string, unknown>;
@@ -25,8 +23,6 @@ export function WalkthroughProvider({ children }: { children: React.ReactNode })
   const [state, setState] = React.useState<WalkthroughState>({ visitedRoutes: [], data: {} });
   const [seedRunning, setSeedRunning] = React.useState(false);
   const [seedError, setSeedError] = React.useState<string | null>(null);
-  const executor = React.useMemo(() => createTrpcExecutorClient(), []);
-
   const markVisited = React.useCallback((href: string) => {
     setState((current) => current.visitedRoutes.includes(href)
       ? current
@@ -41,15 +37,28 @@ export function WalkthroughProvider({ children }: { children: React.ReactNode })
     setSeedRunning(true);
     setSeedError(null);
     try {
-      const result = await executor.execute({ workflowId, manualInput: input });
+      const response = await fetch('/api/walkthrough/seed', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ workflowId, input }),
+      });
+      const result = await response.json() as { executionId?: string; status?: string; error?: string };
+      if (!response.ok || !result.executionId) throw new Error(result.error ?? 'Workflow seed could not be started.');
+
       setState((current) => ({
         ...current,
-        data: {
-          ...current.data,
-          lastSeedExecutionId: result.executionId,
-          lastSeedStatus: result.status,
-        },
+        data: { ...current.data, lastSeedExecutionId: result.executionId, lastSeedStatus: result.status },
       }));
+
+      let status = result.status;
+      for (let attempt = 0; attempt < 12 && status === 'running'; attempt += 1) {
+        await new Promise((resolve) => window.setTimeout(resolve, 500));
+        const poll = await fetch(`/api/walkthrough/runs/${result.executionId}`, { cache: 'no-store' });
+        if (!poll.ok) throw new Error('Unable to read workflow seed status.');
+        const current = await poll.json() as { status?: string; stepIndex?: number; totalSteps?: number };
+        status = current.status;
+        setState((state) => ({ ...state, data: { ...state.data, lastSeedStatus: status, lastSeedProgress: { stepIndex: current.stepIndex, totalSteps: current.totalSteps } } }));
+      }
       return result.executionId;
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Workflow seed could not be started.';
@@ -58,7 +67,7 @@ export function WalkthroughProvider({ children }: { children: React.ReactNode })
     } finally {
       setSeedRunning(false);
     }
-  }, [executor]);
+  }, []);
 
   const value = React.useMemo(() => ({
     ...state,
