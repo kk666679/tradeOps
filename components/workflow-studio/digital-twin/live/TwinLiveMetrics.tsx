@@ -1,52 +1,36 @@
 'use client';
+import * as React from 'react';
+import { Card, CardContent } from '@/components/ui/card';
 
-import {
-  useDigitalTwinStore,
-  selectActiveRun,
-} from '../store/useDigitalTwinStore';
+export interface LiveMetric { id: string; label: string; value: number; unit?: string; delta?: number; }
 
-export function TwinLiveMetrics() {
-  const run = useDigitalTwinStore(selectActiveRun);
-  const nodes = useDigitalTwinStore((s) => s.nodes);
+const SAMPLE: LiveMetric[] = [
+  { id: 'thru',  label: 'Throughput',     value: 342,  unit: 'plt/h',  delta: 4.2 },
+  { id: 'dwell', label: 'Avg Dwell',      value: 47,   unit: 'min',    delta: -2.1 },
+  { id: 'util',  label: 'Dock Util',      value: 78.4, unit: '%',      delta: 1.3 },
+  { id: 'exc',   label: 'Exceptions',     value: 3,    unit: '',       delta: -25 },
+];
 
-  const activeCount = nodes.filter((n) => n.data.status === 'active').length;
-  const blockedCount = nodes.filter((n) => n.data.status === 'blocked').length;
-
+export function TwinLiveMetrics({ metrics = SAMPLE }: { metrics?: LiveMetric[] }) {
   return (
-    <div className="grid grid-cols-2 gap-3 p-3">
-      <Metric label="Active" value={activeCount} tone="emerald" />
-      <Metric label="Blocked" value={blockedCount} tone="amber" />
-      {run && (
-        <>
-          <Metric label="Step" value={`${run.stepIndex}/${run.totalSteps}`} tone="blue" />
-          <Metric label="Throughput" value={run.metrics.throughput.toFixed(0)} tone="cyan" />
-          <Metric label="Dwell" value={`${run.metrics.dwell.toFixed(1)}h`} tone="violet" />
-          <Metric label="Utilization" value={`${run.metrics.utilization.toFixed(0)}%`} tone="emerald" />
-        </>
-      )}
+    <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+      {metrics.map((m) => (
+        <Card key={m.id}>
+          <CardContent className="p-3">
+            <div className="text-xs text-muted-foreground">{m.label}</div>
+            <div className="mt-1 flex items-baseline gap-1">
+              <span className="text-xl font-semibold tabular-nums">{m.value.toLocaleString()}</span>
+              {m.unit && <span className="text-xs text-muted-foreground">{m.unit}</span>}
+            </div>
+            {m.delta != null && (
+              <div className={`mt-0.5 text-[11px] ${m.delta >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                {m.delta >= 0 ? '▲' : '▼'} {Math.abs(m.delta)}%
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      ))}
     </div>
   );
 }
-
-function Metric({ label, value, tone }: {
-  label: string; value: string | number;
-  tone: 'emerald' | 'amber' | 'blue' | 'cyan' | 'violet';
-}) {
-  const color: Record<typeof tone, string> = {
-    emerald: 'text-emerald-300',
-    amber: 'text-amber-300',
-    blue: 'text-blue-300',
-    cyan: 'text-cyan-300',
-    violet: 'text-violet-300',
-  };
-  return (
-    <div className="rounded-lg border border-slate-800 bg-slate-900/40 p-2">
-      <div className="text-[10px] uppercase tracking-wide text-slate-500">
-        {label}
-      </div>
-      <div className={`mt-0.5 text-lg font-semibold tabular-nums ${color[tone]}`}>
-        {value}
-      </div>
-    </div>
-  );
-}
+export default TwinLiveMetrics;
