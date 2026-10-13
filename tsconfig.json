@@ -25,9 +25,15 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "jsx": "react-jsx",
+    "allowJs": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
     "paths": {
       "@/*": ["./*"],
-      "@common/*": ["./common/*"],
+      "@common/*": ["./components/common/*"],
       "@server/*": ["./server/*"]
     },
     "importHelpers": false,
