@@ -1,11 +1,14 @@
 import Link from 'next/link';
 import { PageHeader } from '@/components/dashboard/page/PageHeader';
 import type { WalkthroughSpec } from './walkthrough-types';
+import { WalkthroughProgress } from './WalkthroughProgress';
 
 export function WalkthroughPage({ spec }: { spec: WalkthroughSpec }) {
   return (
     <article className="mx-auto max-w-6xl space-y-8">
       <PageHeader title={`${spec.title} walkthrough`} description={spec.summary} />
+
+      <WalkthroughProgress spec={spec} />
 
       <nav aria-label="Walkthrough contents" className="rounded-lg border bg-card p-4">
         <h2 className="text-sm font-semibold">On this page</h2>
