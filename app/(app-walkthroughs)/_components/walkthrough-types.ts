@@ -62,6 +62,8 @@ export interface WalkthroughTroubleshooting {
 }
 
 export interface WalkthroughSpec {
+  /** Optional persisted workflow to run when a walkthrough seeds a real workflow. */
+  seedWorkflowId?: string;
   domain: WalkthroughDomain;
   title: string;
   summary: string;
