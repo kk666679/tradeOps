@@ -1,21 +1,26 @@
 'use client';
 
+import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
   Background,
   Controls,
   MiniMap,
   ReactFlow,
-  type Edge,
-  type Node,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
 import { trpc } from '@/lib/trpc/client';
+import { nodeTypes } from '@/components/workflow-studio/nodes/registry';
 import type { Accreditation } from '@/components/workflow-studio/brokerage/types';
+import { toXYFlow } from './adapt';
 
-const DEFAULT_NODES: Node[] = [];
-const DEFAULT_EDGES: Edge[] = [];
+/**
+ * Sample accreditations. The live list comes from tRPC when a tenantId
+ * is provided; this constant is a fallback for static previews.
+ * TODO: replace with persisted data from tradeOps.brokerage.getAccreditations
+ */
+export const SAMPLE_ACCREDITATION: Accreditation[] = [];
 
 function AccreditationStatusBadge({ accreditation }: { accreditation: Accreditation }) {
   const statusColors: Record<string, string> = {
@@ -42,7 +47,7 @@ export function BrokerageWorkflowGraph({
   tenantId: string;
   className?: string;
 }) {
-  const { data: workflow } = useQuery({
+  const { data: workflow, isLoading } = useQuery({
     queryKey: ['brokerage-workflow', tenantId],
     queryFn: () => trpc.tradeOps.declarations.getWorkflow.query({ tenantId }),
     enabled: !!tenantId,
@@ -54,14 +59,19 @@ export function BrokerageWorkflowGraph({
     enabled: !!tenantId,
   });
 
-  const nodes = (workflow?.nodes ?? DEFAULT_NODES) as Node[];
-  const edges = (workflow?.edges ?? DEFAULT_EDGES) as Edge[];
+  // Domain → canvas. Memoized; stable across re-renders unless data changes.
+  const graph = useMemo(
+    () => toXYFlow(workflow?.nodes ?? [], workflow?.edges ?? []),
+    [workflow],
+  );
 
-  if (!workflow) {
+  if (isLoading || !workflow) {
     return (
       <div className={`rounded-lg border border-dashed border-muted-foreground/40 bg-muted/20 p-6 text-sm ${className}`}>
         <p className="font-medium">Brokerage workflow graph</p>
-        <p className="mt-1 text-xs text-muted-foreground">Loading workflow...</p>
+        <p className="mt-1 text-xs text-muted-foreground">
+          {isLoading ? 'Loading workflow…' : 'No workflow found for this tenant.'}
+        </p>
       </div>
     );
   }
@@ -70,23 +80,41 @@ export function BrokerageWorkflowGraph({
     <div className={`h-96 w-full ${className}`}>
       <div className="h-full">
         <ReactFlow
-          nodes={nodes}
-          edges={edges}
-          onNodesChange={() => {}}
-          onEdgesChange={() => {}}
-          onConnect={() => {}}
+          nodes={graph.nodes}
+          edges={graph.edges}
+          nodeTypes={nodeTypes}
+          nodesDraggable={false}
+          nodesConnectable={false}
+          elementsSelectable={false}
           fitView
-          attributionPosition="bottom-right"
+          fitViewOptions={{ padding: 0.2 }}
+          minZoom={0.2}
+          maxZoom={2}
+          proOptions={{ hideAttribution: true }}
         >
           <Background />
-          <Controls />
-          <MiniMap />
+          <Controls showInteractive={false} />
+          <MiniMap
+            pannable
+            zoomable
+            nodeColor={(n) => {
+              const kind = (n.data as { kind?: string })?.kind;
+              switch (kind) {
+                case 'start':    return '#10b981';
+                case 'task':     return '#3b82f6';
+                case 'approval': return '#f59e0b';
+                case 'decision': return '#8b5cf6';
+                case 'end':      return '#f43f5e';
+                default:         return '#475569';
+              }
+            }}
+          />
         </ReactFlow>
       </div>
 
       {accreditations && accreditations.length > 0 && (
         <div className="mt-4 space-y-2">
-          <h4 className="font-medium text-sm">Accreditations</h4>
+          <h4 className="text-sm font-medium">Accreditations</h4>
           <div className="flex flex-wrap gap-2">
             {accreditations.map((acc: Accreditation) => (
               <AccreditationStatusBadge key={acc.id} accreditation={acc} />
