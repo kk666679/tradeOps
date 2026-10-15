@@ -8,7 +8,11 @@ export const viewport: Viewport = {
   themeColor: brand.colors.primary,
 };
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3000';
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: brand.metadata.title,
   description: brand.metadata.description,
   keywords: [...brand.metadata.keywords],
@@ -49,7 +53,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning data-scroll-behavior="smooth">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
