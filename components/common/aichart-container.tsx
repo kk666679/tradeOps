@@ -4,7 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ClientOnlyChart } from "@/components/ui/client-only-chart"
 import { cn } from "@/lib/utils"
 import { Download, Filter, RefreshCw, ZoomIn, ZoomOut, Calendar } from "lucide-react"
-import { ReactNode } from "react"
+import type { ReactNode } from "react"
 
 interface ChartTimeRange {
   label: string

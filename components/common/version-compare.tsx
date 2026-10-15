@@ -3,7 +3,8 @@
 import * as React from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { LucideIcon, ArrowRight, Plus, Minus, RefreshCw, ChevronDown, Eye, Download, Copy } from "lucide-react";
+import { ArrowRight, Plus, Minus, RefreshCw, ChevronDown, Eye, Download, Copy } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -49,8 +50,8 @@ export function AIVersionCompare({
   onExport,
   className,
 }: AIVersionCompareProps) {
-  const [selectedVersion, setSelectedVersion] = React.useState<string>(items[0]?.id);
-  const [compareWith, setCompareWith] = React.useState<string>(items[1]?.id || items[0]?.id);
+  const [selectedVersion, setSelectedVersion] = React.useState<string | undefined>(items[0]?.id);
+  const [compareWith, setCompareWith] = React.useState<string | undefined>(items[1]?.id ?? items[0]?.id);
 
   const selected = items.find(i => i.id === selectedVersion);
   const compare = items.find(i => i.id === compareWith);
@@ -73,7 +74,7 @@ export function AIVersionCompare({
               <Eye className="h-4 w-4 mr-1" />
               Preview
             </Button>
-            {onExport && (
+            {onExport && selectedVersion && (
               <Button variant="outline" size="sm" onClick={() => onExport(selectedVersion)}>
                 <Download className="h-4 w-4 mr-1" />
                 Export
@@ -341,4 +342,3 @@ function UnifiedDiffLine({ line }: { line: VersionDiff }) {
 }
 
 export default AIVersionCompare;
-

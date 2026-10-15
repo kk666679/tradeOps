@@ -47,7 +47,7 @@ const matchJsxTag = (code: string) => {
 
   const match = code.match(TAG_REGEX);
 
-  if (!match || match.index === undefined) {
+  if (!match || match.index === undefined || match[1] === undefined) {
     return null;
   }
 
@@ -63,7 +63,7 @@ const matchJsxTag = (code: string) => {
   }
 
   return {
-    attributes: attributes.trim(),
+    attributes: attributes?.trim() ?? "",
     endIndex: match.index + fullMatch.length,
     startIndex: match.index,
     tag: fullMatch,

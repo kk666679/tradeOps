@@ -43,6 +43,7 @@ export function AINotification({
       
       return () => clearTimeout(timer)
     }
+    return;
   }, [duration, onClose])
 
   if (!isVisible) return null

@@ -71,8 +71,11 @@ const parseStackFrame = (line: string): StackFrame => {
 
   // Pattern: at functionName (filePath:line:column)
   const withParensMatch = trimmed.match(STACK_FRAME_WITH_PARENS_REGEX);
-  if (withParensMatch) {
-    const [, functionName, filePath, lineNum, colNum] = withParensMatch;
+  const filePath = withParensMatch?.[2];
+  if (withParensMatch && filePath !== undefined) {
+    const functionName = withParensMatch[1];
+    const lineNum = withParensMatch[3];
+    const colNum = withParensMatch[4];
     const isInternal =
       filePath.includes("node_modules") ||
       filePath.startsWith("node:") ||
@@ -128,7 +131,16 @@ const parseStackTrace = (trace: string): ParsedStackTrace => {
     };
   }
 
-  const firstLine = lines[0].trim();
+  const firstLineValue = lines[0];
+  if (firstLineValue === undefined) {
+    return {
+      errorMessage: trace,
+      errorType: null,
+      frames: [],
+      raw: trace,
+    };
+  }
+  const firstLine = firstLineValue.trim();
   let errorType: string | null = null;
   let errorMessage = firstLine;
 
@@ -136,7 +148,7 @@ const parseStackTrace = (trace: string): ParsedStackTrace => {
   const errorMatch = firstLine.match(ERROR_TYPE_REGEX);
   if (errorMatch) {
     const [, type, msg] = errorMatch;
-    errorType = type;
+    errorType = type ?? null;
     errorMessage = msg || "";
   }
 
