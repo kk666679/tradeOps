@@ -4,6 +4,7 @@
 // loop run; the service re-enqueues while iterations remain, so a large
 // dataset drains incrementally instead of holding a single long-lived job.
 
+import { QueueService } from './queue.service';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { LoopExecutionService } from '../workflow/loop-execution.service';
 
@@ -14,7 +15,7 @@ export class LoopProcessor implements OnModuleInit {
   private readonly logger = new Logger(LoopProcessor.name);
 
   constructor(
-    private readonly queues: import('./queue.service').QueueService,
+    private readonly queues: QueueService,
     private readonly loops: LoopExecutionService,
   ) {}
 

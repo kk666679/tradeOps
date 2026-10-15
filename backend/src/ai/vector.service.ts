@@ -1,6 +1,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { ConfigService } from '@nestjs/config';
+import type { WeaviateClient } from 'weaviate-client';
 
 interface VectorRecord {
   id: string;
@@ -12,7 +13,7 @@ interface VectorRecord {
 export class VectorService implements OnModuleInit {
   private prisma: PrismaClient;
   private usePgVector = true;
-  private weaviateClient: any = null;
+  private weaviateClient: WeaviateClient | null = null;
 
   constructor(private config: ConfigService) {
     this.prisma = new PrismaClient();
@@ -20,14 +21,13 @@ export class VectorService implements OnModuleInit {
 
   async onModuleInit() {
     const weaviateHost = this.config.get('weaviate.host');
-    const weaviateScheme = this.config.get('weaviate.scheme');
     const weaviateApiKey = this.config.get('weaviate.apiKey');
 
     if (weaviateHost && weaviateApiKey) {
       try {
-        const { WeaviateClient } = await import('weaviate-client');
-        this.weaviateClient = await WeaviateClient.connectToWeaviateCloud(weaviateHost, {
-          authCredentials: new weaviateClient.ApiKey(weaviateApiKey),
+        const { ApiKey, connectToWeaviateCloud } = await import('weaviate-client');
+        this.weaviateClient = await connectToWeaviateCloud(weaviateHost, {
+          authCredentials: new ApiKey(weaviateApiKey),
         });
         this.usePgVector = false;
         console.log('Weaviate connected successfully');
@@ -61,11 +61,12 @@ export class VectorService implements OnModuleInit {
   private async upsertWeaviate(tenantId: string, id: string, vector: number[], payload: Record<string, unknown>) {
     if (!this.weaviateClient) return;
     const collection = this.weaviateClient.collections.get('Document');
-    await collection.data.upsert({
-      id,
-      vector,
-      properties: { tenantId, ...payload },
-    });
+    const properties = { tenantId, ...payload };
+    if (await collection.data.exists(id)) {
+      await collection.data.replace({ id, vectors: vector, properties });
+    } else {
+      await collection.data.insert({ id, vectors: vector, properties });
+    }
   }
 
   async search(tenantId: string, vector: number[], k = 5): Promise<{ id: string; score: number; payload: Record<string, unknown> }[]> {
@@ -97,7 +98,7 @@ export class VectorService implements OnModuleInit {
     const collection = this.weaviateClient.collections.get('Document');
     const results = await collection.query.nearVector(vector, {
       limit: k,
-      filters: this.weaviateClient.filter.byProperty('tenantId').equal(tenantId),
+      filters: collection.filter.byProperty('tenantId').equal(tenantId),
       returnMetadata: ['score'],
     });
     return results.objects.map((obj: any) => ({

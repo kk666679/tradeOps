@@ -1,5 +1,5 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { pipeline, Pipeline, env } from '@xenova/transformers';
+import { pipeline, type FeatureExtractionPipeline, env } from '@xenova/transformers';
 
 env.allowLocalModels = false;
 env.allowRemoteModels = true;
@@ -7,7 +7,7 @@ env.useBrowserCache = true;
 
 @Injectable()
 export class EmbeddingsService implements OnModuleInit {
-  private embedder: Pipeline | null = null;
+  private embedder: FeatureExtractionPipeline | null = null;
   private readonly modelId = 'Xenova/all-MiniLM-L6-v2';
   private readonly embeddingDim = 384;
 

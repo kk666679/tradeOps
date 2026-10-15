@@ -10,23 +10,12 @@
 import { Injectable } from '@nestjs/common';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
-import { RunStatus } from '@prisma/client';
+import { TwinRunStatus, type TwinRun } from '@prisma/client';
 import { TrpcService } from '../trpc/trpc.service';
 import { requireAuth, requireTenant } from '../trpc/trpc.middleware';
 import { PrismaService } from '../prisma/prisma.service';
 
 const takeSchema = z.number().int().min(1).max(200).default(50);
-
-type RunRow = {
-  id: string;
-  scenarioId: string;
-  status: string;
-  startedAt: Date;
-  endedAt: Date | null;
-  stepIndex: number;
-  totalSteps: number;
-  finalMetrics: unknown;
-};
 
 @Injectable()
 export class DigitalTwinRouter {
@@ -44,31 +33,19 @@ export class DigitalTwinRouter {
       scenarios: readProcedure
         .input(z.object({ take: takeSchema.optional() }).optional())
         .query(async ({ ctx, input }) => {
-          const tenantRunCounts = await this.prisma.run.groupBy({
-            by: ['scenarioId'],
+          const rows = await this.prisma.twinScenario.findMany({
             where: { tenantId: ctx.tenantId! },
-            _count: { _all: true },
-          });
-          const runCounts = new Map(
-            tenantRunCounts.map((row) => [
-              row.scenarioId,
-              typeof row._count === 'object' && row._count !== null
-                ? row._count._all ?? 0
-                : 0,
-            ]),
-          );
-          const rows = await this.prisma.scenario.findMany({
-            where: { id: { in: tenantRunCounts.map((row) => row.scenarioId) } },
             orderBy: { updatedAt: 'desc' },
             take: input?.take ?? 50,
+            include: { _count: { select: { runs: true } } },
           });
           return rows.map((r) => ({
             id: r.id,
             name: r.name,
             description: r.description,
-            inputs: r.parameters,
+            inputs: r.inputs,
             assertions: r.assertions,
-            runCount: runCounts.get(r.id) ?? 0,
+            runCount: r._count.runs,
             createdAt: r.createdAt.toISOString(),
             updatedAt: r.updatedAt.toISOString(),
           }));
@@ -77,7 +54,7 @@ export class DigitalTwinRouter {
       scenario: readProcedure
         .input(z.object({ id: z.string().min(1) }))
         .query(async ({ ctx, input }) => {
-          const row = await this.prisma.scenario.findFirst({
+          const row = await this.prisma.twinScenario.findFirst({
             where: { id: input.id, tenantId: ctx.tenantId! },
             include: { runs: { orderBy: { startedAt: 'desc' }, take: 50 } },
           });
@@ -103,7 +80,7 @@ export class DigitalTwinRouter {
           }),
         )
         .mutation(async ({ ctx, input }) => {
-          const row = await this.prisma.scenario.create({
+          const row = await this.prisma.twinScenario.create({
             data: {
               tenantId: ctx.tenantId!,
               name: input.name,
@@ -129,18 +106,18 @@ export class DigitalTwinRouter {
           }),
         )
         .mutation(async ({ ctx, input }) => {
-          const scenario = await this.prisma.scenario.findFirst({
+          const scenario = await this.prisma.twinScenario.findFirst({
             where: { id: input.scenarioId, tenantId: ctx.tenantId! },
             select: { id: true },
           });
           if (!scenario) {
             throw new TRPCError({ code: 'NOT_FOUND', message: 'Scenario not found.' });
           }
-          const run = await this.prisma.run.create({
+          const run = await this.prisma.twinRun.create({
             data: {
               tenantId: ctx.tenantId!,
               scenarioId: scenario.id,
-              status: RunStatus.QUEUED,
+              status: TwinRunStatus.QUEUED,
               horizonDays: input.horizonDays,
             },
           });
@@ -155,7 +132,7 @@ export class DigitalTwinRouter {
             .optional(),
         )
         .query(async ({ ctx, input }) => {
-          const rows = await this.prisma.run.findMany({
+          const rows = await this.prisma.twinRun.findMany({
             where: {
               tenantId: ctx.tenantId!,
               ...(input?.scenarioId ? { scenarioId: input.scenarioId } : {}),
@@ -169,28 +146,34 @@ export class DigitalTwinRouter {
       run: readProcedure
         .input(z.object({ id: z.string().min(1) }))
         .query(async ({ ctx, input }) => {
-          const run = await this.prisma.run.findFirst({
+          const run = await this.prisma.twinRun.findFirst({
             where: { id: input.id, tenantId: ctx.tenantId! },
+            include: { metrics: true },
           });
           if (!run) throw new TRPCError({ code: 'NOT_FOUND', message: 'Run not found.' });
           return {
             ...this.toRun(run),
-            metrics: run.finalMetrics,
+            metrics: run.metrics,
           };
         }),
     });
   }
 
-  private toRun(run: RunRow) {
+  private toRun(
+    run: Pick<
+      TwinRun,
+      'id' | 'scenarioId' | 'status' | 'startedAt' | 'endedAt' | 'horizonDays' | 'result' | 'error'
+    >,
+  ) {
     return {
       id: run.id,
       scenarioId: run.scenarioId,
       status: run.status,
       startedAt: run.startedAt.toISOString(),
       endedAt: run.endedAt?.toISOString() ?? null,
-      stepIndex: run.stepIndex,
-      totalSteps: run.totalSteps,
-      finalMetrics: run.finalMetrics,
+      horizonDays: run.horizonDays,
+      finalMetrics: run.result,
+      error: run.error,
     };
   }
 }
