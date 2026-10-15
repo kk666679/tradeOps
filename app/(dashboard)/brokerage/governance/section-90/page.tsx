@@ -9,6 +9,9 @@ export const metadata = {
 
 export default function Section90Page() {
   const accreditation = SAMPLE_ACCREDITATION;
+  const expiresAt = accreditation.expiresAt
+    ? new Date(accreditation.expiresAt).toLocaleDateString()
+    : "not recorded";
 
   return (
     <>
@@ -21,7 +24,7 @@ export default function Section90Page() {
       <BrokerageHeader
         eyebrow="Customs Act 1967 §90"
         title="Section 90 compliance checklist"
-        description={`Licence ${accreditation.licenceNumber} · ${accreditation.ejenType} · expires ${new Date(accreditation.expiresAt).toLocaleDateString()}. Print, sign, and file for your firm's compliance records.`}
+        description={`Licence ${accreditation.licenceNumber} · ${accreditation.ejenType} · expires ${expiresAt}. Print, sign, and file for your firm's compliance records.`}
       />
 
       <div className="grid grid-cols-1 gap-4 px-4 pb-6 lg:grid-cols-[1fr_360px]">

@@ -1,7 +1,11 @@
 import type { ReactNode } from "react";
 import { BrokerageNav } from "./_components";
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3000';
+
 export const metadata = {
+  metadataBase: new URL(siteUrl),
   title: "Brokerage · TradeOps",
   description:
     "Customs brokerage operations — Section 90 accreditation, declarations, clients, audit, and governance.",

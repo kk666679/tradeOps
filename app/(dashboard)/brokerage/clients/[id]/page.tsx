@@ -50,6 +50,7 @@ export default async function ClientDetailPage({
       />
     );
   }
+  const authorization = client.authorization;
 
   return (
     <>
@@ -78,7 +79,7 @@ export default async function ClientDetailPage({
             <h2 className="mb-3 font-mono text-[10px] uppercase tracking-wider text-[var(--text-muted)]">
               §90(1)(b) · Written authorization
             </h2>
-            {client.authorization.written ? (
+            {authorization?.written ? (
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-2 font-mono text-[11.5px] text-emerald-400">
                   <span>✓</span>
@@ -90,7 +91,7 @@ export default async function ClientDetailPage({
                       Reference
                     </dt>
                     <dd className="mt-0.5 font-mono text-[var(--text)]">
-                      {client.authorization.reference}
+                      {authorization.reference}
                     </dd>
                   </div>
                   <div>
@@ -98,7 +99,7 @@ export default async function ClientDetailPage({
                       Signed
                     </dt>
                     <dd className="mt-0.5 font-mono text-[var(--text)]">
-                      {client.authorization.signedAt}
+                      {authorization.signedAt}
                     </dd>
                   </div>
                   <div className="col-span-2">
@@ -106,7 +107,7 @@ export default async function ClientDetailPage({
                       Signed by
                     </dt>
                     <dd className="mt-0.5 text-[var(--text-secondary)]">
-                      {client.authorization.signedBy}
+                      {authorization.signedBy}
                     </dd>
                   </div>
                 </dl>
@@ -152,14 +153,18 @@ export default async function ClientDetailPage({
                   Assigned brokers
                 </dt>
                 <dd className="mt-1 flex flex-wrap gap-1">
-                  {client.assignedBrokers.map((b) => (
-                    <span
-                      key={b}
-                      className="rounded bg-[var(--bg-subtle)] px-1.5 py-0.5 font-mono text-[10.5px] text-[var(--text-secondary)]"
-                    >
-                      {b}
-                    </span>
-                  ))}
+                  {client.assignedBrokers?.length ? (
+                    client.assignedBrokers.map((b) => (
+                      <span
+                        key={b}
+                        className="rounded bg-[var(--bg-subtle)] px-1.5 py-0.5 font-mono text-[10.5px] text-[var(--text-secondary)]"
+                      >
+                        {b}
+                      </span>
+                    ))
+                  ) : (
+                    <span className="text-[var(--text-muted)]">Not assigned</span>
+                  )}
                 </dd>
               </div>
             </dl>
@@ -175,8 +180,8 @@ export default async function ClientDetailPage({
             <ul className="flex flex-col gap-2 font-mono text-[11px]">
               <li className="flex items-center justify-between">
                 <span className="text-[var(--text-muted)]">§90(1)(b) authorization</span>
-                <span className={client.authorization.written ? "text-emerald-400" : "text-red-400"}>
-                  {client.authorization.written ? "✓" : "✕"}
+                <span className={authorization?.written ? "text-emerald-400" : "text-red-400"}>
+                  {authorization?.written ? "✓" : "✕"}
                 </span>
               </li>
               <li className="flex items-center justify-between">

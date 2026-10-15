@@ -163,10 +163,10 @@ function ClientCard({ client }: { client: BrokerClient }) {
         <span className="text-[var(--border)]">·</span>
         <span
           className={
-            client.authorization.written ? "text-emerald-400" : "text-red-400"
+            client.authorization?.written ? "text-emerald-400" : "text-red-400"
           }
         >
-          {client.authorization.written ? "✓ authorized" : "✕ no §90(1)(b)"}
+          {client.authorization?.written ? "✓ authorized" : "✕ no §90(1)(b)"}
         </span>
       </div>
     </Link>

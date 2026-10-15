@@ -50,13 +50,16 @@ function KpiTile({
 
 export default function BrokerageOverviewPage() {
   const accreditation = SAMPLE_ACCREDITATION;
+  const expiresAt = accreditation.expiresAt
+    ? new Date(accreditation.expiresAt).toLocaleDateString()
+    : "not recorded";
 
   return (
     <>
       <BrokerageHeader
         eyebrow="Section 90 · Customs Act 1967"
         title="Brokerage operations"
-        description={`Licence ${accreditation.licenceNumber} · ${accreditation.ejenType} · expires ${new Date(accreditation.expiresAt).toLocaleDateString()}`}
+        description={`Licence ${accreditation.licenceNumber} · ${accreditation.ejenType} · expires ${expiresAt}`}
         actions={
           <>
             <Link

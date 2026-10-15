@@ -52,6 +52,19 @@ const EXCEPTION_MARKER = {
   color: "var(--color-alert-500, #e11d48)",
 } as const
 
+function requireArrayItem<T>(items: readonly T[], index: number, source: string): T {
+  const item = items[index]
+  if (item === undefined) {
+    throw new Error(`Expected ${source} to contain an item at index ${index}`)
+  }
+  return item
+}
+
+const CLOSE_LEDGER_NOTE = requireArrayItem(CONTROL_NOTES, 0, "control notes")
+const CLOSE_RISK_NOTE = requireArrayItem(CONTROL_NOTES, 1, "control notes")
+const CLOSE_RECON_STEP = requireArrayItem(CLOSE_OUT_STEPS, 0, "close-out steps")
+const CLOSE_AUDIT_STEP = requireArrayItem(CLOSE_OUT_STEPS, 1, "close-out steps")
+
 /* ============================================================================
    Domain registry — single source of truth for steps and footnotes
    ========================================================================== */
@@ -66,20 +79,20 @@ const NOTE_DEFINITIONS: readonly WorkflowNoteDefinition[] = [
   {
     id: "close-ledger",
     zone: "control",
-    title: CONTROL_NOTES[0].title,
-    sub: CONTROL_NOTES[0].sub,
+    title: CLOSE_LEDGER_NOTE.title,
+    sub: CLOSE_LEDGER_NOTE.sub,
     description:
       "Every step in the workflow appends one event to the bonded ledger. Events are hash-chained, so the sequence can be verified after the fact.",
-    event: CONTROL_NOTES[0].event,
+    event: CLOSE_LEDGER_NOTE.event,
   },
   {
     id: "close-risk",
     zone: "control",
-    title: CONTROL_NOTES[1].title,
-    sub: CONTROL_NOTES[1].sub,
+    title: CLOSE_RISK_NOTE.title,
+    sub: CLOSE_RISK_NOTE.sub,
     description:
       "When an agent detects an anomaly it raises a hold. Exceptions and SLA breaches are escalated with the evidence already attached.",
-    event: CONTROL_NOTES[1].event,
+    event: CLOSE_RISK_NOTE.event,
   },
 ]
 
@@ -541,8 +554,8 @@ export function buildWorkflowNodes(options: BuildNodesOptions = {}): WorkflowNod
     WorkflowStepDefinition,
     { x: number; y: number },
   ])[] = [
-    [CLOSE_OUT_STEPS[0], LAYOUT.control.recon],
-    [CLOSE_OUT_STEPS[1], LAYOUT.control.audit],
+    [CLOSE_RECON_STEP, LAYOUT.control.recon],
+    [CLOSE_AUDIT_STEP, LAYOUT.control.audit],
   ]
 
   for (const [definition, position] of closeOutWithPosition) {

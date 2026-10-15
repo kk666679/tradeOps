@@ -2,7 +2,7 @@ import Link from "next/link";
 import { BorangCTrace } from "@/components/workflow-studio/brokerage/workflow/BorangCTrace";
 import {
   SAMPLE_ACCREDITATION,
-} from "@/components/workflow-studio/brokerage/workflow/brokerageWorkflowGraph";
+} from "@/components/workflow-studio/brokerage/data";
 import type { Declaration } from "@/components/workflow-studio/brokerage/types";
 import {
   BrokerageHeader,
@@ -12,7 +12,7 @@ import {
 
 export const dynamic = "force-dynamic";
 
-const DECLARATIONS: Record<string, Declaration> = {
+const DECLARATIONS: Record<string, Declaration & { currency: string }> = {
   "K1/PG/2026/00418": {
     id: "d1",
     reference: "K1/PG/2026/00418",
@@ -175,18 +175,22 @@ export default async function DeclarationDetailPage({
                       {li.hsCode}
                     </td>
                     <td className="px-4 py-2.5">
-                      <span
-                        className={[
-                          "font-mono text-[11px]",
-                          li.hsConfidence >= 0.9
-                            ? "text-emerald-400"
-                            : li.hsConfidence >= 0.75
-                            ? "text-amber-400"
-                            : "text-red-400",
-                        ].join(" ")}
-                      >
-                        {(li.hsConfidence * 100).toFixed(0)}%
-                      </span>
+                      {li.hsConfidence !== undefined ? (
+                        <span
+                          className={[
+                            "font-mono text-[11px]",
+                            li.hsConfidence >= 0.9
+                              ? "text-emerald-400"
+                              : li.hsConfidence >= 0.75
+                              ? "text-amber-400"
+                              : "text-red-400",
+                          ].join(" ")}
+                        >
+                          {(li.hsConfidence * 100).toFixed(0)}%
+                        </span>
+                      ) : (
+                        <span className="font-mono text-[11px] text-[var(--text-muted)]">—</span>
+                      )}
                     </td>
                     <td className="px-4 py-2.5 font-mono text-[11px] text-[var(--text-secondary)]">
                       {li.quantity} {li.unit}
@@ -230,7 +234,7 @@ export default async function DeclarationDetailPage({
                       · {a.role}
                     </span>
                     <span className="ml-auto font-mono text-[10px] text-[var(--text-muted)]">
-                      {new Date(a.at).toLocaleString()}
+                      {a.at ? new Date(a.at).toLocaleString() : null}
                     </span>
                   </div>
                   {a.comment && (

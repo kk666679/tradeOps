@@ -45,9 +45,12 @@ export function TradeOpsListPage({ query, config }: { query: TradeOpsListQuery; 
   const filtered = React.useMemo(() => {
     const filter = config.filter
     const scoped = filter ? rows.filter((row) => row[filter.field] === filter.value) : rows
-    return scoped.filter((row) => JSON.stringify(row).toLowerCase().includes(search.toLowerCase()))
+    return scoped.filter((row) => {
+      const serialized = JSON.stringify(row ?? {});
+      return serialized.toLowerCase().includes(search.toLowerCase());
+    })
   }, [rows, search, config.filter])
-  const columns = config.columns ?? (filtered.length ? Object.keys(filtered[0]).filter((key) => !['id', 'tenantId', 'metadata', 'updatedAt'].includes(key)).slice(0, 5) : [])
+  const columns = config.columns ?? (filtered.length && filtered[0] ? Object.keys(filtered[0] as Record<string, unknown>).filter((key) => !['id', 'tenantId', 'metadata', 'updatedAt'].includes(key)).slice(0, 5) : [])
 
   return (
     <div className="flex flex-col gap-6">
