@@ -35,8 +35,13 @@ export async function verifyEmailToken(
     return { ok: false, reason: 'expired' };
   }
 
+  const userId = verification.userId;
+  if (!userId) {
+    return { ok: false, reason: 'invalid' };
+  }
+
   const user = await db.user.findUnique({
-    where: { id: verification.userId ?? undefined },
+    where: { id: userId },
     select: { email: true, emailVerified: true },
   });
 
@@ -51,13 +56,13 @@ export async function verifyEmailToken(
 
   await db.$transaction([
     db.user.update({
-      where: { id: verification.userId! },
+      where: { id: userId },
       data: { emailVerified: new Date() },
     }),
     db.verificationToken.delete({ where: { token: tokenHash } }),
   ]);
 
-  logger.info({ userId: verification.userId }, 'Email verified successfully');
+  logger.info('Email verified successfully', { userId });
 
   return { ok: true, email: user.email, alreadyVerified: false };
 }

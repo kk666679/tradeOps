@@ -88,7 +88,7 @@ function renderVerifyEmailHtml({
   expiresInHours,
 }: {
   name?: string;
-  verificationUrl: string;
+  verificationUrl?: string;
   expiresInHours: number;
 }): string {
   return `<!DOCTYPE html>

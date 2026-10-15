@@ -115,8 +115,10 @@ function resolveValue(value: unknown, context: Record<string, any>): unknown {
   if (typeof value !== 'string') return value;
   const exact = value.match(/^\{\{\s*([^{}]+?)\s*\}\}$/);
   if (exact) {
-    const resolved = resolvePath(exact[1], context);
-    if (resolved === undefined) throw new Error(`Expression “${exact[1]}” has no value.`);
+    const path = exact[1];
+    if (path === undefined) throw new Error('Expression path is missing.');
+    const resolved = resolvePath(path, context);
+    if (resolved === undefined) throw new Error(`Expression “${path}” has no value.`);
     return resolved;
   }
   return value.replace(/\{\{\s*([^{}]+?)\s*\}\}/g, (_match, path: string) => {
