@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2024",
-    "lib": [
-      "ES2024",
-      "DOM",
-      "DOM.Iterable"
-    ],
+    "lib": ["ES2024", "DOM", "DOM.Iterable", "WebWorker"],
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "moduleDetection": "force",
@@ -17,43 +13,21 @@
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
     "noFallthroughCasesInSwitch": true,
-    "noImplicitReturns": true,
     "forceConsistentCasingInFileNames": true,
-    "exactOptionalPropertyTypes": false,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "jsx": "react-jsx",
+    "jsx": "preserve",
     "allowJs": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
-    "paths": {
-      "@/*": ["./*"],
-      "@common/*": ["./components/common/*"],
-      "@server/*": ["./server/*"]
-    },
-    "importHelpers": false,
-    "noErrorTruncation": true,
-    "experimentalDecorators": false,
-    "emitDecoratorMetadata": false,
-    "useDefineForClassFields": true
+    "paths": { "@/*": ["./*"] },
+    "plugins": [{ "name": "next" }]
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts"
+    ".next/types/**/*.ts"
   ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "backend",
-    ".next",
-    "out"
-  ]
+  "exclude": ["node_modules", "backend", ".next", "out"]
 }
