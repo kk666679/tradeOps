@@ -4,12 +4,16 @@
   "description": "AI-native Container Freight System for Free Industrial Zones and Free Commercial Zones.",
   "start_url": "/",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
   "background_color": "#0f172a",
   "theme_color": "#0f172a",
   "orientation": "portrait-primary",
   "scope": "/",
   "lang": "en",
   "dir": "ltr",
+  "id": "/?source=pwa",
+  "prefer_related_applications": false,
+  "categories": ["business", "productivity", "logistics"],
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",
@@ -28,10 +32,29 @@
       "sizes": "180x180",
       "type": "image/png",
       "purpose": "any"
+    },
+    {
+      "src": "/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
     }
   ],
-  "categories": ["business", "productivity", "logistics"],
-  "screenshots": [],
+  "screenshots": [
+    {
+      "src": "/screenshots/dashboard-wide.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "TradeOps Dashboard"
+    },
+    {
+      "src": "/screenshots/studio-narrow.png",
+      "sizes": "750x1334",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "TwinForge Studio on mobile"
+    }
+  ],
   "shortcuts": [
     {
       "name": "Dashboard",
@@ -46,6 +69,52 @@
       "description": "Manage trade operations",
       "url": "/trade-ops",
       "icons": [{ "src": "/web-app-manifest-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Digital Twin Studio",
+      "short_name": "DT Studio",
+      "description": "Compose and run twin workflows",
+      "url": "/digital-twin",
+      "icons": [{ "src": "/web-app-manifest-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "BrokerDesk",
+      "short_name": "Broker",
+      "description": "Customs brokerage workflow studio",
+      "url": "/brokerage",
+      "icons": [{ "src": "/web-app-manifest-192x192.png", "sizes": "192x192" }]
+    }
+  ],
+  "protocol_handlers": [
+    {
+      "protocol": "web+tradeops",
+      "url": "/handlers/open?url=%s"
+    }
+  ],
+  "share_target": {
+    "action": "/share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url",
+      "files": [
+        {
+          "name": "documents",
+          "accept": ["application/pdf", "image/*", ".csv", ".json", ".xml"]
+        }
+      ]
+    }
+  },
+  "file_handlers": [
+    {
+      "action": "/open-file",
+      "accept": {
+        "application/json": [".json"],
+        "text/csv": [".csv"],
+        "application/xml": [".xml"]
+      }
     }
   ]
 }
