@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { PromptInput, Tool, ChainOfThought } from '@/components/ai-elements';
-import { LoadingSpinner } from '@/components/ai/LoadingSpinner';
+import { LoadingSpinner } from '@/components/ai-control/LoadingSpinner';
 
 export default function AICostOptimizer() {
   const [origin, setOrigin] = useState('');
@@ -37,7 +37,7 @@ export default function AICostOptimizer() {
   const handlePromptSubmit = async (prompt: string) => {
     const parts = prompt.match(/from (.+?) to (.+?)(?: weight (\d+(\.\d+)?))?/i);
 
-    if (parts) {
+    if (parts?.[1] !== undefined && parts[2] !== undefined) {
       const parsedOrigin = parts[1];
       const parsedDestination = parts[2];
       const parsedWeight = parts[3];

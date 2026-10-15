@@ -46,7 +46,7 @@ export async function POST(req: Request) {
   try {
     await mkdir(UPLOAD_DIR, { recursive: true });
     const bytes = await file.arrayBuffer();
-    await writeFile(join(UPLOAD_DIR, filename), Buffer.from(bytes));
+    await writeFile(/*turbopackIgnore: true*/ join(UPLOAD_DIR, filename), Buffer.from(bytes));
   } catch (err) {
     console.error('[upload/cargo] write failed', err);
     return NextResponse.json({ ok: false, error: 'Storage error. Please try again.' }, { status: 500 });

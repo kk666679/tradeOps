@@ -21,7 +21,7 @@ export default function CargoUpload() {
     try {
       const filenames: string[] = [];
       for (const file of files) {
-        filenames.push(await uploadDocumentFile(file));
+        filenames.push((await uploadDocumentFile(file)).name);
       }
       setUploaded((prev) => [...prev, ...filenames]);
       setFiles([]);

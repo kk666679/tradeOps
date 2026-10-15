@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Attachments } from '@/components/ai-elements';
-import { LoadingSpinner } from '@/components/ai/LoadingSpinner';
+import { LoadingSpinner } from '@/components/ai-control/LoadingSpinner';
 import { uploadDocumentFile } from '@/lib/upload-document';
 
 export default function DocumentUpload() {

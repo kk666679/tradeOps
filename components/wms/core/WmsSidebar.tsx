@@ -14,7 +14,7 @@ const ITEMS = [
   ['Movement', '/wms/movement'],
   ['Forecasting', '/wms/forecasting'],
   ['Logistics', '/wms/logistics'],
-];
+] as const;
 
 export function WmsSidebar() {
   return (

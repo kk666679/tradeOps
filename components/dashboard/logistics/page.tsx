@@ -4,7 +4,7 @@
 import { Agent, Conversation, Message, Tool } from '@/components/ai-elements';
 import { trpc } from '@/lib/trpc/react';
 import { useState } from 'react';
-import { LoadingSpinner } from '@/components/ai/LoadingSpinner';
+import { LoadingSpinner } from '@/components/ai-control/LoadingSpinner';
 
 export default function LogisticsDashboard() {
   const [messages, setMessages] = useState<Array<{ role: string; content: string; toolCalls?: any[] }>>([]);
