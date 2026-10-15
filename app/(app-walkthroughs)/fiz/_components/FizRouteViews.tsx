@@ -241,6 +241,7 @@ function CreateResource({ kind }: { kind: Kind }) {
   const subcontractCreate = trpc.fiz.subcontract.create.useMutation();
   const wastageCreate = trpc.fiz.wastage.create.useMutation();
   const isPending = [operatorCreate.isPending, machineryCreate.isPending, productionCreate.isPending, subcontractCreate.isPending, wastageCreate.isPending].some(Boolean);
+  const field = (key: string) => values[key] ?? '';
 
   const fields: Record<Kind, InputField[]> = {
     operators: [{ key: 'code', label: 'Operator code' }, { key: 'name', label: 'Operator name' }],
@@ -266,30 +267,30 @@ function CreateResource({ kind }: { kind: Kind }) {
     const number = (key: string) => Number(values[key]);
     try {
       if (kind === 'operators') {
-        await operatorCreate.mutateAsync({ code: values.code.trim(), name: values.name.trim() });
+        await operatorCreate.mutateAsync({ code: field('code').trim(), name: field('name').trim() });
         await utils.fiz.operators.list.invalidate();
       }
       if (kind === 'machinery') {
-        await machineryCreate.mutateAsync({ operatorId, ref: values.ref.trim(), hsCode: values.hsCode.trim(), description: values.description.trim() });
+        await machineryCreate.mutateAsync({ operatorId, ref: field('ref').trim(), hsCode: field('hsCode').trim(), description: field('description').trim() });
         await utils.fiz.machinery.list.invalidate();
       }
       if (kind === 'production') {
         await productionCreate.mutateAsync({
-          operatorId, ref: values.ref.trim(), inputHs: values.inputHs.trim(), inputQty: number('inputQty'), inputUom: values.inputUom.trim(),
-          outputHs: values.outputHs.trim(), outputQty: number('outputQty'), outputUom: values.outputUom.trim(),
+          operatorId, ref: field('ref').trim(), inputHs: field('inputHs').trim(), inputQty: number('inputQty'), inputUom: field('inputUom').trim(),
+          outputHs: field('outputHs').trim(), outputQty: number('outputQty'), outputUom: field('outputUom').trim(),
         });
         await utils.fiz.production.list.invalidate();
       }
       if (kind === 'subcontract') {
         await subcontractCreate.mutateAsync({
-          operatorId, ref: values.ref.trim(), subcontractor: values.subcontractor.trim(), inputHs: values.inputHs.trim(), inputQty: number('inputQty'),
-          outputHs: values.outputHs.trim(), outputQty: number('outputQty'),
+          operatorId, ref: field('ref').trim(), subcontractor: field('subcontractor').trim(), inputHs: field('inputHs').trim(), inputQty: number('inputQty'),
+          outputHs: field('outputHs').trim(), outputQty: number('outputQty'),
         });
         await utils.fiz.subcontract.list.invalidate();
       }
       if (kind === 'wastage') {
         await wastageCreate.mutateAsync({
-          operatorId, ref: values.ref.trim(), description: values.description.trim(), qty: number('qty'), uom: values.uom.trim(), reason: values.reason.trim(),
+          operatorId, ref: field('ref').trim(), description: field('description').trim(), qty: number('qty'), uom: field('uom').trim(), reason: field('reason').trim(),
         });
         await utils.fiz.wastage.list.invalidate();
       }

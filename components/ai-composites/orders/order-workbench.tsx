@@ -38,7 +38,7 @@ interface OrderItem {
   totalPrice: number;
 }
 
-export function OrderWorkbench({ tenantId, className = '' }: { tenantId: string; className?: string }) {
+export function OrderWorkbench({ tenantId = '', className = '' }: { tenantId?: string; className?: string }) {
   const { data: orders, isLoading } = useQuery({
     queryKey: ['orders', tenantId],
     queryFn: () => trpc.orderManagement.purchase.list.query({ tenantId, limit: 50 }),

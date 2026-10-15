@@ -1,4 +1,4 @@
-import { SAMPLE_ACCREDITATION } from "@/components/workflow-studio/brokerage/workflow/brokerageWorkflowGraph";
+import { SAMPLE_ACCREDITATION } from "@/components/workflow-studio/brokerage/data";
 import { Section90Checklist } from "@/components/workflow-studio/brokerage/workflow/Section90Checklist";
 import { RegulatoryHealthPanel } from "@/components/workflow-studio/brokerage/workflow/RegulatoryHealthPanel";
 import { BrokerageHeader, BrokerageBreadcrumbs } from "../../_components";

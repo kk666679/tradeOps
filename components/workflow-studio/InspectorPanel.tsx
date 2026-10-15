@@ -1,6 +1,7 @@
 'use client';
 import { useMemo } from 'react';
 import { useStudio } from '@/lib/workflow-studio/store';
+import { getSupportedOperations } from '@/lib/workflow-studio/logic';
 import { byType } from '@/lib/workflow-studio/node-definitions';
 import { HS_BY_CODE, normalizeHsCode } from '@/lib/workflow-studio/hs-catalog';
 import { clock } from '@/lib/workflow-studio/constants';
@@ -15,11 +16,10 @@ export function InspectorPanel() {
   const transport = useStudio((s) => s.transport);
   const setProdEnabled = useStudio((s) => s.setProdEnabled);
   const setTransport = useStudio((s) => s.setTransport);
-  const supported = useStudio((s) => {
-    // import inside selector avoid top-level cycle concerns
-    const { getSupportedOperations } = require('@/lib/workflow-studio/logic');
-    return getSupportedOperations(s.mode, s.prodEnabled, s.transport);
-  });
+  const supported = useMemo(
+    () => getSupportedOperations(mode, prodEnabled, transport),
+    [mode, prodEnabled, transport],
+  );
   const nodes = useStudio((s) => s.nodes);
   const selNodes = useStudio((s) => s.selNodes);
   const decl = useStudio((s) => s.decl);

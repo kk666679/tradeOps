@@ -1,10 +1,15 @@
 'use client';
 
 import * as React from 'react';
-import type { Declaration } from '../types';
+import type { Declaration } from './types';
+
+type PipelineDeclaration = Declaration & {
+  flags?: string[];
+  draftConfidence?: number;
+};
 
 export interface BrokeragePipelineProps {
-  declarations?: Declaration[];
+  declarations?: PipelineDeclaration[];
   /** Column ordering; defaults to the live declaration statuses. */
   columns?: string[];
   className?: string;
@@ -210,7 +215,7 @@ export function BrokeragePipeline({
                   {items.map((declaration) => {
                     const isDragging = draggedId === declaration.id;
                     const isSelected = selectedId === declaration.id;
-                    const flags = declaration.flags ?? [];
+                    const flags = ((declaration.flags as string[] | undefined) ?? []);
 
                     return (
                       <article
@@ -252,7 +257,7 @@ export function BrokeragePipeline({
 
                         <div className="mt-2 flex flex-wrap items-center gap-1">
                           <span className="font-mono text-[9px] text-[var(--text-muted)]">
-                            {confidenceLabel(declaration.draftConfidence)}
+                            {confidenceLabel(declaration.draftConfidence as number | undefined)}
                           </span>
                         </div>
 

@@ -3,19 +3,15 @@
 import { useState } from 'react';
 import { useDigitalTwinStore } from '../store/useDigitalTwinStore';
 import { TwinBondedLayer } from '../zones/TwinBondedLayer';
-import { TwinGateLayer } from '../zones/TwinGateLayer';
-import { TwinFizLayer } from '../zones/TwinFizLayer';
 import { TwinFczLayer } from '../zones/TwinFczLayer';
 import { TwinMovementLayer } from '../zones/TwinMovementLayer';
 import { TwinTaskQueue } from '../tasks/TwinTaskQueue';
 
-type LayerId = 'tasks' | 'bonded' | 'gates' | 'fiz' | 'fcz' | 'movement';
+type LayerId = 'tasks' | 'bonded' | 'fcz' | 'movement';
 
 const LAYERS: Array<{ id: LayerId; label: string }> = [
   { id: 'tasks',    label: 'Tasks' },
   { id: 'bonded',   label: 'Bonded' },
-  { id: 'gates',    label: 'Gates' },
-  { id: 'fiz',      label: 'FIZ' },
   { id: 'fcz',      label: 'FCZ' },
   { id: 'movement', label: 'Movement' },
 ];
@@ -47,8 +43,6 @@ export function DigitalTwinSidebar({ zoneId }: { zoneId: string }) {
       <div className="flex-1 overflow-y-auto p-3">
         {active === 'tasks'    && <TwinTaskQueue />}
         {active === 'bonded'   && <TwinBondedLayer   zoneId={zoneId} />}
-        {active === 'gates'    && <TwinGateLayer     zoneId={zoneId} />}
-        {active === 'fiz'      && <TwinFizLayer      zoneId={zoneId} />}
         {active === 'fcz'      && <TwinFczLayer      zoneId={zoneId} />}
         {active === 'movement' && <TwinMovementLayer zoneId={zoneId} />}
       </div>

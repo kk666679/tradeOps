@@ -3,7 +3,8 @@
 import * as React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { LucideIcon, Bot, User, Send, Loader2, Copy, RefreshCw, ThumbsUp, ThumbsDown, Sparkles } from "lucide-react";
+import { Bot, User, Send, Loader2, Copy, RefreshCw, ThumbsUp, ThumbsDown, Sparkles } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

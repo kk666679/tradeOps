@@ -186,7 +186,7 @@ export const SAMPLE_ACCREDITATIONS: AccreditationRecord[] = [SAMPLE_ACCREDITATIO
  * Clients
  * ---------------------------------------------------------------- */
 
-export const SAMPLE_CLIENTS: BrokerClient[] = [
+export const SAMPLE_CLIENTS: [BrokerClient, ...BrokerClient[]] = [
   {
     id: 'cl-meridian',
     name: 'Meridian Electronics Sdn Bhd',
@@ -273,7 +273,7 @@ export const SAMPLE_CLIENT: BrokerClient = SAMPLE_CLIENTS[0];
  * Declarations
  * ---------------------------------------------------------------- */
 
-export const SAMPLE_DECLARATIONS: Declaration[] = [
+export const SAMPLE_DECLARATIONS: [Declaration, ...Declaration[]] = [
   {
     id: 'd1',
     reference: 'K1/PG/2026/00418',

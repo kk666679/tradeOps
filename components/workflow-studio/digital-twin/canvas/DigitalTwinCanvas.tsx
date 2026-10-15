@@ -5,7 +5,8 @@ import {
   ReactFlow, Background, Controls, MiniMap,
   applyEdgeChanges, applyNodeChanges,
   type NodeMouseHandler, type EdgeMouseHandler,
-  type NodeTypes, type EdgeTypes,
+  type NodeProps, type NodeTypes, type EdgeTypes,
+  Handle, Position,
   SelectionMode, BackgroundVariant,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
@@ -15,11 +16,32 @@ import {
   selectSelectedEdge,
   selectSelectedNode,
 } from '../store/useDigitalTwinStore';
-import { TwinNode } from '../graph/TwinNode';
 import { TwinEdge } from '../graph/TwinEdge';
 import type { TwinGraphEdge, TwinGraphNode } from '@/lib/digital-twin/types';
 
-const nodeTypes: NodeTypes = { twin: TwinNode };
+function TwinGraphNodeView({ data, selected }: NodeProps<TwinGraphNode>) {
+  const statusColor =
+    data.status === 'error' ? 'border-red-500'
+    : data.status === 'warn' ? 'border-amber-500'
+    : 'border-emerald-500';
+
+  return (
+    <div
+      className={`relative min-w-36 rounded-lg border bg-slate-900 px-3 py-2 text-slate-100 shadow-lg ${
+        selected ? 'ring-2 ring-blue-400' : statusColor
+      }`}
+    >
+      <Handle type="target" position={Position.Left} className="!bg-slate-400" />
+      <div className="text-xs font-semibold">{data.label}</div>
+      <div className="mt-1 text-[10px] uppercase tracking-wide text-slate-400">
+        {data.kind}
+      </div>
+      <Handle type="source" position={Position.Right} className="!bg-slate-400" />
+    </div>
+  );
+}
+
+const nodeTypes: NodeTypes = { twin: TwinGraphNodeView };
 const edgeTypes: EdgeTypes = { twin: TwinEdge };
 
 export function DigitalTwinCanvas() {

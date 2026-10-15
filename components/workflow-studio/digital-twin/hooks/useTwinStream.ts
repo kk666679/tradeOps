@@ -31,29 +31,31 @@ export function useTwinStream() {
 
         if (s.nodes.length > 0) {
           const node = s.nodes[Math.floor(Math.random() * s.nodes.length)];
-          const roll = Math.random();
-          const severity: 'info' | 'warn' | 'error' =
-            roll > 0.97 ? 'error' : roll > 0.9 ? 'warn' : 'info';
+          if (node) {
+            const roll = Math.random();
+            const severity: 'info' | 'warning' | 'error' =
+              roll > 0.97 ? 'error' : roll > 0.9 ? 'warning' : 'info';
 
-          s.pushEvent({
-            kind: severity === 'info' ? 'metric' : 'alert',
-            severity,
-            message:
-              severity === 'error'
-                ? `Blocked at ${node.data.label}`
-                : severity === 'warn'
-                ? `Dwell exceeded at ${node.data.label}`
-                : `Throughput tick at ${node.data.label}`,
-            nodeId: node.id,
-          });
+            s.pushEvent({
+              kind: severity === 'info' ? 'metric' : 'alert',
+              severity,
+              message:
+                severity === 'error'
+                  ? `Blocked at ${node.data.label}`
+                  : severity === 'warning'
+                  ? `Dwell exceeded at ${node.data.label}`
+                  : `Throughput tick at ${node.data.label}`,
+              nodeId: node.id,
+            });
 
-          s.updateNodeData(node.id, {
-            status: severity === 'error' ? 'blocked' : 'active',
-            metrics: {
-              ...(node.data.metrics ?? {}),
-              lastTick: Date.now(),
-            },
-          });
+            s.updateNodeData(node.id, {
+              status: severity === 'error' ? 'error' : severity === 'warning' ? 'warn' : 'ok',
+              metrics: {
+                ...(node.data.metrics ?? {}),
+                lastTick: Date.now(),
+              },
+            });
+          }
         }
       }
 

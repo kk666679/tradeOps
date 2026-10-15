@@ -10,7 +10,8 @@ export interface Movement {
 }
 
 export interface TwinMovementLayerProps {
-  nodes: TwinNodeData[];
+  zoneId?: string;
+  nodes?: TwinNodeData[];
   movements?: Movement[];
   onSelect?: (id: string) => void;
 }
@@ -26,7 +27,7 @@ const SAMPLE: Movement[] = [
 ];
 
 export function TwinMovementLayer({ nodes, movements = SAMPLE, onSelect }: TwinMovementLayerProps) {
-  const map = React.useMemo(() => new Map(nodes.map((n) => [n.id, n])), [nodes]);
+  const map = React.useMemo(() => new Map((nodes ?? []).map((n) => [n.id, n])), [nodes]);
   return (
     <g>
       {movements.map((m) => {

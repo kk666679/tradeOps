@@ -125,7 +125,8 @@ function declaredItemsLabel(declaration: BorangCTraceProps['declaration']): stri
 function approvalLabel(declaration: BorangCTraceProps['declaration']): string {
   const approvals = declaration.approvals ?? [];
   if (approvals.length === 0) return declaration.status === 'draft' ? 'Not started' : 'Awaiting approval';
-  const last = approvals[approvals.length - 1];
+  const last = approvals.at(-1);
+  if (!last) return 'Awaiting approval';
   return `${last.decision ?? 'actioned'} · ${last.actor ?? last.role ?? '—'}`;
 }
 
@@ -297,7 +298,7 @@ export function BorangCTrace({ declaration, accreditation, className = '' }: Bor
                     {condition.pass ? '✓' : '!'}
                   </span>
                   <span className="text-[11px] text-[var(--text-secondary)]">
-                    <span className="font-medium text-[var(--text)]">{condition.label}</span>
+                    <span className="font-medium text-[var(--text)]">{condition.requirement}</span>
                     {' — '}
                     {condition.detail}
                   </span>

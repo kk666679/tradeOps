@@ -2,7 +2,7 @@
 
 import type { NodeProps } from '@xyflow/react';
 import { Handle, Position } from '@xyflow/react';
-import { cn } from '@/lib/utils/cn';
+import { cn } from '@/lib/utils';
 import type { BrokerageNodeKind } from '../taxonomy';
 
 export interface BrokerageNodeData extends Record<string, unknown> {

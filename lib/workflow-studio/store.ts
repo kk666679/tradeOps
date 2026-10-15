@@ -36,12 +36,12 @@ const seedNodes: GraphNode[] = SEED_TYPES.map((type, i) => ({
   pgaLicense: '',
 }));
 
-const seedEdges: GraphEdge[] = seedNodes.slice(0, -1).map((n, i) => ({
-  id: 'e' + i,
-  source: n.id,
-  target: seedNodes[i + 1].id,
-  provenance: 'pending',
-}));
+const seedEdges: GraphEdge[] = seedNodes.slice(0, -1).flatMap((n, i) => {
+  const target = seedNodes[i + 1];
+  return target
+    ? [{ id: 'e' + i, source: n.id, target: target.id, provenance: 'pending' }]
+    : [];
+});
 
 interface StudioStore {
   mode: Mode; prodEnabled: boolean; transport: boolean; running: boolean;
@@ -201,6 +201,7 @@ export const useStudio = create<StudioStore>()((set, get) => ({
     const s = get();
     if (!s.history.past.length) return;
     const prev = s.history.past[s.history.past.length - 1];
+    if (!prev) return;
     set({
       nodes: prev.nodes, edges: prev.edges,
       selNodes: new Set(), selEdges: new Set(),
@@ -216,6 +217,7 @@ export const useStudio = create<StudioStore>()((set, get) => ({
     const s = get();
     if (!s.history.future.length) return;
     const next = s.history.future[0];
+    if (!next) return;
     set({
       nodes: next.nodes, edges: next.edges,
       selNodes: new Set(), selEdges: new Set(),

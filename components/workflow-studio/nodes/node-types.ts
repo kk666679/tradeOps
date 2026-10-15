@@ -7,7 +7,7 @@ import type { NodeTypes } from "@xyflow/react";
 import { GenericNode } from "./generic-node";
 import { EngineNode } from "./engine-node";
 import { BrokerageNode } from "./brokerage-node";
-import { UnsupportedNode } from "./unsupported-node";
+import { UnsupportedNode } from "./UnsupportedNode";
 import { NODE_TYPES } from "../types/workflow";
 
 export const UNSUPPORTED_NODE_TYPE = "__unsupported";

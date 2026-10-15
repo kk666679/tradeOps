@@ -3,7 +3,8 @@
 import * as React from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { LucideIcon, Lightbulb, CheckCircle, ArrowRight, Sparkles, Zap, Target, TrendingUp } from "lucide-react";
+import { Lightbulb, CheckCircle, ArrowRight, Sparkles, Zap, Target, TrendingUp } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";

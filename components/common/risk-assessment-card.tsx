@@ -3,7 +3,8 @@
 import * as React from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { LucideIcon, AlertTriangle, Shield, TrendingDown, TrendingUp, Activity, Target, ChevronDown, Info } from "lucide-react";
+import { AlertTriangle, Shield, TrendingDown, TrendingUp, Activity, Target, ChevronDown, Info } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";

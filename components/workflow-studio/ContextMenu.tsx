@@ -51,12 +51,14 @@ export function ContextMenu() {
       const target = ctx.target ?? [...selNodes][0];
       return [
         { type: 'label', text: `${selNodes.size} node(s) selected` },
-        {
-          text: hasHs ? 'Change HS code…' : 'Attach HS code…',
-          shortcut: 'H',
-          action: () => s.openHsPicker(target),
-        },
-        ...(hasHs
+        ...(target
+          ? [{
+              text: hasHs ? 'Change HS code…' : 'Attach HS code…',
+              shortcut: 'H',
+              action: () => s.openHsPicker(target),
+            }]
+          : []),
+        ...(hasHs && target
           ? [{
               text: 'Remove HS code',
               action: () => { s.openHsPicker(target); s.clearHsCode(); },

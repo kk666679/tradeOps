@@ -80,7 +80,8 @@ export function useKeyboardShortcuts() {
       if (!meta && e.key.toLowerCase() === 'h') {
         if (s.selNodes.size === 1) {
           e.preventDefault();
-          s.openHsPicker([...s.selNodes][0]);
+          const [nodeId] = s.selNodes;
+          if (nodeId) s.openHsPicker(nodeId);
         }
         return;
       }

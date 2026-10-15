@@ -9,7 +9,7 @@ import {
 } from "../components/workflow-studio/nodes/node-types";
 import { BrokerageNode } from "../components/workflow-studio/nodes/brokerage-node";
 import { EngineNode } from "../components/workflow-studio/nodes/engine-node";
-import { UnsupportedNode } from "../components/workflow-studio/nodes/unsupported-node";
+import { UnsupportedNode } from "../components/workflow-studio/nodes/UnsupportedNode";
 import { validateGraphForEngine } from "../components/workflow-studio/lib/workflow-validation";
 import { fromReactFlow, toReactFlow } from "../components/workflow-studio/lib/workflow-serialization";
 

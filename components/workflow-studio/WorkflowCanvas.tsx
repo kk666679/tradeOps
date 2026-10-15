@@ -9,7 +9,7 @@ import { byType } from '@/lib/workflow-studio/node-definitions';
 import { useStudioInteractions } from '@/lib/workflow-studio/hooks/use-studio-interactions';
 
 export function WorkflowCanvas() {
-  const canvasRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLDivElement>(null!);
   const nodes = useStudio((s) => s.nodes);
   const edges = useStudio((s) => s.edges);
   const sizes = useStudio((s) => s.sizes);

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { TONES, Tone } from './tone';
+import { TONES, type Tone } from './tone';
 
 export interface AgentDef {
   name: string;

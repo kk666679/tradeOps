@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { WORKFLOW_DIRECTORY, type WorkflowDirectoryEntry } from '../brokerage/data';
+import { WORKFLOW_DIRECTORY, type WorkflowDirectoryEntry } from './brokerage/data';
 
 export interface WorkflowDirectoryProps {
   entries?: WorkflowDirectoryEntry[];
@@ -32,6 +32,17 @@ const STATUS_STYLE: Record<WorkflowDirectoryEntry['status'], { color: string; la
   draft: { color: '#f59e0b', label: 'Draft' },
   deprecated: { color: '#71717a', label: 'Deprecated' },
 };
+
+function getStatusStyle(status: WorkflowDirectoryEntry['status']) {
+  switch (status) {
+    case 'live':
+      return STATUS_STYLE.live;
+    case 'draft':
+      return STATUS_STYLE.draft;
+    case 'deprecated':
+      return STATUS_STYLE.deprecated;
+  }
+}
 
 export function WorkflowDirectory({ entries = WORKFLOW_DIRECTORY, className = '' }: WorkflowDirectoryProps) {
   const [domain, setDomain] = React.useState<WorkflowDirectoryEntry['domain'] | 'all'>('all');
@@ -96,7 +107,7 @@ export function WorkflowDirectory({ entries = WORKFLOW_DIRECTORY, className = ''
       ) : (
         <ul className="grid grid-cols-1 gap-3 lg:grid-cols-2">
           {filtered.map((entry) => {
-            const status = STATUS_STYLE[entry.status];
+            const status = getStatusStyle(entry.status);
             return (
               <li key={entry.id}>
                 <Link
