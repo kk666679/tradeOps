@@ -7,7 +7,13 @@ import {
   OutcomesGrid,
   KpiTile,
 } from '@/components/workflow-studio/digital-twin/twinforge';
-import { DEMO_PORTFOLIO } from '@/lib/twinforge/demo-data';
+import {
+  DEMO_KPI,
+  DEMO_LABS,
+  DEMO_OUTCOMES,
+  DEMO_PORTFOLIO,
+  DEMO_SLA,
+} from '@/lib/twinforge/demo-data';
 
 export const dynamic = 'force-dynamic';
 
@@ -50,7 +56,7 @@ export default function TwinForgeOverview() {
             <OutcomesGrid outcomes={DEMO_OUTCOMES} accounts={DEMO_PORTFOLIO} />
           </div>
 
-          <LabGrid labs={DEMO_LABS} />
+          <LabGrid labs={[...DEMO_LABS]} />
         </main>
       </div>
     </div>

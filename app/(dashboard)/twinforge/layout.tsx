@@ -1,7 +1,11 @@
 import type { ReactNode } from 'react';
 import { TwinForgeNav } from '@/components/workflow-studio/digital-twin/twinforge';
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3000';
+
 export const metadata = {
+  metadataBase: new URL(siteUrl),
   title: {
     default: 'TwinForge Studio',
     template: '%s · TwinForge',

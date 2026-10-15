@@ -51,7 +51,7 @@ function main() {
   // The marker already ends with `:`, so the type expression begins at the
   // first non-whitespace char after the marker.
   let exprStart = markerIdx + marker.length;
-  while (exprStart < decl.length && /\s/.test(decl[exprStart])) exprStart++;
+  while (exprStart < decl.length && /\s/.test(decl.charAt(exprStart))) exprStart++;
   const exportIdx = decl.indexOf('export type AppRouter');
   if (exportIdx === -1) {
     console.error('Could not find AppRouter export in emitted declaration');

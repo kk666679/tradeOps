@@ -1,3 +1,5 @@
+/// <reference types="node" />
+
 import assert from "node:assert/strict";
 import type { WorkflowDefinition } from "../components/workflow-studio/types/workflow";
 import {
@@ -40,19 +42,29 @@ assert.equal(
 );
 
 const rendered = toReactFlow(definition, ENGINE_NODE_TYPES);
-assert.equal(rendered.nodes[1].type, UNSUPPORTED_NODE_TYPE);
-assert.equal(rendered.edges[0].type, UNSUPPORTED_NODE_TYPE);
+const unsupportedNode = rendered.nodes[1];
+const unsupportedEdge = rendered.edges[0];
+assert.ok(unsupportedNode);
+assert.ok(unsupportedEdge);
+assert.equal(unsupportedNode.type, UNSUPPORTED_NODE_TYPE);
+assert.equal(unsupportedEdge.type, UNSUPPORTED_NODE_TYPE);
 
-(rendered.nodes[1].data as Record<string, unknown>).label = "Edited response";
+unsupportedNode.data.label = "Edited response";
 const restored = fromReactFlow(rendered.nodes, rendered.edges, definition.viewport);
-assert.equal(restored.nodes[1].type, "action.record_customs_response");
-assert.equal(restored.nodes[1].label, "Edited response");
-assert.equal(restored.edges[0].type, "custom-edge");
+const restoredNode = restored.nodes[1];
+const restoredEdge = restored.edges[0];
+assert.ok(restoredNode);
+assert.ok(restoredEdge);
+assert.equal(restoredNode.type, "action.record_customs_response");
+assert.equal(restoredNode.label, "Edited response");
+assert.equal(restoredEdge.type, "custom-edge");
 
 const unknownType = toReactFlow({
   nodes: [{ id: "unknown", type: "not.registered", position: { x: 0, y: 0 }, config: {} }],
   edges: [],
 } as unknown as WorkflowDefinition, new Set(["not.registered"]));
-assert.equal(unknownType.nodes[0].type, UNSUPPORTED_NODE_TYPE);
+const unknownNode = unknownType.nodes[0];
+assert.ok(unknownNode);
+assert.equal(unknownNode.type, UNSUPPORTED_NODE_TYPE);
 
 console.log("Workflow-studio renderer, validation, and serialization checks passed.");

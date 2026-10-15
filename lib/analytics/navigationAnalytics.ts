@@ -324,7 +324,7 @@ export function useNavigationTracking(): void {
   React.useEffect(() => {
     const handleRouteChange = (url: string) => {
       // Extract route from full URL
-      const route = url.split('?')[0].split('#')[0];
+      const [route = ''] = url.split(/[?#]/, 1);
       analyticsTracker.trackRouteChange(route);
     };
 
