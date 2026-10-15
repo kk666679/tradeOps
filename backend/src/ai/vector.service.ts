@@ -1,7 +1,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
 import { ConfigService } from '@nestjs/config';
 import type { WeaviateClient } from 'weaviate-client';
+import { PrismaService } from '../prisma/prisma.service';
 
 interface VectorRecord {
   id: string;
@@ -11,13 +11,13 @@ interface VectorRecord {
 
 @Injectable()
 export class VectorService implements OnModuleInit {
-  private prisma: PrismaClient;
   private usePgVector = true;
   private weaviateClient: WeaviateClient | null = null;
 
-  constructor(private config: ConfigService) {
-    this.prisma = new PrismaClient();
-  }
+  constructor(
+    private config: ConfigService,
+    private readonly prisma: PrismaService,
+  ) {}
 
   async onModuleInit() {
     const weaviateHost = this.config.get('weaviate.host');

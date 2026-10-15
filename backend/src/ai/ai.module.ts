@@ -7,9 +7,10 @@ import { MemoryService } from './memory.service';
 import { VectorService } from './vector.service';
 import { AiGatewayController } from './ai-gateway.controller';
 import { AuthModule } from '../auth/auth.module';
+import { PrismaModule } from '../prisma/prisma.module';
 
 @Module({
-  imports: [AuthModule],
+  imports: [AuthModule, PrismaModule],
   controllers: [AiGatewayController],
   providers: [EmbeddingsService, LlmService, RagService, ForecastingService, MemoryService, VectorService],
   exports: [EmbeddingsService, LlmService, RagService, ForecastingService, MemoryService, VectorService],

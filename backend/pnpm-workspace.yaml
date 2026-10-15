@@ -1,0 +1,83 @@
+# pnpm-workspace.yaml
+# TradeOps — monorepo + Agent Skills configuration
+# Docs: https://pnpm.io/pnpm-workspace_yaml
+
+# ---------------------------------------------------------------------------
+# Workspace packages
+# ---------------------------------------------------------------------------
+# Root app (Next.js 16 App Router, tRPC v11, Prisma 6) plus the NestJS
+# backend that hosts the TradeOps Core MCP server at /api/mcp.
+packages:
+  - '.'
+  - 'backend'
+
+# ---------------------------------------------------------------------------
+# Agent Skills (pnpm >= 12.11.0)
+# ---------------------------------------------------------------------------
+# Where approved Agent Skills from dependencies are linked.
+# This is what fixes: ERR_PNPM_NO_AGENT_SKILLS_DIR
+#
+# pnpm will create symlinks here like:
+#   pnpm-@tanstack+ai-skills
+#   pnpm-@trpc+client-skills
+#   pnpm-@trpc+server-skills
+#
+# Paths are relative to the workspace root. Only list directories you
+# actually use — every entry is created on install if missing.
+skills:
+  dirs:
+    - .claude/skills
+    # Uncomment if you also run these agents:
+    # - .cursor/skills
+    # - .gemini/skills
+
+# ---------------------------------------------------------------------------
+# Dependency approvals
+# ---------------------------------------------------------------------------
+# Recorded results of `pnpm approve`. Add future approvals here so the
+# decision is committed and reviewable (see CLAUDE.md rule 4: no agent
+# tool outside its declared scope).
+permissions:
+  '@tanstack/ai':
+    skills: true
+  '@trpc/client':
+    skills: true
+  '@trpc/server':
+    skills: true
+
+# ---------------------------------------------------------------------------
+# Build scripts
+# ---------------------------------------------------------------------------
+# pnpm 10+ blocks postinstall scripts by default. Allow only the packages
+# that genuinely need to build native artifacts.
+onlyBuiltDependencies:
+  - '@prisma/client'
+  - '@prisma/engines'
+  - 'prisma'
+  - 'esbuild'
+  - 'sharp'
+  - 'bufferutil'
+  - 'utf-8-validate'
+  - '@nestjs/core'
+
+# ---------------------------------------------------------------------------
+# Peer dependency strictness
+# ---------------------------------------------------------------------------
+# tRPC v11 and Prisma 6 both benefit from strict peer resolution so that
+# mismatched @trpc/server / @trpc/client versions fail fast in CI rather
+# than at runtime inside a declaration-validation path.
+strictPeerDependencies: true
+autoInstallPeers: true
+
+# ---------------------------------------------------------------------------
+# Catalog (optional but recommended)
+# ---------------------------------------------------------------------------
+# Pin shared versions across root + backend so a drifted @trpc/server in
+# backend/ cannot silently disagree with the root tRPC client.
+catalogs:
+  default:
+    typescript: ^7.0.3
+    '@trpc/server': ^11.19.0
+    '@trpc/client': ^11.19.0
+    '@prisma/client': ^7.10.0
+    zod: ^4.6.5
