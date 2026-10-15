@@ -44,7 +44,10 @@ export function WorkflowCanvas({ className, data, steps, edges, title = 'Clearan
   }, [steps, data]);
   const links = React.useMemo(() => {
     if (edges?.length) return edges;
-    return list.slice(0, -1).map((s, i) => ({ from: s.id, to: list[i + 1].id }));
+    return list.slice(0, -1).flatMap((step, index) => {
+      const nextStep = list[index + 1];
+      return nextStep ? [{ from: step.id, to: nextStep.id }] : [];
+    });
   }, [edges, list]);
   const nodes = list.map((s, i) => ({
     id: s.id,
@@ -76,4 +79,3 @@ export function WorkflowCanvas({ className, data, steps, edges, title = 'Clearan
 }
 
 export default WorkflowCanvas;
-
