@@ -7,10 +7,12 @@ export interface TestimonialCarouselProps { items: TestimonialCarouselItem[]; }
 export function TestimonialCarousel({ items }: TestimonialCarouselProps) {
   const [i, setI] = React.useState(0);
   React.useEffect(() => {
+    if (items.length <= 1) return;
     const id = setInterval(() => setI((x) => (x + 1) % items.length), 6000);
     return () => clearInterval(id);
   }, [items.length]);
   const cur = items[i];
+  if (!cur) return null;
   return (
     <div className="space-y-3">
       <TestimonialCard {...cur} />

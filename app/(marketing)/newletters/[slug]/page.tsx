@@ -71,7 +71,7 @@ type Issue = {
 // `getRelatedIssues(slug)` from `@/lib/newletters`
 // ---------------------------------------------------------------------------
 
-const CONTRIBUTORS: Record<string, Contributor> = {
+const CONTRIBUTORS = {
   lim: {
     id: 'lim',
     name: 'Wei Lim',
@@ -96,7 +96,7 @@ const CONTRIBUTORS: Record<string, Contributor> = {
     href: '/contributors/priya-rao',
     bio: 'Priya runs customer operations. She spends a week each quarter embedded with a customer team and writes about what she sees.',
   },
-};
+} satisfies Record<string, Contributor>;
 
 const ISSUES: Issue[] = [
   {
@@ -383,8 +383,8 @@ function getAdjacentIssues(slug: string): {
   const idx = sorted.findIndex((i) => i.slug === slug);
   if (idx === -1) return { prev: null, next: null };
   return {
-    prev: idx > 0 ? sorted[idx - 1] : null,
-    next: idx < sorted.length - 1 ? sorted[idx + 1] : null,
+    prev: idx > 0 ? sorted.at(idx - 1) ?? null : null,
+    next: idx < sorted.length - 1 ? sorted.at(idx + 1) ?? null : null,
   };
 }
 

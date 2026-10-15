@@ -65,7 +65,7 @@ type IssueMeta = {
 // `@/lib/newletters`
 // ---------------------------------------------------------------------------
 
-const CONTRIBUTORS: Record<string, Contributor> = {
+const CONTRIBUTORS = {
   lim: {
     id: 'lim',
     name: 'Wei Lim',
@@ -87,7 +87,7 @@ const CONTRIBUTORS: Record<string, Contributor> = {
     avatarUrl: '/contributors/priya-rao.jpg',
     href: '/contributors/priya-rao',
   },
-};
+} satisfies Record<string, Contributor>;
 
 const TOPICS: Topic[] = [
   { id: 'all', name: 'All issues' },

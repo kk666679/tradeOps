@@ -10,8 +10,9 @@ const TABS = [
   { id: 'twin', label: 'Digital Twin', body: 'Simulate zone flow, gate congestion, and duty impact before you commit.' },
 ];
 export function InteractiveHighlights() {
-  const [active, setActive] = React.useState(TABS[0].id);
-  const current = TABS.find((t) => t.id === active)!;
+  const [active, setActive] = React.useState<string>('trade');
+  const current = TABS.find((t) => t.id === active);
+  if (!current) return null;
   return (
     <section className="border-b bg-muted/30">
       <div className="mx-auto max-w-7xl px-4 py-16">

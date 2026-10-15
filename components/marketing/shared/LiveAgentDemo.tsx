@@ -55,7 +55,7 @@ export function LiveAgentDemo({ zone = 'FIZ', amountUsd = 118400, className }: L
 
   const pushAudit = (actor: AuditEntry['actor'], action: string) => {
     setAudit((prev) => {
-      const prevHash = prev.length ? prev[prev.length - 1].hash : 'genesis';
+      const prevHash = prev.at(-1)?.hash ?? 'genesis';
       const hash = 'h_' + Math.random().toString(36).slice(2, 10);
       const target = 'K2/' + zone + '/2026/00418';
       return [...prev, { actor, action, target, prevHash, hash, at: new Date().toISOString() }];
@@ -99,7 +99,8 @@ export function LiveAgentDemo({ zone = 'FIZ', amountUsd = 118400, className }: L
 
   React.useEffect(() => () => clear(), []);
 
-  const conf = steps.length ? steps[steps.length - 1].confidence : 0;
+  const conf = steps.at(-1)?.confidence ?? 0;
+  const lastSampleAudit = SAMPLE_AUDIT.at(-1);
   const pct = conf * 100;
 
   return (
@@ -215,7 +216,7 @@ export function LiveAgentDemo({ zone = 'FIZ', amountUsd = 118400, className }: L
                     <span className="ml-auto font-mono text-[10px] text-muted-foreground/70">{e.hash}</span>
                   </div>
                 ))}
-                <div className="mt-1 truncate font-mono text-[10px] text-muted-foreground/70">{'prev ' + SAMPLE_AUDIT[SAMPLE_AUDIT.length - 1].prevHash + ' · ' + SAMPLE_AUDIT[SAMPLE_AUDIT.length - 1].target}</div>
+                {lastSampleAudit && <div className="mt-1 truncate font-mono text-[10px] text-muted-foreground/70">{'prev ' + lastSampleAudit.prevHash + ' · ' + lastSampleAudit.target}</div>}
               </li>
             ) : audit.map((e, i) => (
               <li key={i} className="p-2 text-xs">
