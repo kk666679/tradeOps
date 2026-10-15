@@ -1,0 +1,187 @@
+/* Brokerage Section 90 declaration-lifecycle workflow graph. */
+
+.s90-graph {
+  display: grid;
+  grid-template-columns: 1fr;
+  border: 1px solid var(--border, #27272a);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background: var(--bg-elev, #18181b);
+}
+
+@media (min-width: 1024px) {
+  .s90-graph {
+    grid-template-columns: 1fr 280px;
+  }
+}
+
+.s90-graph-canvas {
+  position: relative;
+  min-height: 320px;
+  height: 100%;
+  background: var(--bg, #09090b);
+}
+
+.s90-graph-canvas .react-flow__node {
+  cursor: default;
+}
+
+.s90-graph-canvas .react-flow__edge-text {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.s90-graph-canvas .react-flow__minimap {
+  border: 1px solid var(--border, #27272a);
+}
+
+.s90-graph-canvas .react-flow__controls {
+  border: 1px solid var(--border, #27272a);
+  border-radius: 0.375rem;
+  overflow: hidden;
+}
+
+.s90-graph-canvas .react-flow__controls-button {
+  background: var(--bg-elev, #18181b);
+  border-bottom: 1px solid var(--border, #27272a);
+  fill: var(--text-muted, #a1a1aa);
+}
+
+.s90-graph-canvas .react-flow__controls-button:hover {
+  background: var(--bg-subtle, #27272a);
+}
+
+/* ---- node ---- */
+
+.s90-node {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 190px;
+  max-width: 220px;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  font-family: inherit;
+  text-align: left;
+  transition: box-shadow 120ms ease;
+}
+
+.s90-node-icon {
+  font-size: 0.7rem;
+  line-height: 1;
+}
+
+.s90-node-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text, #f4f4f5);
+}
+
+.s90-node-kind {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.5625rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted, #a1a1aa);
+}
+
+/* ---- side rail ---- */
+
+.s90-graph-rail {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+  border-top: 1px solid var(--border, #27272a);
+  background: var(--bg-elev, #18181b);
+}
+
+@media (min-width: 1024px) {
+  .s90-graph-rail {
+    border-top: none;
+    border-left: 1px solid var(--border, #27272a);
+  }
+}
+
+.s90-rail-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.s90-rail-title {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.5625rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted, #a1a1aa);
+}
+
+.s90-rail-value {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text, #f4f4f5);
+}
+
+.s90-rail-track {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--bg-subtle, #27272a);
+  overflow: hidden;
+}
+
+.s90-rail-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--color-signal-400, #3b82f6);
+}
+
+.s90-rail-list,
+.s90-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.s90-rail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 0.375rem 0.5rem;
+  border: 1px solid var(--border, #27272a);
+  border-radius: 0.375rem;
+}
+
+.s90-rail-code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.6875rem;
+  color: var(--text, #f4f4f5);
+}
+
+.s90-rail-meta {
+  font-size: 0.625rem;
+  color: var(--text-muted, #a1a1aa);
+}
+
+.s90-legend-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.s90-legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.s90-legend-label {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.625rem;
+  color: var(--text-muted, #a1a1aa);
+}
