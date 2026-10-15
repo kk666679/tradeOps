@@ -62,3 +62,5 @@ backend/scripts/mcp-launcher.js
 backend/scripts/mcp-launcher.d.ts
 tsconfig.scoped.json
 tsconfig.scoped.json
+.vscode/settings.json
+*.save
