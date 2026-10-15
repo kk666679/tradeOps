@@ -38,8 +38,14 @@ export const NAV_SECTIONS: readonly NavSection[] = [
   {
     label: 'Intelligence',
     items: [
+      { label: 'Workflow', href: '/workflow', icon: 'workflow', children: [
+        { label: 'Studio', href: '/workflow' },
+        { label: 'Runs', href: '/workflow/runs' },
+        { label: 'Datasets', href: '/workflow/datasets' },
+      ]},
       { label: 'Custom Agents', href: '/custom-agents', icon: 'cpu' },
       { label: 'Digital Twin', href: '/digital-twin', icon: 'globe' },
+      { label: 'TwinForge', href: '/twinforge', icon: 'layers' },
     ],
   },
   {

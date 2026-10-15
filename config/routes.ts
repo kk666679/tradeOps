@@ -98,6 +98,11 @@ export const APP_ROUTES = {
   customAgentsAudit: '/custom-agents/audit',
   customAgentsAi: '/custom-agents/ai',
 
+  // Workflow Studio (React Flow authoring surface)
+  workflow: '/workflow',
+  workflowRuns: '/workflow/runs',
+  workflowDatasets: '/workflow/datasets',
+
   // Digital Twin
   digitalTwin: '/digital-twin',
   digitalTwinSimulation: '/digital-twin/simulation',
@@ -108,6 +113,19 @@ export const APP_ROUTES = {
   digitalTwinTasks: '/digital-twin/tasks',
   digitalTwinZones: '/digital-twin/zones',
   digitalTwinAnalytics: '/digital-twin/analytics',
+
+  // TwinForge (Digital Twin Studio — DT-ISaaS)
+  twinForge: '/twinforge',
+  twinForgeServices: '/twinforge/services',
+  twinForgePortfolio: '/twinforge/portfolio',
+  twinForgeTenants: '/twinforge/tenants',
+  twinForgeLabs: '/twinforge/labs',
+  twinForgeMarketplace: '/twinforge/marketplace',
+  twinForgeSla: '/twinforge/sla',
+  twinForgeOutcomes: '/twinforge/outcomes',
+  twinForgeRoadmap: '/twinforge/roadmap',
+  twinForgeExperience: '/twinforge/experience',
+  twinForgeStudio: '/twinforge/studio',
 
   // Integration
   integration: '/integration',

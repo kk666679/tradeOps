@@ -145,33 +145,15 @@ function shutdown(): void {
   if (shuttingDown) return;
   shuttingDown = true;
 
-  // Forward SIGTERM to children so each MCP server can flush in-flight
-  // requests, close transports and exit cleanly.
   for (const [name, child] of children.entries()) {
     if (child.exitCode === null && child.signalCode === null) {
-      log(name, 'Stopping (SIGTERM)...');
-      child.kill('SIGTERM');
+      log(name, 'Stopping...');
+      child.kill();
     }
   }
 
-  // Bounded fallback: SIGKILL only the children that ignored SIGTERM, so the
-  // supervisor never hangs forever on a wedged child.
-  const escalate = setTimeout(() => {
-    for (const [name, child] of children.entries()) {
-      if (child.exitCode === null && child.signalCode === null) {
-        log(name, 'Did not exit on SIGTERM; sending SIGKILL...');
-        child.kill('SIGKILL');
-      }
-    }
-    // Leave the event loop rather than waiting indefinitely on stuck children.
-    process.exit(1);
-  }, 10000);
-  escalate.unref();
-
-  // Exit the supervisor once every child has terminated.
   const settle = () => {
     if (children.size > 0) return;
-    clearTimeout(escalate);
     process.exit(0);
   };
   children.forEach((child) => child.once('exit', settle));
@@ -179,7 +161,6 @@ function shutdown(): void {
 }
 
 process.on('SIGINT', shutdown);
-process.on('SIGTERM', shutdown);
 
 try {
   console.log(figlet.textSync('TradeOps', { font: 'Standard' }));

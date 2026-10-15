@@ -33,6 +33,11 @@ const NAV: NavItem[] = [
     { label: 'Digital Twin',  href: APP_ROUTES.digitalTwin, hint: 'Simulation & analytics' },
     { label: 'Custom Agents', href: APP_ROUTES.agents,      hint: 'Agent orchestration' },
   ]},
+  { label: 'Workflow', href: APP_ROUTES.workflow, children: [
+    { label: 'Studio',    href: APP_ROUTES.workflow,            hint: 'Author & run workflow graphs' },
+    { label: 'Runs',      href: APP_ROUTES.workflowRuns,        hint: 'Execution history & monitoring' },
+    { label: 'Datasets',  href: APP_ROUTES.workflowDatasets,    hint: 'Seed datasets & loop records' },
+  ]},
   { label: 'Integrations', href: APP_ROUTES.integrations },
   { label: 'Settings', href: APP_ROUTES.settings },
 ];

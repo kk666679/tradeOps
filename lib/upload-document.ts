@@ -1,25 +1,27 @@
-export async function uploadDocumentFile(file: File): Promise<string> {
+export async function uploadDocumentFile(
+  file: File,
+  opts?: { tenantId?: string; cargoId?: string },
+): Promise<{ url: string; name: string }> {
   const formData = new FormData();
   formData.append('file', file);
+  if (opts?.tenantId) formData.append('tenantId', opts.tenantId);
+  if (opts?.cargoId) formData.append('cargoId', opts.cargoId);
 
-  const response = await fetch('/api/upload/document', {
-    method: 'POST',
-    body: formData,
-  });
+  const response = await fetch('/api/upload/document', { method: 'POST', body: formData });
 
   if (!response.ok) {
-    throw new Error(`Document upload failed with status ${response.status}.`);
+    let message = `Upload failed (${response.status})`;
+    try {
+      const body = await response.json();
+      if (typeof body?.error === 'string') message = body.error;
+    } catch { /* ignore */ }
+    throw new Error(message);
   }
 
-  const result: unknown = await response.json();
-  if (
-    typeof result !== 'object' ||
-    result === null ||
-    !('received' in result) ||
-    result.received !== true
-  ) {
-    throw new Error('The server did not confirm receipt of the document.');
+  const result = await response.json() as { ok: boolean; url?: string; name?: string; error?: string };
+  if (!result.ok || !result.url) {
+    throw new Error(result.error ?? 'The server did not return a file URL.');
   }
 
-  return file.name;
+  return { url: result.url, name: result.name ?? file.name };
 }

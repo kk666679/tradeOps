@@ -2548,20 +2548,130 @@ enum WorkflowRunStatus {
 }
 
 model WorkflowRun {
-  id           String            @id @default(cuid())
-  tenantId     String
-  tenant       Tenant            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  workflowId   String
-  workflow     Workflow          @relation(fields: [workflowId], references: [id], onDelete: Cascade)
-  status       WorkflowRunStatus @default(QUEUED)
-  input        Json?
-  output       Json?
-  error        String?
-  startedAt    DateTime          @default(now())
-  endedAt      DateTime?
-  steps        Json?
+  id              String            @id @default(cuid())
+  tenantId        String
+  tenant          Tenant            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  workflowId      String
+  workflow        Workflow          @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  status          WorkflowRunStatus @default(QUEUED)
+  input           Json?
+  output          Json?
+  error           String?
+  startedAt       DateTime          @default(now())
+  endedAt         DateTime?
+  steps           Json?
+  // Seed-loop fields
+  seedDatasetId   String?
+  seedDataset     SeedDataset?      @relation(fields: [seedDatasetId], references: [id], onDelete: SetNull)
+  loopConfig      Json?             // { strategy, batchSize, continueOnError, maxRetries, backoffMs }
+  idempotencyKey  String?           @unique
+  totalIterations Int               @default(0)
+  doneIterations  Int               @default(0)
+  failedIterations Int              @default(0)
+
+  iterations      LoopIteration[]
+  logs            ExecutionLog[]
 
   @@index([tenantId, status])
+  @@index([tenantId, seedDatasetId])
+}
+
+// =============================================================================
+// SEED-DRIVEN LOOP EXECUTION
+// =============================================================================
+
+model SeedDataset {
+  id          String        @id @default(cuid())
+  tenantId    String
+  tenant      Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  schema      Json?         // JSON Schema for record validation
+  recordCount Int           @default(0)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  records     SeedRecord[]
+  runs        WorkflowRun[]
+
+  @@index([tenantId])
+}
+
+enum SeedRecordStatus {
+  VALID
+  INVALID
+  PENDING
+}
+
+model SeedRecord {
+  id          String           @id @default(cuid())
+  datasetId   String
+  dataset     SeedDataset      @relation(fields: [datasetId], references: [id], onDelete: Cascade)
+  recordId    String           // stable, user-visible ID (e.g. row number or external key)
+  payload     Json
+  status      SeedRecordStatus @default(PENDING)
+  validationErrors Json?       // array of { field, message }
+  createdAt   DateTime         @default(now())
+
+  iterations  LoopIteration[]
+
+  @@unique([datasetId, recordId])
+  @@index([datasetId, status])
+}
+
+enum IterationStatus {
+  PENDING
+  RUNNING
+  SUCCEEDED
+  FAILED
+  SKIPPED
+  RETRYING
+}
+
+model LoopIteration {
+  id          String          @id @default(cuid())
+  runId       String
+  run         WorkflowRun     @relation(fields: [runId], references: [id], onDelete: Cascade)
+  recordId    String
+  record      SeedRecord      @relation(fields: [recordId], references: [id], onDelete: Cascade)
+  status      IterationStatus @default(PENDING)
+  attempt     Int             @default(1)
+  input       Json?
+  output      Json?
+  error       String?
+  startedAt   DateTime?
+  endedAt     DateTime?
+  durationMs  Int?
+
+  logs        ExecutionLog[]
+
+  @@index([runId, status])
+  @@index([recordId])
+}
+
+enum LogLevel {
+  DEBUG
+  INFO
+  WARN
+  ERROR
+}
+
+model ExecutionLog {
+  id            String      @id @default(cuid())
+  tenantId      String
+  runId         String
+  run           WorkflowRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+  iterationId   String?
+  iteration     LoopIteration? @relation(fields: [iterationId], references: [id], onDelete: SetNull)
+  level         LogLevel    @default(INFO)
+  message       String
+  nodeId        String?
+  payload       Json?
+  at            DateTime    @default(now())
+
+  @@index([runId, at])
+  @@index([iterationId, at])
+  @@index([tenantId, level, at])
 }
 
 model GuardrailHit {
