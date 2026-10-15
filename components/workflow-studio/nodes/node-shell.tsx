@@ -23,6 +23,7 @@ const PROVENANCE_LABEL: Record<Provenance, string> = {
 };
 
 export interface NodeShellProps {
+  family?: "engine" | "brokerage";
   title: string;
   subtitle?: string;
   state?: NodeExecutionState;
@@ -41,7 +42,7 @@ export interface NodeShellProps {
 }
 
 export function NodeShell({
-  title, subtitle, state = "idle", provenance, selected = false,
+  family, title, subtitle, state = "idle", provenance, selected = false,
   hasInput = true, hasOutput = true, outputHandles,
   resizable = true, requiresCapability = false, capabilityUnavailable = false,
   approvalRequired = false, externalSideEffect = false, children, width = 220,
@@ -79,6 +80,12 @@ export function NodeShell({
       <div className="flex items-center gap-2 border-b border-[var(--border-subtle)] px-3 py-1.5">
         <span className="h-1.5 w-1.5 rounded-full" style={{ background: accent }} aria-hidden />
         <span className="truncate text-[12px] font-semibold text-[var(--text)]">{title}</span>
+
+        {family && (
+          <span className={`ml-auto shrink-0 font-mono text-[8px] uppercase ${family === "engine" ? "text-sky-300" : "text-amber-300"}`}>
+            {family}
+          </span>
+        )}
 
         {approvalRequired && (
           <span title="Requires human approval"

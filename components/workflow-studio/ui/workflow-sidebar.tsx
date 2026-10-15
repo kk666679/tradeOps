@@ -3,10 +3,16 @@
 import { NodeLibrary } from "../library";
 import type { JkdmCapabilitySnapshot } from "../types/workflow";
 
-export function WorkflowSidebar({ jkdmCaps }: { jkdmCaps?: JkdmCapabilitySnapshot }) {
+export function WorkflowSidebar({
+  jkdmCaps,
+  supportedTypes,
+}: {
+  jkdmCaps?: JkdmCapabilitySnapshot;
+  supportedTypes?: ReadonlySet<string>;
+}) {
   return (
     <aside className="flex h-full w-[260px] shrink-0 flex-col border-r border-[var(--border)] bg-[var(--bg-subtle)] p-3" aria-label="Workflow sidebar">
-      <NodeLibrary jkdmCaps={jkdmCaps} />
+      <NodeLibrary jkdmCaps={jkdmCaps} supportedTypes={supportedTypes} />
     </aside>
   );
 }

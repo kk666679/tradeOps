@@ -81,6 +81,7 @@ model Tenant {
   agentApprovals     AgentApproval[]
   agentEscalations   AgentEscalation[]
   auditLogs          AuditLog[]
+  seedDatasets       SeedDataset[]
   zones              Zone[]
   zoneTenants        ZoneTenant[]
   cargo              Cargo[]
@@ -2541,6 +2542,7 @@ model Workflow {
 enum WorkflowRunStatus {
   QUEUED
   RUNNING
+  CANCELLING
   SUCCEEDED
   FAILED
   AWAITING_APPROVAL
@@ -2645,6 +2647,7 @@ model LoopIteration {
 
   logs        ExecutionLog[]
 
+  @@unique([runId, recordId])
   @@index([runId, status])
   @@index([recordId])
 }

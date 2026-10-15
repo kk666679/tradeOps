@@ -5,9 +5,10 @@ import { TrpcContextFactory } from './trpc.context';
 import { AuthModule } from '../auth/auth.module';
 import { UserModule } from '../user/user.module';
 import { IntegrationModule } from '../integration/integration.module';
+import { WorkflowModule } from '../workflow/workflow.module';
 
 @Module({
-  imports: [AuthModule, UserModule, IntegrationModule],
+  imports: [AuthModule, UserModule, IntegrationModule, WorkflowModule],
   providers: [TrpcService, TrpcRouter, TrpcContextFactory],
   exports: [TrpcService, TrpcRouter],
 })

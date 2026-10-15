@@ -5,7 +5,17 @@ export type { WorkflowStudioProps } from "./workflow-studio";
 
 export { WorkflowCanvas, WorkflowToolbar, WorkflowSidebar, WorkflowInspector, WorkflowConsole } from "./ui";
 export { NodeLibrary, NodeLibraryItem } from "./library";
-export { NodeShell, GenericNode, workflowNodeTypes } from "./nodes";
+export {
+  NodeShell,
+  GenericNode,
+  workflowNodeTypes,
+  engineWorkflowNodeTypes,
+  brokerageWorkflowNodeTypes,
+  UNSUPPORTED_NODE_TYPE,
+  normalizeNodeType,
+  ENGINE_NODE_TYPES,
+  BROKERAGE_NODE_TYPES,
+} from "./nodes";
 export type { NodeExecutionState } from "./nodes";
 export { workflowEdgeTypes } from "./edges";
 export { InspectorShell, InspectorField, GenericInspector } from "./inspectors";

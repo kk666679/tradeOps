@@ -1,5 +1,12 @@
-type WorkflowNode = { id: string; type: string; position: { x: number; y: number }; data: { label?: string; config?: Record<string, any> } };
-type WorkflowEdge = { id: string; source: string; target: string; sourceHandle?: string; targetHandle?: string; label?: string };
+type WorkflowNode = {
+  id: string;
+  type: string;
+  position: { x: number; y: number };
+  data?: { label?: string; config?: Record<string, any> };
+  label?: string;
+  config?: Record<string, any>;
+};
+type WorkflowEdge = { id: string; source: string; target: string; sourceHandle?: string; targetHandle?: string; label?: string; type?: string };
 type WorkflowDefinition = { nodes: WorkflowNode[]; edges: WorkflowEdge[] };
 
 type Issue = { code: string; message: string; nodeId?: string; edgeId?: string };
@@ -9,13 +16,22 @@ type StepRecord = {
   logs: { level: 'info' | 'error'; message: string }[];
 };
 
-const TYPES = new Set(['trigger.manual', 'data.transform', 'logic.condition', 'flow.output']);
+const TYPES = new Set(['trigger.manual', 'data.transform', 'logic.condition', 'flow.output', 'output']);
 const PORTS: Record<string, { inputs: string[]; outputs: string[] }> = {
   'trigger.manual': { inputs: [], outputs: ['out'] },
   'data.transform': { inputs: ['in'], outputs: ['out'] },
   'logic.condition': { inputs: ['in'], outputs: ['true', 'false'] },
   'flow.output': { inputs: ['in'], outputs: [] },
+  output: { inputs: ['in'], outputs: [] },
 };
+
+function nodeConfig(node: WorkflowNode): Record<string, any> {
+  return node.data?.config ?? node.config ?? {};
+}
+
+function nodeLabel(node: WorkflowNode): string | undefined {
+  return node.data?.label ?? node.label;
+}
 
 function safeValue(value: unknown): boolean {
   try { return JSON.stringify(value).length <= 100_000; } catch { return false; }
@@ -33,20 +49,21 @@ export function validateWorkflow(definition: WorkflowDefinition): Issue[] {
     else byId.set(node.id, node);
     if (!TYPES.has(node?.type)) issues.push({ code: 'unsupported_node', message: `Node type “${node?.type ?? 'unknown'}” has no execution handler.`, nodeId: node?.id });
     if (!Number.isFinite(node?.position?.x) || !Number.isFinite(node?.position?.y)) issues.push({ code: 'invalid_position', message: 'Node position must be finite.', nodeId: node?.id });
-    if (node?.type === 'logic.condition' && (!node.data?.config?.path || !['equals', 'notEquals', 'contains', 'greaterThan', 'isTruthy'].includes(String(node.data.config.operator)))) {
+    const config = nodeConfig(node);
+    if (node?.type === 'logic.condition' && (!config.path || !['equals', 'notEquals', 'contains', 'greaterThan', 'isTruthy'].includes(String(config.operator)))) {
       issues.push({ code: 'invalid_condition', message: 'Set a condition path and supported operator.', nodeId: node.id });
     }
-    if (node?.type === 'data.transform' && (!node.data?.config?.mapping || typeof node.data.config.mapping !== 'object' || Array.isArray(node.data.config.mapping))) {
+    if (node?.type === 'data.transform' && (!config.mapping || typeof config.mapping !== 'object' || Array.isArray(config.mapping))) {
       issues.push({ code: 'invalid_transform', message: 'Add at least one key to the transform mapping.', nodeId: node.id });
     }
-    const timeout = node?.data?.config?.timeoutMs;
+    const timeout = config.timeoutMs;
     if (timeout !== undefined && (!Number.isInteger(timeout) || Number(timeout) < 100 || Number(timeout) > 30_000)) {
       issues.push({ code: 'invalid_timeout', message: 'Timeout must be between 100 and 30,000 ms.', nodeId: node.id });
     }
   }
   const triggers = nodes.filter((node) => node.type === 'trigger.manual');
   if (triggers.length !== 1) issues.push({ code: 'trigger_count', message: 'A workflow must have exactly one manual trigger.' });
-  if (!nodes.some((node) => node.type === 'flow.output')) issues.push({ code: 'output_required', message: 'Add an output node to finish the workflow.' });
+  if (!nodes.some((node) => node.type === 'flow.output' || node.type === 'output')) issues.push({ code: 'output_required', message: 'Add an output node to finish the workflow.' });
 
   const edgeKeys = new Set<string>();
   const outgoing = new Map<string, string[]>();
@@ -55,6 +72,7 @@ export function validateWorkflow(definition: WorkflowDefinition): Issue[] {
   for (const edge of edges) {
     const source = byId.get(edge.source); const target = byId.get(edge.target);
     if (!source || !target) { issues.push({ code: 'missing_endpoint', message: 'Connection endpoint does not exist.', edgeId: edge.id }); continue; }
+    if (edge.type && edge.type !== 'default') issues.push({ code: 'unsupported_edge', message: `Edge type "${edge.type}" has no execution handler.`, edgeId: edge.id });
     if (edge.source === edge.target) issues.push({ code: 'self_connection', message: 'A node cannot connect to itself.', edgeId: edge.id });
     const key = `${edge.source}:${edge.sourceHandle ?? ''}>${edge.target}:${edge.targetHandle ?? ''}`;
     if (edgeKeys.has(key)) issues.push({ code: 'duplicate_edge', message: 'Duplicate connections are not allowed.', edgeId: edge.id });
@@ -156,7 +174,7 @@ export async function executeWorkflow(
       let output: unknown;
       let chosenHandle: string | undefined;
       try {
-        const config = node.data?.config ?? {};
+        const config = nodeConfig(node);
         if (node.type === 'trigger.manual') output = triggerInput;
         else if (node.type === 'data.transform') {
           const mapping = config.mapping as Record<string, unknown>;
@@ -173,7 +191,7 @@ export async function executeWorkflow(
         if (!safeValue(output)) throw new Error('Node output exceeds the 100 KB serialization limit.');
         outputs[id] = output; context.nodes[id] = { output };
         nodeStates.set(id, 'done');
-        steps.push({ nodeId: id, status: 'SUCCEEDED', attempts: 1, startedAt: start.toISOString(), endedAt: new Date().toISOString(), input, output, logs: [{ level: 'info', message: `Completed ${node.data?.label || node.type}.` }] });
+        steps.push({ nodeId: id, status: 'SUCCEEDED', attempts: 1, startedAt: start.toISOString(), endedAt: new Date().toISOString(), input, output, logs: [{ level: 'info', message: `Completed ${nodeLabel(node) || node.type}.` }] });
         for (const edge of outgoing.get(id) ?? []) {
           const branch = edge.sourceHandle ?? edge.label;
           edgeStates.set(edge.id, chosenHandle && branch !== chosenHandle ? 'inactive' : 'active');

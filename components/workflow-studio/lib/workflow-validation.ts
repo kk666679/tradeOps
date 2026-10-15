@@ -11,16 +11,72 @@ import type {
   ValidationIssue, ValidationResult, WorkflowDefinition,
   JkdmCapabilitySnapshot,
 } from "../types/workflow";
+import { normalizeNodeType, UNSUPPORTED_NODE_TYPE, ENGINE_NODE_TYPES } from "../nodes/node-types";
 import { topoSort, incomingEdges, outgoingEdges } from "./workflow-graph";
 
 const NODE_LIMIT = 200;
+const EXECUTABLE_NODE_TYPES = ENGINE_NODE_TYPES;
+
+function isSupportedSet(value: unknown): value is ReadonlySet<string> {
+  return value instanceof Set || (typeof value === "object" && value !== null && "has" in value && typeof (value as { has?: unknown }).has === "function");
+}
+
+export function validateGraphForEngine(
+  graph: Pick<WorkflowDefinition, "nodes" | "edges">,
+  supported: ReadonlySet<string> = EXECUTABLE_NODE_TYPES,
+  supportedEdgeTypes: ReadonlySet<string> = new Set(["default"]),
+): { ok: true } | { ok: false; errors: ValidationIssue[] } {
+  const errors: ValidationIssue[] = [];
+  const nodeIds = new Set<string>();
+
+  for (const node of graph.nodes) {
+    const normalizedType = normalizeNodeType(node.type);
+    if (nodeIds.has(node.id)) {
+      errors.push({ code: "duplicate_node", message: "Node IDs must be unique.", severity: "error", nodeId: node.id });
+    }
+    nodeIds.add(node.id);
+    if (normalizedType === UNSUPPORTED_NODE_TYPE || !supported.has(normalizedType)) {
+      errors.push({
+        code: "unsupported_node",
+        message: `Node type ${node.type} has no execution handler.`,
+        type: node.type,
+        severity: "error",
+        nodeId: node.id,
+      });
+    }
+  }
+
+  for (const edge of graph.edges) {
+    if (edge.type && !supportedEdgeTypes.has(edge.type)) {
+      errors.push({
+        code: "unsupported_edge",
+        message: `Edge type ${edge.type} has no execution handler.`,
+        type: edge.type,
+        severity: "error",
+        edgeId: edge.id,
+      });
+    }
+    if (!nodeIds.has(edge.source) || !nodeIds.has(edge.target)) {
+      errors.push({ code: "dangling_edge", message: "Connection endpoint does not exist.", severity: "error", edgeId: edge.id });
+    }
+  }
+
+  return errors.length ? { ok: false, errors } : { ok: true };
+}
 
 export function validateWorkflow(
   def: WorkflowDefinition,
-  caps?: JkdmCapabilitySnapshot,
+  capsOrSupported?: JkdmCapabilitySnapshot | ReadonlySet<string>,
+  maybeSupported?: ReadonlySet<string>,
 ): ValidationResult {
   const errors: ValidationIssue[] = [];
   const warnings: ValidationIssue[] = [];
+  const caps = isSupportedSet(capsOrSupported) ? undefined : capsOrSupported;
+  const supported = isSupportedSet(capsOrSupported)
+    ? capsOrSupported
+    : (maybeSupported ?? EXECUTABLE_NODE_TYPES);
+  const engineValidation = validateGraphForEngine(def, supported);
+  if (!engineValidation.ok) errors.push(...engineValidation.errors);
 
   if (def.nodes.length > NODE_LIMIT) {
     errors.push({ code: "node_limit", message: `Too many nodes (${def.nodes.length} > ${NODE_LIMIT}).`, severity: "error" });
@@ -106,6 +162,18 @@ export function validateWorkflow(
 
   // ---- Required config per node type ----
   for (const node of def.nodes) {
+    if (node.type === "logic.condition") {
+      const config = (node.config ?? {}) as { path?: unknown; operator?: unknown };
+      if (typeof config.path !== "string" || !["equals", "notEquals", "contains", "greaterThan", "isTruthy"].includes(String(config.operator))) {
+        errors.push({ code: "condition_invalid", message: "Condition needs a valid path and operator.", severity: "error", nodeId: node.id });
+      }
+    }
+    if (node.type === "data.transform") {
+      const mapping = (node.config ?? {} as { mapping?: unknown }).mapping;
+      if (!mapping || typeof mapping !== "object" || Array.isArray(mapping) || Object.keys(mapping).length === 0) {
+        errors.push({ code: "transform_invalid", message: "Transform needs at least one output mapping.", severity: "error", nodeId: node.id });
+      }
+    }
     if (node.type === "data.validate_required") {
       const required = (node.config as { required?: unknown[] }).required;
       if (!Array.isArray(required) || required.length === 0) {

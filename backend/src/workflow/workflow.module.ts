@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
+import { PrismaModule } from '../prisma/prisma.module';
+import { QueuesModule } from '../queues/queues.module';
+import { LoopProcessor } from '../queues/loop.processor';
 import { SeedService } from './seed.service';
 import { LoopExecutionService } from './loop-execution.service';
-import { SeedRouter } from './seed.router';
 
 /**
  * Seed datasets + seed-driven loop execution.
@@ -10,8 +12,8 @@ import { SeedRouter } from './seed.router';
  * `QueuesModule`; importing it here keeps the dependency explicit.
  */
 @Module({
-  imports: [],
-  providers: [SeedService, LoopExecutionService, SeedRouter],
+  imports: [PrismaModule, QueuesModule],
+  providers: [SeedService, LoopExecutionService, LoopProcessor],
   exports: [SeedService, LoopExecutionService],
 })
 export class WorkflowModule {}

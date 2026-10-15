@@ -5,6 +5,7 @@ import {
   Background, BackgroundVariant, Controls, MiniMap,
   ReactFlow, useReactFlow,
   type Connection, type Edge, type EdgeChange, type Node, type NodeChange,
+  type NodeTypes,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 
@@ -15,17 +16,18 @@ import type { WorkflowNode } from "../types/workflow";
 export interface WorkflowCanvasProps {
   nodes: Node[];
   edges: Edge[];
+  nodeTypes?: NodeTypes;
   onNodesChange: (c: NodeChange[]) => void;
   onEdgesChange: (c: EdgeChange[]) => void;
   onConnect: (c: Connection) => void;
-  isValidConnection: (c: Connection) => boolean;
+  isValidConnection: (c: Connection | Edge) => boolean;
   onNodeClick?: (node: Node) => void;
   onPaneClick?: () => void;
   onDropNode?: (type: WorkflowNode["type"], position: { x: number; y: number }) => void;
 }
 
 export function WorkflowCanvas({
-  nodes, edges, onNodesChange, onEdgesChange, onConnect,
+  nodes, edges, nodeTypes = workflowNodeTypes, onNodesChange, onEdgesChange, onConnect,
   isValidConnection, onNodeClick, onPaneClick, onDropNode,
 }: WorkflowCanvasProps) {
   const wrapper = useRef<HTMLDivElement>(null);
@@ -43,7 +45,7 @@ export function WorkflowCanvas({
     <div ref={wrapper} className="h-full w-full" onDragOver={onDragOver} onDrop={onDrop}>
       <ReactFlow
         nodes={nodes} edges={edges}
-        nodeTypes={workflowNodeTypes} edgeTypes={workflowEdgeTypes}
+        nodeTypes={nodeTypes} edgeTypes={workflowEdgeTypes}
         onNodesChange={onNodesChange} onEdgesChange={onEdgesChange}
         onConnect={onConnect} isValidConnection={isValidConnection}
         onNodeClick={(_, node) => onNodeClick?.(node)}

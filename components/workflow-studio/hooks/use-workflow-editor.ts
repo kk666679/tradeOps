@@ -23,7 +23,7 @@ export interface UseWorkflowEditorResult {
   onNodesChange: (c: NodeChange[]) => void;
   onEdgesChange: (c: EdgeChange[]) => void;
   onConnect: (c: Connection) => void;
-  isValidConnection: (c: Connection) => boolean;
+  isValidConnection: (c: Connection | Edge) => boolean;
   addNodeAt: (type: WorkflowNode["type"], position: { x: number; y: number }) => void;
   updateNode: (id: string, patch: Partial<WorkflowNode>) => void;
   removeNode: (id: string) => void;
@@ -31,8 +31,11 @@ export interface UseWorkflowEditorResult {
   toDefinition: (viewport: Viewport) => WorkflowDefinition;
 }
 
-export function useWorkflowEditor(initial: WorkflowDefinition): UseWorkflowEditorResult {
-  const initialRF = useMemo(() => toReactFlow(initial), [initial]);
+export function useWorkflowEditor(
+  initial: WorkflowDefinition,
+  supportedTypes?: ReadonlySet<string>,
+): UseWorkflowEditorResult {
+  const initialRF = useMemo(() => toReactFlow(initial, supportedTypes), [initial, supportedTypes]);
   const [nodes, setNodes, onNodesChange] = useNodesState(initialRF.nodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialRF.edges);
 
@@ -52,7 +55,7 @@ export function useWorkflowEditor(initial: WorkflowDefinition): UseWorkflowEdito
     }, eds));
   }, [setEdges]);
 
-  const isValidConnection = useCallback((c: Connection) => {
+  const isValidConnection = useCallback((c: Connection | Edge) => {
     if (!c.source || !c.target) return false;
     if (c.source === c.target) return false;
     const def = currentRef.current;

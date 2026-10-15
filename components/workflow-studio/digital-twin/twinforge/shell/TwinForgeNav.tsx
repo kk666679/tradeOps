@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 
 const ITEMS = [
   { href: '/twinforge',              label: 'Overview',    icon: '◆' },
+  { href: '/twinforge/studio',       label: 'Workflows',   icon: '⌘' },
   { href: '/twinforge/services',     label: 'Services',    icon: '⚙' },
   { href: '/twinforge/portfolio',    label: 'Portfolio',   icon: '▣' },
   { href: '/twinforge/labs',         label: 'Labs',        icon: '⚗' },

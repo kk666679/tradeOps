@@ -63,6 +63,18 @@ export class SeedRouter {
           }),
         ),
 
+      previewRecords: protectedProcedure
+        .input(
+          z.object({
+            schema: z.record(z.string(), z.unknown()).optional(),
+            records: z.array(z.object({
+              recordId: z.string().min(1).max(200),
+              payload: z.unknown(),
+            })).min(1).max(500),
+          }),
+        )
+        .mutation(({ input }) => this.seeds.previewRecords(input)),
+
       addRecords: protectedProcedure
         .input(
           z.object({

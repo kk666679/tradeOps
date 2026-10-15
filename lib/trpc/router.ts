@@ -2061,6 +2061,7 @@ export type AppRouter = import("@trpc/server").TRPCBuiltRouter<{
                 errorShape: import("@trpc/server").TRPCDefaultErrorShape;
                 transformer: true;
             }, import("@trpc/server").TRPCDecorateCreateRouterOptions<{
+                seed: import("../../backend/src/workflow/seed.router").SeedRouter["router"];
                 listWorkflows: import("@trpc/server").TRPCQueryProcedure<{
                     input: {
                         q?: string | undefined;

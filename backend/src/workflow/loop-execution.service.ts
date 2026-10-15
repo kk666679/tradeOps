@@ -15,11 +15,17 @@
 //      bad record aborts the loop or is recorded and skipped.
 //   4. Tenant isolation is structural: every query carries `tenantId`.
 
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  ServiceUnavailableException,
+} from '@nestjs/common';
 import { createHash } from 'node:crypto';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { QueueService } from '../queues/queue.service';
-import { validateWorkflow } from '../custom-agents/orchestration/workflow-engine';
+import { executeWorkflow, validateWorkflow } from '../custom-agents/orchestration/workflow-engine';
 
 /** BullMQ queue name consumed by the loop worker. */
 export const LOOP_QUEUE = 'cfs:workflow-loop';
@@ -66,6 +72,19 @@ export interface LoopRunSummary {
 }
 
 const MAX_TOTAL_ITERATIONS = 1000;
+
+type IterationWithRecord = Prisma.LoopIterationGetPayload<{
+  include: { record: { select: { recordId: true; payload: true } } };
+}>;
+
+function stableJson(value: unknown): string {
+  if (Array.isArray(value)) return `[${value.map(stableJson).join(',')}]`;
+  if (value !== null && typeof value === 'object') {
+    const record = value as Record<string, unknown>;
+    return `{${Object.keys(record).sort().map((key) => `${JSON.stringify(key)}:${stableJson(record[key])}`).join(',')}}`;
+  }
+  return JSON.stringify(value) ?? 'null';
+}
 
 export function normaliseLoopConfig(partial?: Partial<LoopConfig>): LoopConfig {
   const cfg = { ...DEFAULT_LOOP_CONFIG, ...(partial ?? {}) };
@@ -132,23 +151,61 @@ export class LoopExecutionService {
     private readonly queues: QueueService,
   ) {}
 
+  private async compareAndSetRunStatus(
+    runId: string,
+    expected: Array<'QUEUED' | 'RUNNING' | 'CANCELLING'>,
+    status: 'RUNNING' | 'SUCCEEDED' | 'FAILED' | 'CANCELLED',
+    extra: Prisma.WorkflowRunUpdateManyMutationInput = {},
+  ): Promise<boolean> {
+    const result = await this.prisma.workflowRun.updateMany({
+      where: { id: runId, status: { in: expected } },
+      data: { ...extra, status },
+    });
+    return result.count === 1;
+  }
+
+  private async completeCancellation(runId: string): Promise<string> {
+    const activeIterations = await this.prisma.loopIteration.count({
+      where: { runId, status: { in: ['RUNNING', 'RETRYING'] } },
+    });
+    if (activeIterations > 0) return 'CANCELLING';
+    const completed = await this.compareAndSetRunStatus(
+      runId,
+      ['CANCELLING'],
+      'CANCELLED',
+      { endedAt: new Date() },
+    );
+    if (completed) return 'CANCELLED';
+    const current = await this.prisma.workflowRun.findUnique({
+      where: { id: runId },
+      select: { status: true },
+    });
+    return current?.status ?? 'CANCELLED';
+  }
+
   /** Resolve the draft workflow + dataset a loop will run against. */
   private async resolveTargets(tenantId: string, workflowId: string, seedDatasetId: string) {
     const workflow = await this.prisma.workflow.findFirst({
       where: { tenantId, workflowId, version: 'draft' },
-      select: { id: true, workflowId: true, name: true, definition: true },
+      select: { id: true, workflowId: true, name: true, definition: true, updatedAt: true },
     });
     if (!workflow) throw new NotFoundException('Save this workflow before running a loop.');
 
     const dataset = await this.prisma.seedDataset.findFirst({
       where: { id: seedDatasetId, tenantId },
-      select: { id: true, recordCount: true },
+      select: { id: true, recordCount: true, updatedAt: true },
     });
     if (!dataset) throw new NotFoundException('Seed dataset not found.');
 
-    const records = await this.prisma.seedRecord.count({ where: { datasetId: dataset.id } });
-    if (records === 0) {
+    const totalRecords = await this.prisma.seedRecord.count({ where: { datasetId: dataset.id } });
+    if (totalRecords === 0) {
       throw new BadRequestException('This seed dataset has no records to iterate over.');
+    }
+    const records = await this.prisma.seedRecord.count({
+      where: { datasetId: dataset.id, status: 'VALID' },
+    });
+    if (records === 0) {
+      throw new BadRequestException('This seed dataset has no valid records to iterate over.');
     }
     if (records > MAX_TOTAL_ITERATIONS) {
       throw new BadRequestException(
@@ -170,6 +227,11 @@ export class LoopExecutionService {
     actorId: string,
     input: StartLoopInput,
   ): Promise<LoopRunSummary & { deduplicated: boolean }> {
+    if (!this.queues.isEnabled) {
+      throw new ServiceUnavailableException(
+        'Workflow loop execution requires Redis-backed workers. Configure REDIS_URL and retry.',
+      );
+    }
     const loopConfig = normaliseLoopConfig(input.loopConfig);
     const { workflow, dataset, recordCount } = await this.resolveTargets(
       tenantId,
@@ -185,11 +247,18 @@ export class LoopExecutionService {
       );
     }
 
-    const idempotencyKey =
-      input.idempotencyKey?.trim() ||
-      createHash('sha256')
-        .update(`${tenantId}:${workflow.id}:${dataset.id}:${Date.now()}:${Math.random()}`)
-        .digest('hex');
+    const configHash = createHash('sha256')
+      .update(stableJson({
+        loopConfig,
+        sharedInput: input.sharedInput ?? {},
+        workflowDefinition: workflow.definition,
+        workflowUpdatedAt: workflow.updatedAt.toISOString(),
+        datasetUpdatedAt: dataset.updatedAt.toISOString(),
+      }))
+      .digest('hex');
+    const idempotencyKey = input.idempotencyKey?.trim() || createHash('sha256')
+      .update(`${tenantId}:${workflow.workflowId}:${dataset.id}:${configHash}:${actorId}`)
+      .digest('hex');
 
     // Idempotent: an existing run with this key wins. Re-running the same loop
     // must not double-process the dataset.
@@ -204,32 +273,58 @@ export class LoopExecutionService {
       return { ...toLoopSummary(existing as never), deduplicated: true };
     }
 
-    const run = await this.prisma.workflowRun.create({
-      data: {
-        tenantId,
-        workflowId: workflow.id,
-        status: 'QUEUED',
-        input: { sharedInput: input.sharedInput ?? {} } as never,
-        steps: [] as never,
-        seedDatasetId: dataset.id,
-        loopConfig: loopConfig as never,
-        idempotencyKey,
-        totalIterations: recordCount,
-        doneIterations: 0,
-        failedIterations: 0,
-      },
-      include: { workflow: { select: { name: true, definition: true } } },
-    });
+    let run;
+    try {
+      run = await this.prisma.workflowRun.create({
+        data: {
+          tenantId,
+          workflowId: workflow.id,
+          status: 'QUEUED',
+          input: { sharedInput: input.sharedInput ?? {} } as never,
+          steps: [] as never,
+          seedDatasetId: dataset.id,
+          loopConfig: loopConfig as never,
+          idempotencyKey,
+          totalIterations: recordCount,
+          doneIterations: 0,
+          failedIterations: 0,
+        },
+        include: { workflow: { select: { name: true, definition: true } } },
+      });
+    } catch (error) {
+      if (!(error instanceof Prisma.PrismaClientKnownRequestError) || error.code !== 'P2002') {
+        throw error;
+      }
+      const raced = await this.prisma.workflowRun.findUnique({
+        where: { idempotencyKey },
+        include: { workflow: { select: { name: true, definition: true } } },
+      });
+      if (!raced || raced.tenantId !== tenantId) throw error;
+      return { ...toLoopSummary(raced as never), deduplicated: true };
+    }
 
     await this.writeLog(run.id, null, 'INFO', `Loop queued over ${recordCount} record(s).`);
 
-    await this.queues.enqueue(LOOP_QUEUE, 'loop.iterate', {
-      tenantId,
-      runId: run.id,
-      actorId,
-      sharedInput: input.sharedInput ?? {},
-      loopConfig,
-    });
+    try {
+      const dispatch = await this.queues.enqueue(LOOP_QUEUE, 'loop.iterate', {
+        tenantId,
+        runId: run.id,
+        actorId,
+        sharedInput: input.sharedInput ?? {},
+        loopConfig,
+      });
+      if (!dispatch.dispatched) {
+        throw new ServiceUnavailableException('Redis queue is unavailable; loop was not dispatched.');
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Queue dispatch failed.';
+      await this.prisma.workflowRun.update({
+        where: { id: run.id },
+        data: { status: 'FAILED', error: message.slice(0, 2000), endedAt: new Date() },
+      });
+      await this.writeLog(run.id, null, 'ERROR', `Loop dispatch failed: ${message}`);
+      throw error;
+    }
 
     return { ...toLoopSummary(run as never), deduplicated: false };
   }
@@ -359,21 +454,34 @@ export class LoopExecutionService {
       include: { workflow: { select: { workflowId: true, name: true, definition: true } } },
     });
     if (!run) throw new NotFoundException('Run not found.');
-    if (['SUCCEEDED', 'FAILED', 'CANCELLED'].includes(run.status)) {
-      return toLoopSummary(run as never);
-    }
-    // Mark PENDING iterations SKIPPED so progress counters stay consistent.
-    await this.prisma.loopIteration.updateMany({
-      where: { runId: run.id, status: 'PENDING' },
-      data: { status: 'SKIPPED' },
-    });
-    const updated = await this.prisma.workflowRun.update({
-      where: { id: run.id },
+    const queuedCancelled = await this.prisma.workflowRun.updateMany({
+      where: { id: run.id, tenantId, status: 'QUEUED' },
       data: { status: 'CANCELLED', endedAt: new Date() },
+    });
+    const runningCancelled = queuedCancelled.count === 0
+      ? await this.prisma.workflowRun.updateMany({
+          where: { id: run.id, tenantId, status: 'RUNNING' },
+          data: { status: 'CANCELLING' },
+        })
+      : { count: 0 };
+    if (queuedCancelled.count === 1 || runningCancelled.count === 1) {
+      await this.prisma.loopIteration.updateMany({
+        where: { runId: run.id, status: 'PENDING' },
+        data: { status: 'SKIPPED', endedAt: new Date() },
+      });
+      await this.writeLog(run.id, null, 'WARN', queuedCancelled.count === 1
+        ? 'Queued loop cancelled.'
+        : 'Loop cancellation requested; active iteration will finish.');
+    }
+    if (runningCancelled.count === 1 || run.status === 'CANCELLING') {
+      await this.completeCancellation(run.id);
+    }
+    const current = await this.prisma.workflowRun.findFirst({
+      where: { id: run.id, tenantId },
       include: { workflow: { select: { workflowId: true, name: true, definition: true } } },
     });
-    await this.writeLog(run.id, null, 'WARN', 'Loop cancelled by operator.');
-    return toLoopSummary(updated as never);
+    if (!current) throw new NotFoundException('Run not found.');
+    return toLoopSummary(current as never);
   }
 
   /**
@@ -396,21 +504,37 @@ export class LoopExecutionService {
     if (['SUCCEEDED', 'FAILED', 'CANCELLED'].includes(run.status)) {
       return { processed: 0, remaining: 0, status: run.status };
     }
+    if (run.status === 'CANCELLING') {
+      const remaining = await this.prisma.loopIteration.count({
+        where: { runId: run.id, status: 'PENDING' },
+      });
+      return { processed: 0, remaining, status: await this.completeCancellation(run.id) };
+    }
 
-    const cfg = normaliseLoopConfig(run.loopConfig as Partial<LoopConfig> | null);
+    const cfg = normaliseLoopConfig((run.loopConfig ?? undefined) as Partial<LoopConfig> | undefined);
     const definition = (run.workflow.definition as any)?.graph ?? run.workflow.definition;
     const sharedInput = ((run.input as any)?.sharedInput ?? {}) as Record<string, unknown>;
 
     if (run.status === 'QUEUED') {
-      await this.prisma.workflowRun.update({ where: { id: run.id }, data: { status: 'RUNNING' } });
-      await this.writeLog(run.id, null, 'INFO', 'Loop started.');
+      const claimed = await this.compareAndSetRunStatus(run.id, ['QUEUED'], 'RUNNING');
+      if (!claimed) {
+        const latest = await this.prisma.workflowRun.findUnique({
+          where: { id: run.id },
+          select: { status: true },
+        });
+        if (latest?.status !== 'RUNNING') {
+          return { processed: 0, remaining: 0, status: latest?.status ?? 'CANCELLED' };
+        }
+      } else {
+        await this.writeLog(run.id, null, 'INFO', 'Loop started.');
+      }
     }
 
     await this.ensureIterationsPlanned(run.id, run.seedDatasetId!, cfg);
 
     const batch = await this.prisma.loopIteration.findMany({
-      where: { runId: run.id, status: 'PENDING' },
-      orderBy: { createdAt: 'asc' },
+      where: { runId: run.id, status: 'PENDING', run: { is: { status: 'RUNNING' } } },
+      orderBy: { record: { recordId: 'asc' } },
       take: cfg.batchSize,
       include: { record: { select: { recordId: true, payload: true } } },
     });
@@ -429,17 +553,48 @@ export class LoopExecutionService {
         break;
       }
       const outcome = await this.runIteration(run, iteration, cfg, definition, sharedInput);
-      if (outcome === 'failed' && !cfg.continueOnError) aborted = true;
+      if (outcome === 'cancelled') aborted = true;
+      const latest = await this.prisma.workflowRun.findUnique({
+        where: { id: run.id },
+        select: { status: true },
+      });
+      if (latest?.status === 'CANCELLING' || latest?.status === 'CANCELLED') aborted = true;
+      if (aborted) break;
+      if (outcome === 'failed' && !cfg.continueOnError) {
+        aborted = true;
+        break;
+      }
       processed += 1;
     }
 
-    const remaining = await this.prisma.loopIteration.count({
+    if (aborted) {
+      const latest = await this.prisma.workflowRun.findUnique({
+        where: { id: run.id },
+        select: { status: true },
+      });
+      await this.prisma.loopIteration.updateMany({
+        where: { runId: run.id, status: 'PENDING' },
+        data: { status: 'SKIPPED', endedAt: new Date() },
+      });
+      if (latest?.status === 'CANCELLING' || latest?.status === 'CANCELLED') {
+        const remaining = await this.prisma.loopIteration.count({
+          where: { runId: run.id, status: 'PENDING' },
+        });
+        return { processed, remaining, status: await this.completeCancellation(run.id) };
+      }
+    }
+
+    const pendingIterations = await this.prisma.loopIteration.count({
       where: { runId: run.id, status: 'PENDING' },
     });
+    const activeIterations = await this.prisma.loopIteration.count({
+      where: { runId: run.id, status: { in: ['RUNNING', 'RETRYING'] } },
+    });
+    const remaining = pendingIterations + activeIterations;
     const status = await this.finaliseIfDrained(run.id, remaining, aborted);
 
     // Re-enqueue while work remains so the worker drains the run incrementally.
-    if (!aborted && remaining > 0) {
+    if (!aborted && pendingIterations > 0) {
       await this.queues.enqueue(LOOP_QUEUE, 'loop.iterate', {
         tenantId,
         runId: run.id,
@@ -464,13 +619,14 @@ export class LoopExecutionService {
     if (existing > 0) return;
 
     const records = await this.prisma.seedRecord.findMany({
-      where: { datasetId },
+      where: { datasetId, status: 'VALID' },
       orderBy: { recordId: 'asc' },
       select: { id: true },
     });
     if (records.length) {
       await this.prisma.loopIteration.createMany({
         data: records.map((r) => ({ runId, recordId: r.id, status: 'PENDING' as const })),
+        skipDuplicates: true,
       });
     }
     await this.writeLog(
@@ -484,89 +640,149 @@ export class LoopExecutionService {
   /** Execute the workflow once for a single record and persist the outcome. */
   private async runIteration(
     run: RunWithWorkflow,
-    iteration: {
-      id: string;
-      recordId: string;
-      record: { recordId: string; payload: unknown };
-    },
+    iteration: IterationWithRecord,
     cfg: LoopConfig,
     definition: unknown,
     sharedInput: Record<string, unknown>,
-  ): Promise<'succeeded' | 'failed'> {
+  ): Promise<'succeeded' | 'failed' | 'cancelled' | 'not_claimed'> {
     const startedAt = new Date();
-    await this.prisma.loopIteration.update({
-      where: { id: iteration.id },
-      data: { status: 'RUNNING', startedAt, input: iteration.record.payload as never },
-    });
-
-    const input = { ...sharedInput, ...(iteration.record.payload as Record<string, unknown>) };
-
-    try {
-      const result = await executeWorkflow(definition as never, input, {
-        executionId: `${run.id}:${iteration.record.recordId}`,
-        workflowId: run.workflow.workflowId,
-        actorId: 'loop-worker',
-      });
-
-      const endedAt = new Date();
-      const durationMs = endedAt.getTime() - startedAt.getTime();
-      await this.prisma.$transaction([
-        this.prisma.loopIteration.update({
-          where: { id: iteration.id },
-          data: { status: 'SUCCEEDED', output: result.output as never, endedAt, durationMs },
-        }),
-        this.prisma.workflowRun.update({
-          where: { id: run.id },
-          data: { doneIterations: { increment: 1 } },
-        }),
-        this.prisma.seedRecord.update({
-          where: { id: iteration.recordId },
-          data: { status: 'VALID' },
-        }),
-      ]);
-
-      for (const step of result.steps) {
-        await this.writeLog(
-          run.id,
-          iteration.id,
-          step.status === 'FAILED' ? 'ERROR' : 'INFO',
-          `[${iteration.record.recordId}] ${step.nodeId}: ${step.status}`,
-          step.nodeId,
-          step.output,
-        );
-      }
-      return 'succeeded';
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Iteration failed.';
-      const endedAt = new Date();
-      const durationMs = endedAt.getTime() - startedAt.getTime();
-      await this.prisma.$transaction([
-        this.prisma.loopIteration.update({
-          where: { id: iteration.id },
-          data: {
-            status: 'FAILED',
-            error: message.slice(0, 2000),
-            endedAt,
-            durationMs,
-          },
-        }),
-        this.prisma.workflowRun.update({
-          where: { id: run.id },
-          data: { failedIterations: { increment: 1 } },
-        }),
-        this.prisma.seedRecord.update({
-          where: { id: iteration.recordId },
-          data: { status: 'INVALID', validationErrors: [{ message }] as never },
-        }),
-      ]);
-      await this.writeLog(
-        run.id,
-        iteration.id,
-        'ERROR',
-        `[${iteration.record.recordId}] ${message}`,
-      );
-      return 'failed';
+    const payload = iteration.record.payload;
+    if (payload === null || typeof payload !== 'object' || Array.isArray(payload)) {
+      throw new BadRequestException(`Seed record ${iteration.record.recordId} must be a JSON object.`);
     }
+    const input = { ...sharedInput, ...(payload as Record<string, unknown>) };
+
+    const claim = await this.prisma.loopIteration.updateMany({
+      where: {
+        id: iteration.id,
+        status: 'PENDING',
+        run: { is: { status: 'RUNNING' } },
+      },
+      data: { status: 'RUNNING', attempt: 1, startedAt, input: payload as never },
+    });
+    if (claim.count !== 1) return 'not_claimed';
+
+    for (let attempt = 1; attempt <= cfg.maxRetries + 1; attempt += 1) {
+      if (attempt > 1) {
+        const retryClaim = await this.prisma.loopIteration.updateMany({
+          where: {
+            id: iteration.id,
+            status: 'RETRYING',
+            run: { is: { status: 'RUNNING' } },
+          },
+          data: { status: 'RUNNING', attempt },
+        });
+        if (retryClaim.count !== 1) {
+          const runStatus = await this.prisma.workflowRun.findUnique({
+            where: { id: run.id },
+            select: { status: true },
+          });
+          if (runStatus?.status !== 'CANCELLING' && runStatus?.status !== 'CANCELLED') {
+            return 'not_claimed';
+          }
+          const endedAt = new Date();
+          await this.prisma.loopIteration.updateMany({
+            where: { id: iteration.id, status: 'RETRYING' },
+            data: { status: 'SKIPPED', endedAt, durationMs: endedAt.getTime() - startedAt.getTime() },
+          });
+          return 'cancelled';
+        }
+      }
+
+      try {
+        const result = await executeWorkflow(definition as never, input, {
+          executionId: `${run.id}:${iteration.record.recordId}`,
+          workflowId: run.workflow.workflowId,
+          actorId: 'loop-worker',
+        });
+
+        const endedAt = new Date();
+        const durationMs = endedAt.getTime() - startedAt.getTime();
+        const finalized = await this.prisma.$transaction(async (tx) => {
+          const transitioned = await tx.loopIteration.updateMany({
+            where: { id: iteration.id, status: 'RUNNING' },
+            data: { status: 'SUCCEEDED', output: result.output as never, error: null, endedAt, durationMs },
+          });
+          if (transitioned.count !== 1) return false;
+          await tx.workflowRun.update({
+            where: { id: run.id },
+            data: { doneIterations: { increment: 1 } },
+          });
+          return true;
+        });
+        if (!finalized) return 'not_claimed';
+
+        for (const step of result.steps) {
+          await this.writeLog(
+            run.id,
+            iteration.id,
+            step.status === 'FAILED' ? 'ERROR' : 'INFO',
+            `[${iteration.record.recordId}] ${step.nodeId}: ${step.status}`,
+            step.nodeId,
+            step.output,
+          );
+        }
+        return 'succeeded';
+      } catch (error) {
+        const message = error instanceof Error ? error.message : 'Iteration failed.';
+        if (attempt <= cfg.maxRetries) {
+          const retrying = await this.prisma.loopIteration.updateMany({
+            where: { id: iteration.id, status: 'RUNNING', run: { is: { status: 'RUNNING' } } },
+            data: { status: 'RETRYING', attempt, error: message.slice(0, 2000) },
+          });
+          if (retrying.count !== 1) {
+            return this.persistFailedIteration(run.id, iteration, attempt, message, startedAt);
+          }
+          await this.writeLog(
+            run.id,
+            iteration.id,
+            'WARN',
+            `[${iteration.record.recordId}] attempt ${attempt} failed; retry scheduled.`,
+          );
+          const delayMs = Math.min(cfg.backoffMs * 2 ** (attempt - 1), 60_000);
+          if (delayMs > 0) await new Promise<void>((complete) => setTimeout(complete, delayMs));
+          continue;
+        }
+
+        const endedAt = new Date();
+        const durationMs = endedAt.getTime() - startedAt.getTime();
+        return this.persistFailedIteration(run.id, iteration, attempt, message, startedAt, endedAt, durationMs);
+      }
+    }
+
+    return 'failed';
+  }
+
+  private async persistFailedIteration(
+    runId: string,
+    iteration: IterationWithRecord,
+    attempt: number,
+    message: string,
+    startedAt: Date,
+    endedAt = new Date(),
+    durationMs = endedAt.getTime() - startedAt.getTime(),
+  ): Promise<'failed' | 'not_claimed'> {
+    const failed = await this.prisma.$transaction(async (tx) => {
+      const transitioned = await tx.loopIteration.updateMany({
+        where: { id: iteration.id, status: 'RUNNING' },
+        data: {
+          status: 'FAILED',
+          attempt,
+          error: message.slice(0, 2000),
+          endedAt,
+          durationMs,
+        },
+      });
+      if (transitioned.count !== 1) return false;
+      await tx.workflowRun.update({
+        where: { id: runId },
+        data: { failedIterations: { increment: 1 } },
+      });
+      return true;
+    });
+    if (!failed) return 'not_claimed';
+    await this.writeLog(runId, iteration.id, 'ERROR', `[${iteration.record.recordId}] ${message}`);
+    return 'failed';
   }
 
   /** Close out the run once every iteration is no longer PENDING. */
@@ -576,14 +792,16 @@ export class LoopExecutionService {
     aborted: boolean,
   ): Promise<string> {
     if (aborted) {
-      await this.prisma.workflowRun.update({
-        where: { id: runId },
-        data: {
-          status: 'FAILED',
-          endedAt: new Date(),
-          error: 'Loop aborted: an iteration failed and continueOnError is false.',
-        },
+      if (remaining > 0) return 'RUNNING';
+      const transitioned = await this.compareAndSetRunStatus(runId, ['RUNNING'], 'FAILED', {
+        endedAt: new Date(),
+        error: 'Loop aborted: an iteration failed and continueOnError is false.',
       });
+      if (!transitioned) {
+        const latest = await this.prisma.workflowRun.findUnique({ where: { id: runId }, select: { status: true } });
+        if (latest?.status === 'CANCELLING') return this.completeCancellation(runId);
+        return latest?.status ?? 'CANCELLED';
+      }
       await this.writeLog(runId, null, 'ERROR', 'Loop aborted after a failing iteration.');
       return 'FAILED';
     }
@@ -595,22 +813,24 @@ export class LoopExecutionService {
     });
     const failed = final?.failedIterations ?? 0;
     const hasFailures = failed > 0;
-    await this.prisma.workflowRun.update({
-      where: { id: runId },
-      data: {
-        status: hasFailures ? 'FAILED' : 'SUCCEEDED',
-        endedAt: new Date(),
-        error: hasFailures
-          ? `${failed} of ${final?.totalIterations ?? 0} iteration(s) failed.`
-          : null,
-      },
+    const status = hasFailures ? 'FAILED' : 'SUCCEEDED';
+    const transitioned = await this.compareAndSetRunStatus(runId, ['RUNNING'], status, {
+      endedAt: new Date(),
+      error: hasFailures
+        ? `${failed} of ${final?.totalIterations ?? 0} iteration(s) failed.`
+        : null,
     });
+    if (!transitioned) {
+      const latest = await this.prisma.workflowRun.findUnique({ where: { id: runId }, select: { status: true } });
+      if (latest?.status === 'CANCELLING') return this.completeCancellation(runId);
+      return latest?.status ?? 'CANCELLED';
+    }
     await this.writeLog(
       runId,
       null,
       hasFailures ? 'WARN' : 'INFO',
       hasFailures ? `Loop finished with ${failed} failure(s).` : 'Loop finished successfully.',
     );
-    return hasFailures ? 'FAILED' : 'SUCCEEDED';
+    return status;
   }
 }

@@ -89,6 +89,9 @@ import { WebhookRouter } from '../integration/webhook/webhook.router';
 import { WmsExtRouter } from '../integration/wms-ext/wms-ext.router';
 import { JkdmRouter } from '../integration/jkdm/jkdm.router';
 import { JkdmService } from '../integration/jkdm/jkdm.service';
+import { PrismaService } from '../prisma/prisma.service';
+import { SeedService } from '../workflow/seed.service';
+import { LoopExecutionService } from '../workflow/loop-execution.service';
 
 /**
  * The single source of truth for the API surface.
@@ -105,6 +108,9 @@ export class TrpcRouter {
     private readonly auth: AuthService,
     private readonly userService: UserService,
     private readonly jkdmService: JkdmService,
+    private readonly prisma: PrismaService,
+    private readonly seedService: SeedService,
+    private readonly loopExecutionService: LoopExecutionService,
   ) {}
 
   get appRouter() {
@@ -119,7 +125,7 @@ export class TrpcRouter {
       task: new TaskRouter(this.trpc).router,
       inventory: new InventoryRouter(this.trpc).router,
       logistics: new LogisticsRouter(this.trpc).router,
-      digitalTwin: new DigitalTwinRouter(this.trpc).router,
+      digitalTwin: new DigitalTwinRouter(this.trpc, this.prisma).router,
 
       // --- cargo ---
       cargo: this.trpc.router({
@@ -176,7 +182,11 @@ export class TrpcRouter {
         evals: new EvalsRouter(this.trpc).router,
         memory: new MemoryRouter(this.trpc).router,
         monitoring: new MonitoringRouter(this.trpc).router,
-        orchestration: new OrchestrationRouter(this.trpc).router,
+        orchestration: new OrchestrationRouter(
+          this.trpc,
+          this.seedService,
+          this.loopExecutionService,
+        ).router,
         policy: new PolicyRouter(this.trpc).router,
         registry: new RegistryRouter(this.trpc).router,
         supervision: new SupervisionRouter(this.trpc).router,

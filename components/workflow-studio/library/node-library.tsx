@@ -1,16 +1,17 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { CATEGORIES, catalogByCategory, type CatalogEntry } from "../lib/node-catalog-helpers";
+import { CATEGORIES, catalogByCategory, filterBySupportedTypes, type CatalogEntry } from "../lib/node-catalog-helpers";
 import { NodeLibraryItem } from "./node-library-item";
 import type { JkdmCapabilitySnapshot } from "../types/workflow";
 
 export interface NodeLibraryProps {
   onDragStart?: (entry: CatalogEntry) => void;
   jkdmCaps?: JkdmCapabilitySnapshot;
+  supportedTypes?: ReadonlySet<string>;
 }
 
-export function NodeLibrary({ onDragStart, jkdmCaps }: NodeLibraryProps) {
+export function NodeLibrary({ onDragStart, jkdmCaps, supportedTypes }: NodeLibraryProps) {
   const [query, setQuery] = useState("");
   const grouped = useMemo(() => catalogByCategory(), []);
 
@@ -23,12 +24,14 @@ export function NodeLibrary({ onDragStart, jkdmCaps }: NodeLibraryProps) {
 
   const filteredCategories = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return CATEGORIES;
+    if (!q) return CATEGORIES.filter((cat) =>
+      filterBySupportedTypes(grouped.get(cat.id) ?? [], supportedTypes).length > 0,
+    );
     return CATEGORIES.filter((cat) => {
-      const entries = grouped.get(cat.id) ?? [];
+      const entries = filterBySupportedTypes(grouped.get(cat.id) ?? [], supportedTypes);
       return cat.label.toLowerCase().includes(q) || entries.some((e) => e.label.toLowerCase().includes(q) || e.description.toLowerCase().includes(q));
     });
-  }, [query, grouped]);
+  }, [query, grouped, supportedTypes]);
 
   return (
     <div className="flex h-full flex-col gap-2" aria-label="Node library">
@@ -43,6 +46,7 @@ export function NodeLibrary({ onDragStart, jkdmCaps }: NodeLibraryProps) {
         )}
         {filteredCategories.map((cat) => {
           const entries = (grouped.get(cat.id) ?? []).filter((e) => {
+            if (supportedTypes && !supportedTypes.has(e.type)) return false;
             const q = query.trim().toLowerCase();
             if (!q) return true;
             return e.label.toLowerCase().includes(q) || e.description.toLowerCase().includes(q) || cat.label.toLowerCase().includes(q);

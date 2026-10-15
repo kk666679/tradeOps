@@ -5,6 +5,9 @@ import { requireAuth, requireTenant } from '../../trpc/trpc.middleware';
 import { Injectable } from '@nestjs/common';
 import { TrpcService } from '../../trpc/trpc.service';
 import { executeWorkflow, validateWorkflow } from './workflow-engine';
+import { SeedService } from '../../workflow/seed.service';
+import { LoopExecutionService } from '../../workflow/loop-execution.service';
+import { SeedRouter } from '../../workflow/seed.router';
 
 const workflowIdSchema = z.string().min(1).max(120);
 const definitionSchema = z.object({
@@ -17,11 +20,17 @@ const definitionSchema = z.object({
 
 @Injectable()
 export class OrchestrationRouter {
-  constructor(private trpc: TrpcService) {}
+  constructor(
+    private trpc: TrpcService,
+    private seeds: SeedService,
+    private loops: LoopExecutionService,
+  ) {}
 
   get router() {
     const protectedProcedure = this.trpc.procedure.use(requireAuth).use(requireTenant);
     return this.trpc.router({
+      seed: new SeedRouter(this.trpc, this.seeds, this.loops).router,
+
       listWorkflows: protectedProcedure
         .input(z.object({ q: z.string().optional(), take: z.number().int().min(1).max(100).default(50) }).optional())
         .query(async ({ ctx, input }) => {
@@ -69,10 +78,6 @@ export class OrchestrationRouter {
           definition: definitionSchema,
         }))
         .mutation(async ({ ctx, input }) => {
-          const issues = validateWorkflow(input.definition as any);
-          if (issues.length) {
-            throw new TRPCError({ code: 'BAD_REQUEST', message: 'Workflow validation failed.', cause: issues });
-          }
           const workflowId = input.workflowId ?? randomUUID();
           const where = { tenantId: ctx.tenantId!, workflowId, version: 'draft' };
           const existing = await ctx.db.workflow.findFirst({ where });

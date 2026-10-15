@@ -30,7 +30,7 @@ export function useWorkflowExecution(workflowId: string, client: ExecutorClient)
   const [error, setError] = useState<string | null>(null);
   const [caps, setCaps] = useState<JkdmCapabilitySnapshot | null>(null);
 
-  const cancelled = useRef(false);
+  const runGeneration = useRef(0);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const refreshCaps = useCallback(async () => {
@@ -40,16 +40,17 @@ export function useWorkflowExecution(workflowId: string, client: ExecutorClient)
   useEffect(() => { void refreshCaps(); }, [refreshCaps]);
 
   const cancelPolling = useCallback(() => {
-    cancelled.current = true;
+    runGeneration.current += 1;
     if (timerRef.current) clearTimeout(timerRef.current);
     timerRef.current = null;
     setRunning(false);
   }, []);
 
-  const poll = useCallback(async (id: string, intervalMs: number) => {
-    if (cancelled.current) return;
+  const poll = useCallback(async (id: string, intervalMs: number, generation: number) => {
+    if (generation !== runGeneration.current) return;
     try {
       const exec = await client.getExecution(id);
+      if (generation !== runGeneration.current) return;
       setExecution(exec);
       // Terminal states — stop polling.
       if (["succeeded", "failed", "cancelled"].includes(exec.status)) { setRunning(false); return; }
@@ -57,8 +58,9 @@ export function useWorkflowExecution(workflowId: string, client: ExecutorClient)
       const next = exec.status === "waiting_approval" || exec.status === "waiting_external"
         ? POLL_MAX_MS
         : Math.min(intervalMs * 1.5, POLL_MAX_MS);
-      timerRef.current = setTimeout(() => void poll(id, next), next);
+      timerRef.current = setTimeout(() => void poll(id, next, generation), next);
     } catch (e) {
+      if (generation !== runGeneration.current) return;
       setError((e as Error).message);
       setRunning(false);
     }
@@ -66,34 +68,42 @@ export function useWorkflowExecution(workflowId: string, client: ExecutorClient)
 
   const run = useCallback(async (triggerPayload?: unknown) => {
     setError(null); setExecution(null); setExecutionId(null); setRunning(true);
-    cancelled.current = false;
+    const generation = ++runGeneration.current;
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = null;
     try {
       const { executionId: id, status, reason } = await client.execute({ workflowId, triggerPayload });
+      if (generation !== runGeneration.current) return;
       setExecutionId(id);
       if (status === "integration_required") {
         setError(reason ?? "JKDM integration is not configured");
         setRunning(false);
         return;
       }
-      timerRef.current = setTimeout(() => void poll(id, POLL_START_MS), POLL_START_MS);
+      timerRef.current = setTimeout(() => void poll(id, POLL_START_MS, generation), POLL_START_MS);
     } catch (e) {
+      if (generation !== runGeneration.current) return;
       setError((e as Error).message); setRunning(false);
     }
   }, [client, workflowId, poll]);
 
   const submitApproval = useCallback(async (args: Omit<SubmitApprovalArgs, "executionId">) => {
     if (!executionId) throw new Error("no active execution");
+    const generation = runGeneration.current;
     await client.submitApproval({ ...args, executionId });
+    if (generation !== runGeneration.current) return;
     // Resume polling immediately.
     if (timerRef.current) clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(() => void poll(executionId, POLL_START_MS), POLL_START_MS);
+    timerRef.current = setTimeout(() => void poll(executionId, POLL_START_MS, generation), POLL_START_MS);
   }, [client, executionId, poll]);
 
   const recordManualResponse = useCallback(async (args: Omit<RecordManualResponseArgs, "executionId">) => {
     if (!executionId) throw new Error("no active execution");
+    const generation = runGeneration.current;
     await client.recordManualResponse({ ...args, executionId });
+    if (generation !== runGeneration.current) return;
     if (timerRef.current) clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(() => void poll(executionId, POLL_START_MS), POLL_START_MS);
+    timerRef.current = setTimeout(() => void poll(executionId, POLL_START_MS, generation), POLL_START_MS);
   }, [client, executionId, poll]);
 
   useEffect(() => () => cancelPolling(), [cancelPolling]);

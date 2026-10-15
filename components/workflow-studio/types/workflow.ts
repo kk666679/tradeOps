@@ -8,6 +8,8 @@ import { z } from "zod";
 
 export const NODE_TYPES = [
   "trigger.manual",
+  "logic.condition",
+  "data.transform",
   "trigger.shipment.created",
   "trigger.shipment.status_changed",
   "trigger.document.uploaded",
@@ -93,8 +95,26 @@ export const WorkflowNodeSchema = z.object({
   ]).optional(),
   /** True when the node may cause an external side effect. */
   externalSideEffect: z.boolean().optional(),
-});
+}).passthrough();
 export type WorkflowNode = z.infer<typeof WorkflowNodeSchema>;
+
+const PersistedWorkflowNodeSchema = z.object({
+  id: z.string().min(1),
+  type: z.string().min(1),
+  position: PositionSchema,
+  size: NodeSizeSchema.optional(),
+  label: z.string().optional(),
+  description: z.string().optional(),
+  config: z.record(z.string(), z.unknown()).optional(),
+  timeoutMs: z.number().int().positive().optional(),
+  retryPolicy: z.object({
+    maxAttempts: z.number().int().positive().max(5).default(1),
+    backoffMs: z.number().int().nonnegative().default(0),
+  }).optional(),
+  approvalRequired: z.boolean().optional(),
+  approverRole: z.string().optional(),
+  externalSideEffect: z.boolean().optional(),
+}).passthrough();
 
 export const WorkflowEdgeSchema = z.object({
   id: z.string().min(1),
@@ -103,13 +123,18 @@ export const WorkflowEdgeSchema = z.object({
   sourceHandle: z.string().default("out"),
   targetHandle: z.string().default("in"),
   label: z.string().optional(),
-});
+  type: z.string().optional(),
+}).passthrough();
 export type WorkflowEdge = z.infer<typeof WorkflowEdgeSchema>;
 
 export const WorkflowDefinitionSchema = z.object({
-  nodes: z.array(WorkflowNodeSchema),
+  nodes: z.array(PersistedWorkflowNodeSchema),
   edges: z.array(WorkflowEdgeSchema),
   viewport: ViewportSchema.default({ x: 0, y: 0, zoom: 1 }),
+}).passthrough().transform((definition) => definition as unknown as {
+  nodes: WorkflowNode[];
+  edges: WorkflowEdge[];
+  viewport: Viewport;
 });
 export type WorkflowDefinition = z.infer<typeof WorkflowDefinitionSchema>;
 
@@ -210,6 +235,7 @@ export interface JkdmCapabilitySnapshot {
 export const ValidationIssueSchema = z.object({
   code: z.string(),
   message: z.string(),
+  type: z.string().optional(),
   severity: z.enum(["error", "warning"]),
   nodeId: z.string().optional(),
   edgeId: z.string().optional(),

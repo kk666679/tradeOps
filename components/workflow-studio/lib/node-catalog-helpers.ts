@@ -27,6 +27,7 @@ export const CATALOG: CatalogEntry[] = [
   { type: "trigger.deadline.scheduled", label: "Scheduled deadline check", description: "Cron-style check for approaching deadlines.", categoryId: "triggers", defaultConfig: { cron: "0 9 * * *" } },
 
   // Logic
+  { type: "logic.condition", label: "Condition", description: "Branch on a trigger or upstream value.", categoryId: "logic", defaultConfig: { path: "trigger.value", operator: "isTruthy" }, branching: true },
   { type: "logic.document_missing", label: "Document missing?", description: "Branch on document completeness.", categoryId: "logic", defaultConfig: { documentTypes: [] }, branching: true },
   { type: "logic.value_threshold", label: "Value threshold", description: "Branch when declared value exceeds a threshold.", categoryId: "logic", defaultConfig: { thresholdMYR: 250000 }, branching: true },
   { type: "logic.hs_classification_review", label: "HS review needed?", description: "Branch when HS confidence is below threshold.", categoryId: "logic", defaultConfig: { minConfidence: 0.8 }, branching: true },
@@ -51,6 +52,7 @@ export const CATALOG: CatalogEntry[] = [
   { type: "action.create_audit_event", label: "Audit event", description: "Write a custom audit marker.", categoryId: "actions", defaultConfig: { kind: "" } },
 
   // Data
+  { type: "data.transform", label: "Transform", description: "Map trigger fields into a workflow output.", categoryId: "data", defaultConfig: { mapping: { result: "{{trigger}}" } } },
   { type: "data.map_shipment_fields", label: "Map shipment fields", description: "Extract fields from the shipment record.", categoryId: "data", defaultConfig: { mappings: [] } },
   { type: "data.normalize_document_metadata", label: "Normalize document metadata", description: "Normalize dates, currencies, and identifiers.", categoryId: "data", defaultConfig: {} },
   { type: "data.validate_required", label: "Validate required data", description: "Refuse if required fields are missing.", categoryId: "data", defaultConfig: { required: [] } },
@@ -61,6 +63,13 @@ export const CATALOG: CatalogEntry[] = [
   // Output
   { type: "output", label: "Output", description: "Final workflow output.", categoryId: "utility", defaultConfig: { value: "" } },
 ];
+
+export function filterBySupportedTypes(
+  catalog: readonly CatalogEntry[],
+  supported?: ReadonlySet<string>,
+): CatalogEntry[] {
+  return supported ? catalog.filter((entry) => supported.has(entry.type)) : [...catalog];
+}
 
 export const CATEGORIES: CatalogCategory[] = [
   { id: "triggers", label: "Triggers" },

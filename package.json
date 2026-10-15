@@ -10,6 +10,7 @@
     "trpc:types": "jiti scripts/sync-trpc-types.ts",
     "start": "next start",
     "verify:workflow": "jiti scripts/verify-workflow.ts",
+    "verify:workflow-studio": "backend/node_modules/.bin/tsx scripts/verify-workflow-studio.ts",
     "prisma:generate": "DATABASE_URL=\"postgresql://postgres:password@localhost:5432/cfs_wms\" prisma generate",
     "postinstall": "npm run prisma:generate"
   },

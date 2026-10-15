@@ -10,6 +10,7 @@
 // record can never be reached across tenants.
 
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import Ajv, { type AnySchema } from 'ajv';
 import { createHash } from 'node:crypto';
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -41,6 +42,15 @@ export interface AddRecordsInput {
   records: Array<{ recordId: string; payload: unknown }>;
 }
 
+export interface SeedPreviewRecord {
+  recordId: string;
+  payload: unknown;
+  status: 'VALID' | 'INVALID';
+  validationErrors: Array<{ field?: string; message: string }>;
+}
+
+const ajv = new Ajv({ allErrors: true, strict: false });
+
 const MAX_RECORDS_PER_CALL = 500;
 const MAX_PAYLOAD_BYTES = 64 * 1024;
 
@@ -57,6 +67,33 @@ function assertPayloadSize(payload: unknown, recordId: string): void {
       `Record ${recordId} payload exceeds the ${MAX_PAYLOAD_BYTES} byte limit.`,
     );
   }
+}
+
+function createRecordValidator(schema: unknown) {
+  if (schema === null || schema === undefined) {
+    return (payload: unknown): SeedPreviewRecord['validationErrors'] => {
+      if (payload !== null && typeof payload === 'object' && !Array.isArray(payload)) return [];
+      return [{ message: 'Seed payload must be a JSON object.' }];
+    };
+  }
+
+  let validate: ReturnType<typeof ajv.compile>;
+  try {
+    validate = ajv.compile(schema as AnySchema);
+  } catch {
+    throw new BadRequestException('Seed dataset schema is not a valid JSON Schema.');
+  }
+
+  return (payload: unknown): SeedPreviewRecord['validationErrors'] => {
+    if (payload === null || typeof payload !== 'object' || Array.isArray(payload)) {
+      return [{ message: 'Seed payload must be a JSON object.' }];
+    }
+    if (validate(payload)) return [];
+    return (validate.errors ?? []).map((error) => ({
+      field: error.instancePath || undefined,
+      message: error.message ?? 'Seed record does not match its dataset schema.',
+    }));
+  };
 }
 
 @Injectable()
@@ -135,6 +172,49 @@ export class SeedService {
         schema: (input.schema ?? null) as never,
       },
     });
+    return {
+      id: row.id,
+      name: row.name,
+      description: row.description,
+      recordCount: row.recordCount,
+      createdAt: row.createdAt.toISOString(),
+      updatedAt: row.updatedAt.toISOString(),
+    };
+  }
+
+  /** Validate a batch in memory; this operation never writes records or runs. */
+  previewRecords(input: {
+    schema?: unknown;
+    records: Array<{ recordId: string; payload: unknown }>;
+  }): {
+    total: number;
+    valid: number;
+    invalid: number;
+    records: SeedPreviewRecord[];
+  } {
+    if (!Array.isArray(input.records) || input.records.length === 0 || input.records.length > MAX_RECORDS_PER_CALL) {
+      throw new BadRequestException(`Preview requires between 1 and ${MAX_RECORDS_PER_CALL} records.`);
+    }
+    const seen = new Set<string>();
+    const validateRecord = createRecordValidator(input.schema);
+    const records = input.records.map((record) => {
+      if (!record.recordId || seen.has(record.recordId)) {
+        throw new BadRequestException(`Record IDs must be present and unique: ${record.recordId}`);
+      }
+      seen.add(record.recordId);
+      assertPayloadSize(record.payload, record.recordId);
+      const validationErrors = validateRecord(record.payload);
+      return {
+        recordId: record.recordId,
+        payload: record.payload,
+        status: validationErrors.length ? 'INVALID' as const : 'VALID' as const,
+        validationErrors,
+      };
+    });
+    const valid = records.filter((record) => record.status === 'VALID').length;
+    return { total: records.length, valid, invalid: records.length - valid, records };
+  }
+
   /**
    * Insert or replace records in a dataset and keep `recordCount` in sync.
    *
@@ -159,10 +239,11 @@ export class SeedService {
 
     const dataset = await this.prisma.seedDataset.findFirst({
       where: { id: input.datasetId, tenantId },
-      select: { id: true },
+      select: { id: true, schema: true },
     });
     if (!dataset) throw new NotFoundException('Seed dataset not found.');
 
+    const validateRecord = createRecordValidator(dataset.schema);
     const seen = new Set<string>();
     let inserted = 0;
     let replaced = 0;
@@ -177,6 +258,8 @@ export class SeedService {
         }
         seen.add(record.recordId);
         assertPayloadSize(record.payload, record.recordId);
+        const validationErrors = validateRecord(record.payload);
+        const status = validationErrors.length ? 'INVALID' : 'VALID';
 
         const existing = await tx.seedRecord.findUnique({
           where: { datasetId_recordId: { datasetId: dataset.id, recordId: record.recordId } },
@@ -188,8 +271,8 @@ export class SeedService {
             where: { id: existing.id },
             data: {
               payload: record.payload as never,
-              status: 'PENDING',
-              validationErrors: null as never,
+              status,
+              validationErrors: validationErrors.length ? validationErrors as never : null as never,
             },
           });
           replaced += 1;
@@ -199,7 +282,8 @@ export class SeedService {
               datasetId: dataset.id,
               recordId: record.recordId,
               payload: record.payload as never,
-              status: 'PENDING',
+              status,
+              validationErrors: validationErrors.length ? validationErrors as never : null as never,
             },
           });
           inserted += 1;
