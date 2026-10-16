@@ -2,16 +2,15 @@ import Link from 'next/link';
 import type { ReactNode } from 'react';
 
 const sections = [
-  { href: '/dashboard', label: 'Overview' },
-  { href: '/runs', label: 'Runs' },
-  { href: '/audit', label: 'Audit' },
+  { href: '/console/dashboard', label: 'Overview' },
+  { href: '/console/audit', label: 'Audit' },
 ];
 
 export default function AppShell({ children }: { children: ReactNode }) {
   return (
     <div className="flex min-h-screen bg-background text-foreground">
       <aside className="hidden w-56 shrink-0 border-r bg-card p-4 md:block">
-        <Link href="/dashboard" className="text-lg font-semibold">TradeOps Console</Link>
+        <Link href="/console/dashboard" className="text-lg font-semibold">TradeOps Console</Link>
         <nav className="mt-8 flex flex-col gap-1">
           {sections.map((section) => (
             <Link key={section.href} href={section.href} className="rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground">
