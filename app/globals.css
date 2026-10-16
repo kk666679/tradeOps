@@ -1,1019 +1,695 @@
-/* ============================================================================
-   AI-NATIVE CONTAINER FREIGHT SYSTEM — GLOBALS
-   Free Industrial Zones (FIZ) · Free Commercial Zones (FCZ)
-   Tailwind CSS v4+ · Framer Motion · Glassmorphism · Dark-first
-   ========================================================================== */
-
 @import "tailwindcss";
 
-/* Optional: if you are NOT using next/font, uncomment.
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300..800&family=JetBrains+Mono:wght@400..700&display=swap");
-*/
+/* ═══════════════════════════════════════════════════════════
+   THEME TOKENS — extended with responsive scale
+   ═══════════════════════════════════════════════════════════ */
 
-/* ---------------------------------------------------------------------------
-   1. VARIANTS
-   Dark is the default (:root). `.light` opts into the light theme.
-   Keep interaction media queries in standard CSS/utility rules when needed.
---------------------------------------------------------------------------- */
-:where(.light, .light *) {
-  color-scheme: light;
-}
-
-/* ============================================================================
-   2. DESIGN TOKENS
-   ========================================================================== */
-/* Tailwind CSS v4 theme directive; keep this directive for theme token utilities. */
 @theme {
-  /* ---- Typography ------------------------------------------------------- */
-  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
-    Roboto, "Helvetica Neue", sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas,
-    monospace;
+  /* ── Surface ── */
+  --color-bg-app: #0a0d12;
+  --color-bg-panel: #0f141b;
+  --color-bg-panel-2: #131921;
+  --color-bg-elevated: #1a2129;
+  --color-bg-hover: #1f2731;
+  --color-bg-active: #233044;
 
-  /* Fluid type scale — scales cleanly from 360px phone to 4K wall display */
-  --text-micro: 0.6875rem;
-  --text-micro--line-height: 1.35;
-  --text-data: clamp(0.8125rem, 0.78rem + 0.15vw, 0.9375rem);
-  --text-data--line-height: 1.45;
-  --text-body: clamp(0.9375rem, 0.9rem + 0.22vw, 1.0625rem);
-  --text-body--line-height: 1.6;
-  --text-h3: clamp(1.125rem, 1.02rem + 0.5vw, 1.5rem);
-  --text-h3--line-height: 1.35;
-  --text-h2: clamp(1.375rem, 1.1rem + 1.2vw, 2rem);
-  --text-h2--line-height: 1.25;
-  --text-h1: clamp(1.75rem, 1.2rem + 2.4vw, 3rem);
-  --text-h1--line-height: 1.15;
-  --text-display: clamp(2.25rem, 1.3rem + 4.2vw, 4.5rem);
-  --text-display--line-height: 1.02;
+  /* ── Lines ── */
+  --color-line: #1f2937;
+  --color-line-2: #2d3748;
+  --color-line-3: #374151;
 
-  /* ---- Core palette: abyss (steel / deep water) ------------------------- */
-  --color-abyss-50: oklch(0.972 0.008 245);
-  --color-abyss-100: oklch(0.932 0.014 245);
-  --color-abyss-200: oklch(0.862 0.024 245);
-  --color-abyss-300: oklch(0.762 0.036 246);
-  --color-abyss-400: oklch(0.634 0.046 248);
-  --color-abyss-500: oklch(0.522 0.05 250);
-  --color-abyss-600: oklch(0.42 0.054 252);
-  --color-abyss-700: oklch(0.33 0.05 254);
-  --color-abyss-800: oklch(0.252 0.045 256);
-  --color-abyss-900: oklch(0.19 0.04 258);
-  --color-abyss-950: oklch(0.128 0.035 260);
+  /* ── Text ── */
+  --color-text: #e5e7eb;
+  --color-text-2: #9ca3af;
+  --color-text-3: #6b7280;
+  --color-text-4: #4b5563;
 
-  /* ---- Signal (AI / telemetry cyan) ------------------------------------- */
-  --color-signal-200: oklch(0.92 0.06 200);
-  --color-signal-300: oklch(0.858 0.115 200);
-  --color-signal-400: oklch(0.782 0.142 201);
-  --color-signal-500: oklch(0.702 0.152 202);
-  --color-signal-600: oklch(0.598 0.138 205);
-  --color-signal-700: oklch(0.494 0.112 207);
+  /* ── Signal ── */
+  --color-blue: #3b82f6;
+  --color-blue-2: #60a5fa;
+  --color-green: #10b981;
+  --color-amber: #f59e0b;
+  --color-red: #ef4444;
+  --color-purple: #8b5cf6;
+  --color-cyan: #06b6d4;
+  --color-pink: #ec4899;
 
-  /* ---- Cargo (amber / dwell time, holds) -------------------------------- */
-  --color-cargo-300: oklch(0.898 0.098 82);
-  --color-cargo-400: oklch(0.836 0.146 78);
-  --color-cargo-500: oklch(0.762 0.162 70);
-  --color-cargo-600: oklch(0.652 0.152 62);
+  /* ── Semantic ── */
+  --color-status-idle: #475569;
+  --color-status-running: #3b82f6;
+  --color-status-success: #10b981;
+  --color-status-warn: #f59e0b;
+  --color-status-error: #ef4444;
+  --color-status-blocked: #a855f7;
 
-  /* ---- Clear (emerald / customs cleared, gate-out) ---------------------- */
-  --color-clear-300: oklch(0.888 0.098 162);
-  --color-clear-400: oklch(0.808 0.152 160);
-  --color-clear-500: oklch(0.712 0.162 160);
-  --color-clear-600: oklch(0.604 0.146 161);
+  /* ── Typography — fluid with clamp() ── */
+  --font-ui: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --font-display: 'Inter Tight', system-ui, sans-serif;
 
-  /* ---- Alert (rose / exceptions, demurrage risk) ------------------------ */
-  --color-alert-300: oklch(0.822 0.108 18);
-  --color-alert-400: oklch(0.712 0.186 20);
-  --color-alert-500: oklch(0.622 0.212 21);
-  --color-alert-600: oklch(0.532 0.198 22);
+  --text-2xs: clamp(0.625rem, 0.6rem + 0.15vw, 0.6875rem);
+  --text-xs:  clamp(0.6875rem, 0.66rem + 0.15vw, 0.75rem);
+  --text-sm:  clamp(0.75rem, 0.72rem + 0.2vw, 0.8125rem);
+  --text-base:clamp(0.8125rem, 0.78rem + 0.25vw, 0.875rem);
+  --text-lg:  clamp(0.9375rem, 0.9rem + 0.35vw, 1rem);
+  --text-xl:  clamp(1.125rem, 1.05rem + 0.6vw, 1.25rem);
 
-  /* ---- Zone accents (FIZ vs FCZ) ---------------------------------------- */
-  --color-fiz: oklch(0.72 0.152 202); /* industrial — cyan */
-  --color-fcz: oklch(0.74 0.148 296); /* commercial — violet */
-  --color-transit: oklch(0.78 0.12 84); /* in-transit — amber */
+  /* ── Radii ── */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-xl: 14px;
 
-  /* ---- Radii ------------------------------------------------------------ */
-  --radius-glass: 1rem;
-  --radius-panel: 1.25rem;
-  --radius-hud: 0.625rem;
+  /* ── Motion ── */
+  --ease-out: cubic-bezier(.4, 0, .2, 1);
+  --duration-fast: 120ms;
+  --duration-base: 180ms;
+  --duration-slow: 260ms;
 
-  /* ---- Motion (mirrors your Framer Motion transitions) ------------------ */
-  --ease-freight: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-snap: cubic-bezier(0.32, 0.72, 0, 1);
-  --ease-hud: cubic-bezier(0.4, 0, 0.2, 1);
+  /* ── Breakpoints (Tailwind 4 reads --breakpoint-*) ── */
+  --breakpoint-xs: 30rem;     /*  480px */
+  --breakpoint-sm: 40rem;     /*  640px */
+  --breakpoint-md: 48rem;     /*  768px */
+  --breakpoint-lg: 64rem;     /* 1024px */
+  --breakpoint-xl: 80rem;     /* 1280px */
+  --breakpoint-2xl: 96rem;    /* 1536px */
+  --breakpoint-3xl: 120rem;   /* 1920px */
 
-  --animate-shimmer: shimmer 2.6s linear infinite;
-  --animate-scan: scan 4s ease-in-out infinite;
-  --animate-grid-drift: grid-drift 24s linear infinite;
-  --animate-pulse-ring: pulse-ring 2.4s var(--ease-hud) infinite;
-  --animate-ticker: ticker 38s linear infinite;
-  --animate-float: float 7s ease-in-out infinite;
-  --animate-blink: blink 1.4s steps(2, start) infinite;
+  /* ── Container sizes ── */
+  --container-studio-left: 250px;
+  --container-studio-right: 400px;
+  --container-studio-left-lg: 220px;
+  --container-studio-right-lg: 340px;
+  --container-studio-collapsed: 36px;
 
-  @keyframes shimmer {
-    0% {
-      background-position: -200% 0;
-    }
-    100% {
-      background-position: 200% 0;
-    }
-  }
-  @keyframes scan {
-    0%,
-    100% {
-      transform: translateY(-40%);
-      opacity: 0;
-    }
-    40% {
-      opacity: 0.55;
-    }
-    50% {
-      transform: translateY(40%);
-      opacity: 0.35;
-    }
-  }
-  @keyframes grid-drift {
-    from {
-      background-position: 0 0;
-    }
-    to {
-      background-position: 80px 80px;
-    }
-  }
-  @keyframes pulse-ring {
-    0% {
-      transform: scale(0.85);
-      opacity: 0.7;
-    }
-    70% {
-      transform: scale(1.9);
-      opacity: 0;
-    }
-    100% {
-      transform: scale(1.9);
-      opacity: 0;
-    }
-  }
-  @keyframes ticker {
-    from {
-      transform: translateX(0);
-    }
-    to {
-      transform: translateX(-50%);
-    }
-  }
-  @keyframes float {
-    0%,
-    100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-6px);
-    }
-  }
-  @keyframes blink {
-    0%,
-    100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.25;
-    }
-  }
+  /* ── Touch target minimum ── */
+  --touch-min: 44px;
 }
 
-/* ============================================================================
-   3. RUNTIME SEMANTIC TOKENS (theme-switchable)
-   Dark is default. `.light` overrides.
-   ========================================================================== */
-:root {
-  color-scheme: dark;
+/* ═══════════════════════════════════════════════════════════
+   BASE LAYER
+   ═══════════════════════════════════════════════════════════ */
 
-  /* Surfaces */
-  --surface-0: oklch(0.128 0.035 260);
-  --surface-1: oklch(0.168 0.038 258);
-  --surface-2: oklch(0.212 0.04 257);
-  --surface-3: oklch(0.262 0.042 256);
-
-  /* Text */
-  --ink-strong: oklch(0.975 0.008 245);
-  --ink: oklch(0.878 0.014 246);
-  --ink-muted: oklch(0.702 0.026 248);
-  --ink-faint: oklch(0.542 0.03 250);
-
-  /* Hairlines */
-  --line: color-mix(in oklab, oklch(0.98 0.01 245) 10%, transparent);
-  --line-strong: color-mix(in oklab, oklch(0.98 0.01 245) 18%, transparent);
-
-  /* Glass */
-  --glass-bg: color-mix(in oklab, var(--surface-2) 52%, transparent);
-  --glass-bg-raised: color-mix(in oklab, var(--surface-3) 62%, transparent);
-  --glass-bg-sunken: color-mix(in oklab, var(--surface-0) 58%, transparent);
-  --glass-border: color-mix(in oklab, oklch(1 0 0) 13%, transparent);
-  --glass-border-hi: color-mix(in oklab, oklch(1 0 0) 24%, transparent);
-  --glass-blur: 20px;
-  --glass-saturate: 165%;
-  --glass-noise-opacity: 0.035;
-
-  /* Elevation */
-  --shadow-glass: 0 1px 0 0 color-mix(in oklab, oklch(1 0 0) 7%, transparent)
-      inset,
-    0 12px 40px -12px oklch(0 0 0 / 0.65);
-  --shadow-lift: 0 24px 64px -24px oklch(0 0 0 / 0.72);
-  --shadow-glow-signal: 0 0 0 1px
-      color-mix(in oklab, var(--color-signal-400) 32%, transparent),
-    0 0 34px -6px color-mix(in oklab, var(--color-signal-400) 42%, transparent);
-
-  /* Grid backdrop */
-  --grid-line: color-mix(in oklab, oklch(0.98 0.01 245) 5%, transparent);
-  --grid-size: 40px;
-
-  /* Focus */
-  --focus-ring: var(--color-signal-400);
-
-  /* shadcn/ui compatibility tokens */
-  --background: var(--surface-0);
-  --foreground: var(--ink-strong);
-  --card: var(--surface-1);
-  --card-foreground: var(--ink-strong);
-  --popover: var(--surface-1);
-  --popover-foreground: var(--ink-strong);
-  --primary: var(--color-signal-500);
-  --primary-foreground: var(--surface-0);
-  --secondary: var(--surface-2);
-  --secondary-foreground: var(--ink);
-  --muted: var(--surface-2);
-  --muted-foreground: var(--ink-muted);
-  --accent: var(--surface-2);
-  --accent-foreground: var(--ink);
-  --destructive: var(--color-alert-500);
-  --destructive-foreground: var(--ink-strong);
-  --border: var(--line);
-  --input: var(--line);
-  --ring: var(--color-signal-400);
-  --radius-md: 0.5rem;
-}
-
-.light {
-  color-scheme: light;
-
-  --surface-0: oklch(0.982 0.004 245);
-  --surface-1: oklch(0.958 0.007 245);
-  --surface-2: oklch(0.928 0.011 245);
-  --surface-3: oklch(0.892 0.015 245);
-
-  --ink-strong: oklch(0.19 0.04 258);
-  --ink: oklch(0.312 0.036 256);
-  --ink-muted: oklch(0.482 0.03 252);
-  --ink-faint: oklch(0.632 0.024 250);
-
-  --line: color-mix(in oklab, oklch(0.19 0.04 258) 12%, transparent);
-  --line-strong: color-mix(in oklab, oklch(0.19 0.04 258) 20%, transparent);
-
-  --glass-bg: color-mix(in oklab, oklch(1 0 0) 58%, transparent);
-  --glass-bg-raised: color-mix(in oklab, oklch(1 0 0) 74%, transparent);
-  --glass-bg-sunken: color-mix(in oklab, oklch(1 0 0) 42%, transparent);
-  --glass-border: color-mix(in oklab, oklch(0.19 0.04 258) 10%, transparent);
-  --glass-border-hi: color-mix(in oklab, oklch(0.19 0.04 258) 18%, transparent);
-  --glass-saturate: 140%;
-  --glass-noise-opacity: 0.02;
-
-  --shadow-glass: 0 1px 0 0 oklch(1 0 0 / 0.9) inset,
-    0 10px 32px -14px oklch(0.19 0.04 258 / 0.28);
-  --shadow-lift: 0 22px 56px -22px oklch(0.19 0.04 258 / 0.34);
-
-  --grid-line: color-mix(in oklab, oklch(0.19 0.04 258) 6%, transparent);
-
-  /* shadcn/ui compatibility tokens */
-  --background: var(--surface-0);
-  --foreground: var(--ink-strong);
-  --card: var(--surface-1);
-  --card-foreground: var(--ink-strong);
-  --popover: var(--surface-1);
-  --popover-foreground: var(--ink-strong);
-  --primary: var(--color-signal-600);
-  --primary-foreground: var(--surface-0);
-  --secondary: var(--surface-2);
-  --secondary-foreground: var(--ink);
-  --muted: var(--surface-2);
-  --muted-foreground: var(--ink-muted);
-  --accent: var(--surface-2);
-  --accent-foreground: var(--ink);
-  --destructive: var(--color-alert-600);
-  --destructive-foreground: var(--ink-strong);
-  --border: var(--line);
-  --input: var(--line);
-  --ring: var(--color-signal-600);
-  --radius-md: 0.5rem;
-}
-
-/* Expose runtime tokens as Tailwind utilities (bg-surface-1, text-ink-muted…) */
-@theme inline {
-  --color-surface-0: var(--surface-0);
-  --color-surface-1: var(--surface-1);
-  --color-surface-2: var(--surface-2);
-  --color-surface-3: var(--surface-3);
-
-  --color-ink-strong: var(--ink-strong);
-  --color-ink: var(--ink);
-  --color-ink-muted: var(--ink-muted);
-  --color-ink-faint: var(--ink-faint);
-
-  --color-line: var(--line);
-  --color-line-strong: var(--line-strong);
-
-  --color-glass: var(--glass-bg);
-  --color-glass-raised: var(--glass-bg-raised);
-  --color-glass-border: var(--glass-border);
-
-  /* shadcn/ui compatibility tokens */
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-
-  --radius-glass: var(--radius-glass);
-  --radius-md: var(--radius-md);
-  --shadow-glass: var(--shadow-glass);
-  --shadow-lift: var(--shadow-lift);
-  --shadow-glow-signal: var(--shadow-glow-signal);
-  --ease-freight: var(--ease-freight);
-  --ease-snap: var(--ease-snap);
-}
-
-/* ============================================================================
-   4. BASE LAYER
-   ========================================================================== */
 @layer base {
   *,
   *::before,
   *::after {
-    border-color: var(--line);
-    min-width: 0;
+    box-sizing: border-box;
   }
 
   html {
+    height: 100%;
+    /* Prevent zoom-on-focus in iOS */
     -webkit-text-size-adjust: 100%;
-    -webkit-tap-highlight-color: transparent;
-    scrollbar-gutter: stable;
-    scroll-behavior: smooth;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    html {
-      scroll-behavior: auto;
-    }
+    text-size-adjust: 100%;
   }
 
   body {
-    background-color: var(--surface-0);
-    color: var(--ink);
-    font-family: var(--font-sans);
-    font-size: var(--text-body);
-    line-height: 1.6;
-    font-feature-settings: "cv11", "ss01", "tnum" 0;
+    height: 100%;
+    margin: 0;
+    font: var(--text-sm) / 1.5 var(--font-ui);
+    background: var(--color-bg-app);
+    color: var(--color-text);
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-rendering: optimizeLegibility;
-    overflow-x: hidden;
-    min-height: 100dvh;
-    /* Ambient zone atmosphere */
-    background-image: radial-gradient(
-        120% 80% at 12% -10%,
-        color-mix(in oklab, var(--color-signal-500) 14%, transparent) 0%,
-        transparent 55%
-      ),
-      radial-gradient(
-        90% 70% at 100% 0%,
-        color-mix(in oklab, var(--color-fcz) 12%, transparent) 0%,
-        transparent 60%
-      );
-    background-attachment: fixed;
+    /* Prevent overscroll bounce on iOS during canvas pan */
+    overscroll-behavior: none;
   }
 
-  h1,
-  h2,
-  h3,
-  h4 {
-    color: var(--ink-strong);
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    text-wrap: balance;
+  /* Prevent pull-to-refresh when interacting with the canvas */
+  html,
+  body {
+    overscroll-behavior-y: contain;
   }
 
-  p {
-    text-wrap: pretty;
-  }
-
-  /* Numeric data, container IDs, BL numbers, HS codes */
-  code,
-  kbd,
-  samp,
-  pre,
-  .tabular {
-    font-family: var(--font-mono);
-    font-variant-numeric: tabular-nums;
-    font-feature-settings: "tnum" 1, "zero" 1;
-  }
-
-  ::selection {
-    background: color-mix(in oklab, var(--color-signal-400) 38%, transparent);
-    color: var(--ink-strong);
-  }
-
-  :focus-visible {
-    outline: 2px solid var(--focus-ring);
-    outline-offset: 2px;
-    border-radius: 4px;
-  }
-
-  :disabled,
-  [aria-disabled="true"] {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  /* ---- Scrollbars ------------------------------------------------------- */
-  * {
-    scrollbar-width: thin;
-    scrollbar-color: color-mix(in oklab, var(--ink-faint) 45%, transparent)
-      transparent;
-  }
+  /* Scrollbars — thinner on touch devices */
   ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
-  }
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: color-mix(in oklab, var(--ink-faint) 40%, transparent);
-    border: 3px solid transparent;
-    background-clip: content-box;
-    border-radius: 999px;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: color-mix(in oklab, var(--color-signal-400) 55%, transparent);
-    background-clip: content-box;
-  }
-  ::-webkit-scrollbar-corner {
-    background: transparent;
-  }
-
-  /* ---- Safe areas (iOS notch / Android gesture bar) --------------------- */
-  .safe-top {
-    padding-top: env(safe-area-inset-top, 0px);
-  }
-  .safe-bottom {
-    padding-bottom: env(safe-area-inset-bottom, 0px);
-  }
-  .safe-x {
-    padding-left: env(safe-area-inset-left, 0px);
-    padding-right: env(safe-area-inset-right, 0px);
-  }
-
-  /* ---- Media ------------------------------------------------------------ */
-  img,
-  video,
-  canvas,
-  svg {
-    display: block;
-    max-width: 100%;
-  }
-  canvas {
-    touch-action: none;
-  }
-}
-
-/* ============================================================================
-   5. CUSTOM UTILITIES
-   ========================================================================== */
-
-/* ---- Glass primitives ---------------------------------------------------- */
-@utility glass {
-  background-color: var(--glass-bg);
-  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
-  -webkit-backdrop-filter: blur(var(--glass-blur))
-    saturate(var(--glass-saturate));
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--shadow-glass);
-}
-
-@utility glass-raised {
-  background-color: var(--glass-bg-raised);
-  backdrop-filter: blur(calc(var(--glass-blur) * 1.4))
-    saturate(var(--glass-saturate));
-  -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 1.4))
-    saturate(var(--glass-saturate));
-  border: 1px solid var(--glass-border-hi);
-  box-shadow: var(--shadow-lift);
-}
-
-@utility glass-sunken {
-  background-color: var(--glass-bg-sunken);
-  backdrop-filter: blur(calc(var(--glass-blur) * 0.6))
-    saturate(var(--glass-saturate));
-  -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.6))
-    saturate(var(--glass-saturate));
-  border: 1px solid var(--line);
-  box-shadow: inset 0 1px 0 0 color-mix(in oklab, oklch(0 0 0) 22%, transparent);
-}
-
-/* Glass with a light-catching top edge — the classic "frosted card" look */
-@utility glass-edge {
-  position: relative;
-  &::before {
-    content: "";
-    position: absolute;
-    inset: 0 0 auto 0;
-    height: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      var(--glass-border-hi) 22%,
-      var(--glass-border-hi) 78%,
-      transparent
-    );
-    pointer-events: none;
-  }
-}
-
-/* Fallback: devices without backdrop-filter get solid surfaces */
-@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .glass,
-  .glass-raised {
-    background-color: var(--surface-2);
-  }
-}
-
-/* ---- GPU / Framer Motion helpers ---------------------------------------- */
-@utility gpu {
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  will-change: transform, opacity;
-}
-
-@utility motion-layer {
-  will-change: transform, opacity, filter;
-  transform: translateZ(0);
-  contain: layout paint style;
-}
-
-@utility no-motion {
-  @media (prefers-reduced-motion: reduce) {
-    animation: none !important;
-    transition: none !important;
-    transform: none !important;
-  }
-}
-
-/* ---- Text treatments ----------------------------------------------------- */
-@utility text-glow {
-  text-shadow: 0 0 24px
-    color-mix(in oklab, currentColor 55%, transparent);
-}
-
-@utility text-hud {
-  font-family: var(--font-mono);
-  font-size: var(--text-micro);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  font-weight: 500;
-  color: var(--ink-muted);
-}
-
-@utility text-gradient-signal {
-  background: linear-gradient(
-    100deg,
-    var(--color-signal-300),
-    var(--color-fiz) 45%,
-    var(--color-fcz)
-  );
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-}
-
-/* ---- Backdrops ----------------------------------------------------------- */
-@utility grid-backdrop {
-  background-image: linear-gradient(var(--grid-line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
-  background-size: var(--grid-size) var(--grid-size);
-}
-
-@utility scanlines {
-  background-image: repeating-linear-gradient(
-    to bottom,
-    color-mix(in oklab, oklch(1 0 0) 4%, transparent) 0px,
-    color-mix(in oklab, oklch(1 0 0) 4%, transparent) 1px,
-    transparent 1px,
-    transparent 3px
-  );
-}
-
-/* ---- Shimmer skeleton for AI inference / loading states ------------------ */
-@utility shimmer {
-  background: linear-gradient(
-    100deg,
-    color-mix(in oklab, var(--ink-faint) 8%, transparent) 20%,
-    color-mix(in oklab, var(--color-signal-400) 22%, transparent) 45%,
-    color-mix(in oklab, var(--ink-faint) 8%, transparent) 70%
-  );
-  background-size: 200% 100%;
-  animation: var(--animate-shimmer);
-}
-
-/* ---- Scroll behaviours --------------------------------------------------- */
-@utility no-scrollbar {
-  scrollbar-width: none;
-  &::-webkit-scrollbar {
-    display: none;
-  }
-}
-
-@utility scroll-x-snap {
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  overscroll-behavior-x: contain;
-  -webkit-overflow-scrolling: touch;
-}
-
-@utility snap-item {
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
-  flex: 0 0 auto;
-}
-
-/* ---- Touch ergonomics ---------------------------------------------------- */
-@utility tap-target {
-  min-height: 44px;
-  min-width: 44px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-@utility touch-scroll {
-  touch-action: pan-y;
-  overscroll-behavior: contain;
-}
-
-/* ============================================================================
-   6. COMPONENT LAYER
-   ========================================================================== */
-@layer components {
-  /* ---- App shell -------------------------------------------------------- */
-  .freight-shell {
-    display: grid;
-    min-height: 100dvh;
-    grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr;
-  }
-
-  @media (min-width: 1024px) {
-    .freight-shell {
-      grid-template-columns: 272px 1fr;
-      grid-template-rows: auto 1fr;
-    }
-  }
-
-  @media (min-width: 1536px) {
-    .freight-shell {
-      grid-template-columns: 296px 1fr 360px;
-    }
-  }
-
-  /* ---- Panels ----------------------------------------------------------- */
-  .panel {
-    @apply glass glass-edge;
-    border-radius: var(--radius-panel);
-    position: relative;
-    isolation: isolate;
-    overflow: hidden;
-  }
-
-  .panel-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.75rem;
-    padding: 0.875rem 1rem;
-    border-bottom: 1px solid var(--line);
-    min-height: 56px;
-  }
-
-  @media (min-width: 768px) {
-    .panel-header {
-      padding-inline: 1.25rem;
-    }
-  }
-
-  .panel-body {
-    padding: 1rem;
-  }
-
-  @media (min-width: 768px) {
-    .panel-body {
-      padding: 1.25rem;
-    }
-  }
-
-  /* ---- AI copilot / inference surface ----------------------------------- */
-  .copilot {
-    @apply glass-raised;
-    border-radius: var(--radius-panel);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .copilot::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      180deg,
-      color-mix(in oklab, var(--color-signal-400) 12%, transparent),
-      transparent 38%
-    );
-    pointer-events: none;
-  }
-
-  .copilot-scanline {
-    position: absolute;
-    inset-inline: 0;
-    height: 42%;
-    background: linear-gradient(
-      180deg,
-      transparent,
-      color-mix(in oklab, var(--color-signal-400) 22%, transparent),
-      transparent
-    );
-    animation: var(--animate-scan);
-    pointer-events: none;
-  }
-
-  /* ---- Status chips ------------------------------------------------------ */
-  .chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.375rem;
-    padding: 0.25rem 0.625rem;
-    border-radius: 999px;
-    font-family: var(--font-mono);
-    font-size: var(--text-micro);
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    border: 1px solid var(--glass-border);
-    background: color-mix(in oklab, var(--surface-3) 55%, transparent);
-    color: var(--ink-muted);
-    white-space: nowrap;
-  }
-
-  .chip-clear {
-    color: var(--color-clear-300);
-    border-color: color-mix(in oklab, var(--color-clear-400) 40%, transparent);
-    background: color-mix(in oklab, var(--color-clear-500) 16%, transparent);
-  }
-  .chip-cargo {
-    color: var(--color-cargo-300);
-    border-color: color-mix(in oklab, var(--color-cargo-400) 40%, transparent);
-    background: color-mix(in oklab, var(--color-cargo-500) 16%, transparent);
-  }
-  .chip-alert {
-    color: var(--color-alert-300);
-    border-color: color-mix(in oklab, var(--color-alert-400) 42%, transparent);
-    background: color-mix(in oklab, var(--color-alert-500) 16%, transparent);
-  }
-  .chip-signal {
-    color: var(--color-signal-200);
-    border-color: color-mix(in oklab, var(--color-signal-400) 40%, transparent);
-    background: color-mix(in oklab, var(--color-signal-500) 16%, transparent);
-  }
-  .chip-fiz {
-    color: color-mix(in oklab, var(--color-fiz) 82%, white);
-    border-color: color-mix(in oklab, var(--color-fiz) 42%, transparent);
-    background: color-mix(in oklab, var(--color-fiz) 15%, transparent);
-  }
-  .chip-fcz {
-    color: color-mix(in oklab, var(--color-fcz) 82%, white);
-    border-color: color-mix(in oklab, var(--color-fcz) 42%, transparent);
-    background: color-mix(in oklab, var(--color-fcz) 15%, transparent);
-  }
-
-  /* ---- Live status dot --------------------------------------------------- */
-  .status-dot {
-    position: relative;
-    display: inline-block;
     width: 8px;
     height: 8px;
-    border-radius: 999px;
-    background: currentColor;
-    flex: none;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-line-2);
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-line-3);
   }
 
-  .status-dot::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background: currentColor;
-    animation: var(--animate-pulse-ring);
+  /* Respect reduced-motion — kill all decorative animation */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 
-  /* ---- Data table / list rows -------------------------------------------- */
-  .data-row {
+  /* High-contrast preference */
+  @media (prefers-contrast: more) {
+    :root {
+      --color-line: #374151;
+      --color-line-2: #4b5563;
+      --color-text-3: #9ca3af;
+      --color-text-4: #6b7280;
+    }
+  }
+
+  /* Larger base size on wide screens for comfortable reading */
+  @media (min-width: 1920px) {
+    html {
+      font-size: 15px;
+    }
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   COMPONENT LAYER
+   ═══════════════════════════════════════════════════════════ */
+
+@layer components {
+  /* ── Panels ── */
+  .ai-panel {
+    @apply rounded-[var(--radius-lg)] border border-[var(--color-line)] bg-[var(--color-bg-panel)];
+  }
+  .ai-panel-head {
+    @apply flex items-center gap-2 border-b border-[var(--color-line)] px-3 py-2;
+  }
+  .ai-panel-title {
+    @apply font-extrabold uppercase tracking-[.08em] text-[var(--color-text-3)];
+    font-size: var(--text-2xs);
+  }
+
+  /* ── Key/value rows ── */
+  .ai-kv {
+    @apply flex justify-between gap-3 py-1;
+    font-size: var(--text-sm);
+  }
+  .ai-kv > span:first-child {
+    @apply text-[var(--color-text-3)];
+  }
+  .ai-kv > span:last-child {
+    @apply font-semibold text-right break-words;
+  }
+
+  /* ── Chips ── */
+  .ai-chip {
+    @apply inline-flex items-center gap-1 rounded px-1.5 py-0.5 font-extrabold uppercase tracking-[.04em];
+    font-size: var(--text-2xs);
+  }
+
+  /* ── Mono ── */
+  .ai-mono {
+    font-family: var(--font-mono);
+  }
+
+  /* ═════════════════════════════════════════════════════════
+     STUDIO SHELL — device-aware grid
+     ═════════════════════════════════════════════════════════ */
+
+  /*
+   * Default (mobile-first): single column, panels become bottom sheets.
+   * Rows:  title(28) · tabbar(38) · main(1fr) · bottom(150)
+   */
+  .studio-shell {
     display: grid;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem 1rem;
-    border-bottom: 1px solid var(--line);
-    transition: background-color 180ms var(--ease-hud);
+    grid-template-rows: 28px 38px 1fr 150px;
+    height: 100dvh;              /* dynamic viewport — accounts for mobile chrome */
+    height: 100vh;
+    background: var(--color-bg-app);
+    /* iOS safe areas */
+    padding: env(safe-area-inset-top, 0)
+             env(safe-area-inset-right, 0)
+             env(safe-area-inset-bottom, 0)
+             env(safe-area-inset-left, 0);
   }
-
-  @media (hover: hover) {
-    .data-row:hover {
-      background: color-mix(in oklab, var(--color-signal-400) 8%, transparent);
+  @supports (height: 100dvh) {
+    .studio-shell {
+      height: 100dvh;
     }
   }
 
-  .data-row:last-child {
-    border-bottom: 0;
+  /* Tablet — tighter side panels, slightly taller console */
+  @media (min-width: 48rem) {
+    .studio-shell {
+      grid-template-rows: 28px 38px 1fr 180px;
+    }
   }
 
-  /* ---- Inputs ------------------------------------------------------------ */
-  .field {
+  /* Desktop — full height console */
+  @media (min-width: 64rem) {
+    .studio-shell {
+      grid-template-rows: 28px 38px 1fr 200px;
+    }
+  }
+
+  /* ═════════════════════════════════════════════════════════
+     STUDIO MAIN GRID — 3-panel layout, device-aware
+     ═════════════════════════════════════════════════════════ */
+
+  .studio-main {
+    display: grid;
+    min-height: 0;
+    overflow: hidden;
+    transition: grid-template-columns var(--duration-base) var(--ease-out);
+    /*
+     * Mobile default: canvas only, panels become drawers
+     * (handled by .studio-main--mobile-* modifier classes below)
+     */
+    grid-template-columns: 1fr;
+  }
+
+  /* XS–SM (phones) — canvas only; panels overlay when opened */
+  @media (min-width: 30rem) {
+    .studio-main {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* MD (tablets ≥ 768) — 2-col: left panel + canvas */
+  @media (min-width: 48rem) {
+    .studio-main {
+      grid-template-columns:
+        min(30vw, 220px)
+        1fr
+        min(0vw, 0px);   /* right collapsed */
+    }
+    .studio-main.is-right-open {
+      grid-template-columns:
+        min(30vw, 220px)
+        1fr
+        min(38vw, 320px);
+    }
+  }
+
+  /* LG (≥ 1024) — full 3-col */
+  @media (min-width: 64rem) {
+    .studio-main {
+      grid-template-columns: var(--container-studio-left-lg) 1fr var(--container-studio-right-lg);
+    }
+    .studio-main.is-left-collapsed {
+      grid-template-columns: var(--container-studio-collapsed) 1fr var(--container-studio-right-lg);
+    }
+    .studio-main.is-right-collapsed {
+      grid-template-columns: var(--container-studio-left-lg) 1fr var(--container-studio-collapsed);
+    }
+    .studio-main.is-both-collapsed {
+      grid-template-columns: var(--container-studio-collapsed) 1fr var(--container-studio-collapsed);
+    }
+  }
+
+  /* XL+ — full width comfortable layout */
+  @media (min-width: 80rem) {
+    .studio-main {
+      grid-template-columns: var(--container-studio-left) 1fr var(--container-studio-right);
+    }
+  }
+
+  /* ═════════════════════════════════════════════════════════
+     TOUCH TARGETS — enlarged on coarse pointers
+     ═════════════════════════════════════════════════════════ */
+
+  @media (pointer: coarse) {
+    /* Every interactive control grows to at least 44px tall */
+    .touch-target,
+    .studio-shell button:not(.no-touch-grow) {
+      min-height: var(--touch-min);
+    }
+
+    /* Icon-only toolbar buttons get larger hit areas */
+    .studio-shell button[title] {
+      min-width: var(--touch-min);
+    }
+
+    /* Scrollbars disappear on touch — rely on native momentum */
+    ::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+    }
+  }
+
+  /* ═════════════════════════════════════════════════════════
+     TITLE BAR
+     ═════════════════════════════════════════════════════════ */
+
+  .studio-titlebar {
+    @apply flex items-center gap-2 border-b border-black px-2;
+    background: linear-gradient(180deg, #1a2129, #0f141b);
+    font-size: var(--text-xs);
+    color: var(--color-text-2);
+  }
+
+  /* Hide window controls on mobile — no window metaphor */
+  .studio-titlebar .win-ctrl {
+    display: none;
+  }
+  @media (min-width: 64rem) {
+    .studio-titlebar .win-ctrl {
+      display: flex;
+    }
+  }
+
+  /* ═════════════════════════════════════════════════════════
+     TAB BAR — scrollable on mobile, wrapping on wide
+     ═════════════════════════════════════════════════════════ */
+
+  .studio-tabbar {
+    @apply flex items-center gap-1.5 overflow-x-auto border-b border-[var(--color-line)] bg-[var(--color-bg-chrome)] px-2;
+    font-size: var(--text-xs);
+    scrollbar-width: none;                /* Firefox */
+    -webkit-overflow-scrolling: touch;    /* iOS momentum */
+  }
+  .studio-tabbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Pill labels truncate on narrow phones */
+  .studio-tabbar .pill {
+    max-width: 12ch;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  @media (min-width: 48rem) {
+    .studio-tabbar .pill {
+      max-width: none;
+    }
+  }
+
+  /* Hide secondary pills on phones */
+  @media (max-width: 30rem) {
+    .studio-tabbar .pill--secondary,
+    .studio-tabbar .hide-xs {
+      display: none;
+    }
+  }
+
+  /* ═════════════════════════════════════════════════════════
+     SIDE PANELS — become overlay drawers on phones
+     ═════════════════════════════════════════════════════════ */
+
+  .studio-side,
+  .studio-right {
+    @apply flex min-w-0 flex-col overflow-hidden bg-[var(--color-bg-panel)];
+  }
+  .studio-side {
+    border-right: 1px solid var(--color-line);
+  }
+  .studio-right {
+    border-left: 1px solid var(--color-line);
+  }
+
+  /* Mobile: side panels become full-height drawers */
+  @media (max-width: 47.999rem) {
+    .studio-side,
+    .studio-right {
+      position: fixed;
+      top: 66px;                                     /* title + tabbar */
+      bottom: 150px;                                 /* console height */
+      width: min(85vw, 340px);
+      z-index: 30;
+      box-shadow: 0 24px 48px -12px rgba(0, 0, 0, .65);
+      transition: transform var(--duration-base) var(--ease-out);
+    }
+    .studio-side {
+      left: 0;
+      transform: translateX(-105%);
+    }
+    .studio-side.is-open {
+      transform: translateX(0);
+    }
+    .studio-right {
+      right: 0;
+      transform: translateX(105%);
+    }
+    .studio-right.is-open {
+      transform: translateX(0);
+    }
+  }
+
+  /* ═════════════════════════════════════════════════════════
+     CANVAS
+     ═════════════════════════════════════════════════════════ */
+
+  .studio-canvas {
+    position: relative;
+    min-height: 0;
+    flex: 1;
+    overflow: hidden;
+    background-color: #0b1220;
+    touch-action: none;                    /* React Flow owns gestures */
+  }
+
+  /* Larger nodes on touch so ports are tappable */
+  @media (pointer: coarse) {
+    .react-flow__handle {
+      width: 16px !important;
+      height: 16px !important;
+    }
+    .react-flow__controls-button {
+      width: 36px !important;
+      height: 36px !important;
+    }
+    .react-flow__minimap {
+      width: 120px !important;
+      height: 80px !important;
+    }
+  }
+
+  /* Hide the minimap entirely on phones */
+  @media (max-width: 30rem) {
+    .react-flow__minimap {
+      display: none !important;
+    }
+    .react-flow__controls {
+      bottom: 12px !important;
+      right: 12px !important;
+    }
+  }
+
+  /* ═════════════════════════════════════════════════════════
+     CONSOLE
+     ═════════════════════════════════════════════════════════ */
+
+  .studio-console {
+    @apply flex min-h-0 flex-col border-t border-[var(--color-line)] bg-[var(--color-bg-chrome)];
+  }
+
+  /* Collapse console to a single-row status strip on phones */
+  @media (max-width: 30rem) {
+    .studio-console .console-body {
+      max-height: 92px;
+    }
+  }
+
+  /* ═════════════════════════════════════════════════════════
+     MODAL — full-bleed sheet on phones, centered card on desktop
+     ═════════════════════════════════════════════════════════ */
+
+  .ai-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    display: grid;
+    background: rgba(3, 7, 18, .82);
+    backdrop-filter: blur(3px);
+    padding: 0;
+    place-items: stretch;
+  }
+  @media (min-width: 30rem) {
+    .ai-modal-backdrop {
+      padding: 20px;
+      place-items: center;
+    }
+  }
+
+  .ai-modal {
     width: 100%;
-    padding: 0.625rem 0.875rem;
-    border-radius: var(--radius-hud);
-    background: var(--glass-bg-sunken);
-    border: 1px solid var(--line);
-    color: var(--ink-strong);
-    font-size: var(--text-data);
-    transition: border-color 160ms var(--ease-hud),
-      box-shadow 160ms var(--ease-hud), background-color 160ms var(--ease-hud);
+    max-height: 100%;
+    overflow-y: auto;
+    background: var(--color-bg-panel);
+    border: 1px solid var(--color-line);
+    border-radius: 0;
+    padding: 18px;
+    /* Safe area for notch */
+    padding-bottom: calc(18px + env(safe-area-inset-bottom, 0));
+  }
+  @media (min-width: 30rem) {
+    .ai-modal {
+      max-width: 560px;
+      max-height: 90vh;
+      border-radius: var(--radius-xl);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, .6);
+    }
   }
 
-  .field::placeholder {
-    color: var(--ink-faint);
+  /* ═════════════════════════════════════════════════════════
+     TABLE — scroll horizontally on narrow, freeze left col
+     ═════════════════════════════════════════════════════════ */
+
+  .ai-table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .ai-table-scroll table {
+    min-width: 640px;
+  }
+  .ai-table-scroll th:first-child,
+  .ai-table-scroll td:first-child {
+    position: sticky;
+    left: 0;
+    background: var(--color-bg-panel);
+    z-index: 1;
   }
 
-  .field:focus {
-    outline: none;
-    border-color: color-mix(in oklab, var(--color-signal-400) 60%, transparent);
-    box-shadow: 0 0 0 3px
-      color-mix(in oklab, var(--color-signal-400) 20%, transparent);
-    background: color-mix(in oklab, var(--surface-2) 70%, transparent);
+  /* ═════════════════════════════════════════════════════════
+     UTILITIES
+     ═════════════════════════════════════════════════════════ */
+
+  /* Fluid text helpers */
+  .text-fluid-2xs { font-size: var(--text-2xs); }
+  .text-fluid-xs  { font-size: var(--text-xs); }
+  .text-fluid-sm  { font-size: var(--text-sm); }
+  .text-fluid-base{ font-size: var(--text-base); }
+  .text-fluid-lg  { font-size: var(--text-lg); }
+  .text-fluid-xl  { font-size: var(--text-xl); }
+
+  /* Hide on breakpoints */
+  .hide-xs  { }
+  .hide-sm  { }
+  .hide-md  { }
+  @media (max-width: 30rem)  { .hide-xs  { display: none !important; } }
+  @media (max-width: 40rem)  { .hide-sm  { display: none !important; } }
+  @media (max-width: 48rem)  { .hide-md  { display: none !important; } }
+
+  /* Show only on mobile */
+  .show-xs-only { display: none; }
+  @media (max-width: 40rem) {
+    .show-xs-only { display: initial; }
   }
 
-  /* ---- Buttons ----------------------------------------------------------- */
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 0.625rem 1rem;
-    border-radius: var(--radius-hud);
-    font-size: var(--text-data);
-    font-weight: 550;
-    letter-spacing: -0.005em;
-    border: 1px solid var(--glass-border);
-    background: color-mix(in oklab, var(--surface-3) 55%, transparent);
-    color: var(--ink-strong);
-    cursor: pointer;
+  /* ═════════════════════════════════════════════════════════
+     CONTAINER QUERIES — component-level responsiveness
+     ═════════════════════════════════════════════════════════ */
+
+  .cq-host {
+    container-type: inline-size;
+  }
+
+  /* Compact node layout when the canvas is narrow */
+  @container (max-width: 380px) {
+    .node-card {
+      width: 180px;
+    }
+    .node-card .label {
+      font-size: 11.5px;
+    }
+  }
+
+  /* Panel internal layout — stack key/values on narrow panels */
+  @container (max-width: 260px) {
+    .ai-kv {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+    }
+    .ai-kv > span:last-child {
+      text-align: left;
+    }
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   UTILITIES LAYER — device-specific overrides
+   ═══════════════════════════════════════════════════════════ */
+
+@layer utilities {
+  /* Safe area helpers */
+  .safe-top    { padding-top: env(safe-area-inset-top, 0); }
+  .safe-bottom { padding-bottom: env(safe-area-inset-bottom, 0); }
+  .safe-left   { padding-left: env(safe-area-inset-left, 0); }
+  .safe-right  { padding-right: env(safe-area-inset-right, 0); }
+
+  .safe-y {
+    padding-top: env(safe-area-inset-top, 0);
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+
+  /* Prevent text selection while dragging on touch */
+  .no-select {
     user-select: none;
-    min-height: 44px;
-    transition: transform 140ms var(--ease-snap),
-      background-color 160ms var(--ease-hud),
-      border-color 160ms var(--ease-hud), box-shadow 160ms var(--ease-hud);
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
   }
 
+  /* Prevent tap-highlight flash */
+  .no-tap-highlight {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Reveal-on-hover — disable on touch to avoid stuck states */
+  @media (hover: none) {
+    .hover-only {
+      display: none !important;
+    }
+  }
   @media (hover: hover) {
-    .btn:hover {
-      background: color-mix(in oklab, var(--surface-3) 78%, transparent);
-      border-color: var(--glass-border-hi);
+    .hover-only {
+      opacity: 0;
+      transition: opacity var(--duration-fast) var(--ease-out);
+    }
+    *:hover > .hover-only,
+    *:focus-within > .hover-only {
+      opacity: 1;
     }
   }
 
-  .btn:active {
-    transform: scale(0.975);
+  /* Landscape phone — reduce vertical chrome */
+  @media (max-height: 32rem) and (orientation: landscape) {
+    .studio-shell {
+      grid-template-rows: 24px 32px 1fr 100px;
+    }
+    .studio-console .console-body {
+      max-height: 68px;
+    }
   }
 
-  .btn-primary {
-    background: linear-gradient(
-      180deg,
-      color-mix(in oklab, var(--color-signal-400) 92%, white),
-      var(--color-signal-600)
-    );
-    border-color: color-mix(in oklab, var(--color-signal-300) 55%, transparent);
-    color: oklch(0.16 0.03 250);
-    box-shadow: var(--shadow-glow-signal);
+  /* Very tall / portrait tablet — give canvas more room */
+  @media (min-width: 48rem) and (max-height: 60rem) {
+    .studio-shell {
+      grid-template-rows: 28px 38px 1fr 160px;
+    }
   }
 
-  /* ---- Dividers / rules -------------------------------------------------- */
-  .hairline {
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--line-strong), transparent);
-    border: 0;
-  }
-
-  /* ---- Live ticker (zone throughput, gate queues) ------------------------ */
-  .ticker-track {
-    display: flex;
-    width: max-content;
-    animation: var(--animate-ticker);
-  }
-
-  @media (hover: hover) {
-    .ticker-track:hover {
-      animation-play-state: paused;
+  /* Foldables — handle the narrower outer display */
+  @media (max-width: 22rem) {
+    .studio-tabbar .pill:not(.pill--primary) {
+      display: none;
+    }
+    .studio-titlebar span:not(:first-child) {
+      display: none;
     }
   }
 }
 
-/* ============================================================================
-   7. RESPONSIVE / DEVICE REFINEMENTS
-   ========================================================================== */
+/* ═══════════════════════════════════════════════════════════
+   PRINT — strip chrome, print the canvas
+   ═══════════════════════════════════════════════════════════ */
 
-/* Coarse pointers: bigger hit areas, less hover chrome */
-@media (pointer: coarse) {
-  .data-row {
-    padding-block: 0.875rem;
-  }
-  .btn {
-    min-height: 48px;
-  }
-}
-
-
-/* Utility: allow horizontal scroll on small screens when needed */
-.scroll-x {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-@media (max-width: 1024px) {
-  main {
-    max-width: 100%;
-  }
-}
-
-/* Small phones: tighten glass blur for GPU headroom */
-@media (max-width: 480px) {
-  :root {
-    --glass-blur: 14px;
-    --radius-panel: 1rem;
-  }
-}
-
-/* Large displays: widen the grid backdrop */
-@media (min-width: 1920px) {
-  :root {
-    --grid-size: 56px;
-  }
-}
-
-/* Print: flatten glass, keep data legible */
 @media print {
-  .glass,
-  .glass-raised,
-  .panel,
-  .copilot {
-    background: #fff !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-    box-shadow: none !important;
-    border: 1px solid #ccc !important;
+  .studio-titlebar,
+  .studio-tabbar,
+  .studio-console,
+  .studio-side,
+  .studio-right {
+    display: none !important;
+  }
+  .studio-main {
+    grid-template-columns: 1fr !important;
   }
   body {
-    background: #fff !important;
-    color: #000 !important;
-  }
-}
-
-/* ============================================================================
-   8. MOTION SAFETY — always last so it wins
-   ========================================================================== */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+    background: white;
+    color: black;
   }
 }
