@@ -115,7 +115,7 @@ jobs:
           echo "Running Prisma migrations against production database..."
           # Integration point — replace with your actual migration runner.
           # Example:
-          #   cd /tmp/artifacts && pppnpm install --frozen-lockfile --ignore-scripts && npx prisma migrate deploy
+          #   cd /tmp/artifacts && pnpm install --frozen-lockfile --ignore-scripts && npx prisma migrate deploy
         env:
           DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
 

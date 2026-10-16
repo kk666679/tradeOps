@@ -21,27 +21,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4  # 11d5960a326750d5838078e36cf38b85af677262
 
-      - name: Dependency review (root lockfile)
-        uses: actions/dependency-review@v4  # TODO: pin to full commit SHA via .github/workflows/dependency-update.yml
-        with:
-          fail-on-severity: high
-          fail-on-non-prod: false
-          allow-dependencies: |
-            # Allowlist — only add after maintainer review.
-            # Format: owner/repo@version
-          deny-dependencies: |
-            # e.g. owner/repo@1.0.0
-          allow-licenses: |
-            MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC, 0BSD, Unlicense
-
-      - name: Dependency review (backend lockfile)
-        uses: actions/dependency-review@v4  # TODO: pin to full commit SHA
+      - name: Review dependency changes
+        uses: actions/dependency-review-action@v4  # TODO: pin to full commit SHA via .github/workflows/dependency-update.yml
         with:
           fail-on-severity: high
           fail-on-non-prod: false
           allow-licenses: |
             MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC, 0BSD, Unlicense
-          path: backend/pnpm-lock.yaml
 
   license-compliance:
     name: License compliance

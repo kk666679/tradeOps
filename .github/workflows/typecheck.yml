@@ -55,4 +55,4 @@ jobs:
           enable-backend: true
 
       - name: Typecheck
-        run: npx tsc --noEmit -p backend/tsconfig.json
+        run: npm exec -- tsc --noEmit -p backend/tsconfig.json

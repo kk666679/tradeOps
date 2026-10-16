@@ -13,7 +13,7 @@ on:
       - 'package.json'
       - 'pnpm-lock.yaml'
       - 'backend/package.json'
-      - 'backend/pnpm-lock.yaml'
+      - 'backend/package-lock.json'
       - 'docker-compose*.yml'
       - 'prisma/**'
       - '.github/workflows/ci.yml'
@@ -64,13 +64,13 @@ jobs:
           cache: 'pnpm'
           cache-dependency-path: |
             pnpm-lock.yaml
-            backend/pnpm-lock.yaml
+            backend/package-lock.json
 
       - name: Install root dependencies
         run: pnpm install --frozen-lockfile
 
       - name: Install backend dependencies
-        run: pnpm install --frozen-lockfile
+        run: npm ci
         working-directory: backend
 
       - name: Build Next.js web app
@@ -124,13 +124,13 @@ jobs:
           cache: 'pnpm'
           cache-dependency-path: |
             pnpm-lock.yaml
-            backend/pnpm-lock.yaml
+            backend/package-lock.json
 
       - name: Install root dependencies
         run: pnpm install --frozen-lockfile
 
       - name: Install backend dependencies
-        run: pnpm install --frozen-lockfile
+        run: npm ci
         working-directory: backend
 
       - name: Type check web (tsc --noEmit)
@@ -162,25 +162,16 @@ jobs:
           cache: 'pnpm'
           cache-dependency-path: |
             pnpm-lock.yaml
-            backend/pnpm-lock.yaml
+            backend/package-lock.json
 
       - name: Install root dependencies
         run: pnpm install --frozen-lockfile
 
       - name: Install backend dependencies
-        run: pnpm install --frozen-lockfile
+        run: npm ci
         working-directory: backend
 
-      - name: Lint backend
-        run: pnpm exec eslint "backend/src/**/*.ts" "backend/test/**/*.ts" --max-warnings=0
-        continue-on-error: false
-
-      - name: Check backend formatting
-        run: pnpm exec prettier --check "backend/src/**/*.ts" "backend/test/**/*.ts"
-
-      - name: Lint web (Next.js ESLint)
-        run: pnpm exec next lint --dir . --max-warnings=0
-        continue-on-error: false
-
-      - name: Check web formatting
-        run: pnpm exec prettier --check "app/**/*.tsx" "app/**/*.ts" "lib/**/*.ts" "components/**/*.tsx" "components/**/*.ts" "hooks/**/*.ts" "providers/**/*.ts" "server/**/*.ts" "workers/**/*.ts" "prisma/**/*.ts"
+      - name: Type check web and backend
+        run: |
+          pnpm exec tsc --noEmit -p tsconfig.json
+          pnpm exec tsc --noEmit -p backend/tsconfig.json

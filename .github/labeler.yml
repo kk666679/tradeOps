@@ -4,7 +4,7 @@
 backend:
   - backend/**/*
   - backend/package.json
-  - backend/pnpm-lock.yaml
+  - backend/package-lock.json
 
 frontend:
   - app/**/*
@@ -31,12 +31,12 @@ config:
 docs:
   - README.md
   - SECURITY.md
-  - CONTRIBUTING.md
+  - CONTRIBUTION.md
   - CODE_OF_CONDUCT.md
   - backend/README.md
 
 tariff:
-  - src/hs-code-data.ts
+  - components/trade-ops/hs-classification/hs-code-data.ts
   - CHANGELOG-tariff.md
 
 tests:

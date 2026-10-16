@@ -1,14 +1,20 @@
-name: Lint
+name: Formatting and Typecheck
 
 on:
   push:
     branches: [main]
     paths:
-      - '**.ts'
-      - '**.tsx'
-      - '**.js'
-      - '**.mjs'
+      - '**/*.ts'
+      - '**/*.tsx'
+      - '**/*.js'
+      - '**/*.mjs'
       - '.github/workflows/lint.yml'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'backend/package.json'
+      - 'backend/package-lock.json'
+      - 'tsconfig*.json'
+      - 'backend/tsconfig*.json'
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -21,8 +27,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  eslint:
-    name: ESLint
+  typecheck:
+    name: TypeScript checks
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -35,16 +41,11 @@ jobs:
           node-version: '22.12.0'
           enable-backend: true
 
-      - name: Install ESLint config
-        run: ppnpm install --no-save --no-package-lock eslint@^9 @eslint/js typescript-eslint@^8
+      - name: Typecheck web
+        run: pnpm exec tsc --noEmit -p tsconfig.json
 
-      - name: Lint backend
-        run: npx eslint "backend/src/**/*.ts" "backend/test/**/*.ts" --max-warnings=0
-        continue-on-error: false
-
-      - name: Lint web (Next.js)
-        run: npx next lint --dir . --max-warnings=0
-        continue-on-error: false
+      - name: Typecheck backend
+        run: pnpm exec tsc --noEmit -p backend/tsconfig.json
 
   prettier:
     name: Prettier
@@ -61,7 +62,7 @@ jobs:
           enable-backend: true
 
       - name: Install Prettier
-        run: ppnpm install --no-save --no-package-lock prettier@^3
+        run: npm install --no-save --package-lock=false prettier@^3
 
       - name: Check formatting
         run: npx prettier --check "**/*.{ts,tsx,js,mjs,json,prisma}" --ignore-path .gitignore

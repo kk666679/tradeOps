@@ -12,7 +12,7 @@ on:
       - 'package.json'
       - 'pnpm-lock.yaml'
       - 'backend/package.json'
-      - 'backend/pnpm-lock.yaml'
+      - 'backend/package-lock.json'
       - '.github/workflows/security.yml'
   pull_request:
     branches: [main]
@@ -47,7 +47,7 @@ jobs:
         run: pnpm audit --json > audit-root.json || true
 
       - name: Audit backend dependencies
-        run: pnpm audit --json > audit-backend.json || true
+        run: npm audit --json > audit-backend.json || true
         working-directory: backend
 
       - name: Summarise audit results

@@ -10,7 +10,7 @@ on:
       - 'package.json'
       - 'pnpm-lock.yaml'
       - 'backend/package.json'
-      - 'backend/pnpm-lock.yaml'
+      - 'backend/package-lock.json'
       - 'prisma/**'
       - 'prisma.config.ts'
       - 'next.config.ts'

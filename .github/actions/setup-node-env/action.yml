@@ -1,5 +1,5 @@
 name: Setup Node Env
-description: Install Node, restore pnpm cache, install root (and optionally backend) dependencies.
+description: Install the repository-pinned Node.js version and install root (and optionally backend) dependencies.
 
 inputs:
   node-version:
@@ -24,9 +24,7 @@ runs:
       with:
         node-version: ${{ inputs.node-version }}
         cache: pnpm
-        cache-dependency-path: |
-          pnpm-lock.yaml
-          backend/pnpm-lock.yaml
+        cache-dependency-path: pnpm-lock.yaml
 
     - name: Install root dependencies
       shell: bash
@@ -36,4 +34,4 @@ runs:
       if: ${{ inputs.enable-backend == 'true' }}
       shell: bash
       working-directory: backend
-      run: pnpm install --frozen-lockfile
+      run: npm ci

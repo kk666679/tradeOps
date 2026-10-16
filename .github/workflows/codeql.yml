@@ -11,7 +11,7 @@ on:
       - 'package.json'
       - 'pnpm-lock.yaml'
       - 'backend/package.json'
-      - 'backend/pnpm-lock.yaml'
+      - 'backend/package-lock.json'
       - '.github/workflows/codeql.yml'
   pull_request:
     branches: [main]

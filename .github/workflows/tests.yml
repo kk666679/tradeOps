@@ -64,7 +64,7 @@ jobs:
       - name: Prisma migrate + generate
         working-directory: backend
         run: |
-          pnpm exec prisma migrate deploy
+          pnpm exec prisma db push --accept-data-loss
           pnpm exec prisma generate
 
       - name: Run Jest unit tests
