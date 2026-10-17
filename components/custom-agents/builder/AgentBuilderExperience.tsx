@@ -13,11 +13,11 @@ import { AgentSimulationRun } from '@/components/custom-agents/builder/AgentSimu
 import { AgentPublishPanel } from '@/components/custom-agents/builder/AgentPublishPanel';
 
 const handleSubmit = async (values: Record<string, unknown>) => {
-  console.log('Submit:', values);
+  // console.log('Submit:', values);
 };
 
 const handleCancel = () => {
-  console.log('Cancel');
+  // console.log('Cancel');
 };
 
 export function AgentBuilderExperience() {

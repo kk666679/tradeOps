@@ -184,7 +184,7 @@ export function arithmeticWarnings(
     const sum = amounts.reduce((a, b) => a + b, 0);
     if (declared !== null && Math.abs(declared - sum) > Math.max(tolerance, Math.abs(declared) * 0.005)) {
       warnings.push(
-        `Line-item sum ${sum.toFixed(2} does not match declared total ${declared.toFixed(2)} — verify before use.`,
+        `Line-item sum ${sum.toFixed(2} does not match declared total ${declared.toFixed(2)} — verify before use.",,
       );
     }
   }

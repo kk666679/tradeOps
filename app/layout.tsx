@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-// 引入你的全局 Provider (通常包含 React Query, Theme, Wagmi 等)
 import { Providers } from "@/components/provider"; 
+import { Web3Provider } from "@/lib/web3/Web3Provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "TradeOps | Enterprise Trade Infrastructure",
+  title: "TradeOps | Enterprise Web3 Trade Infrastructure",
   description: "The multi-tenant warehouse and customs platform.",
 };
 
@@ -19,9 +19,12 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <Providers>
-          {children}
-        </Providers>
+        {/* 必须在这里包裹 Web3Provider 才能让全站使用 Wagmi */}
+        <Web3Provider>
+          <Providers>
+            {children}
+          </Providers>
+        </Web3Provider>
       </body>
     </html>
   );

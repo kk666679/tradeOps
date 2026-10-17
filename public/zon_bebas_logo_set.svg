@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">Zon Bebas Malaysia — set ikon SVG</title>
+  <desc id="desc">Set ikon vektor untuk portal Senarai Zon Bebas dan Pihak Berkuasa Zon Bebas.</desc>
+  <defs>
+    <style>
+      .bg{fill:#f4f7f9}.tile{fill:#fff;stroke:#d8e2e8;stroke-width:2}
+      .ink{fill:none;stroke:#123b5d;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+      .accent{fill:none;stroke:#0e927e;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+      .solid{fill:#123b5d}.green{fill:#0e927e}
+      .label{font:600 20px Arial,sans-serif;fill:#17364c;text-anchor:middle}
+      .sub{font:14px Arial,sans-serif;fill:#5a6d79;text-anchor:middle}
+    </style>
+  </defs>
+  <rect class="bg" width="1200" height="760" rx="24"/>
+  <g transform="translate(40 30)">
+    <circle cx="34" cy="34" r="30" fill="#123b5d"/>
+    <path d="M14 43h40M19 43V27l15-9 15 9v16M26 43V31h16v12M13 50h42" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="82" y="31" font-family="Arial,sans-serif" font-size="27" font-weight="700" fill="#123b5d">ZON BEBAS MALAYSIA</text>
+    <text x="82" y="57" font-family="Arial,sans-serif" font-size="16" fill="#526a79">Senarai Zon Bebas &amp; Pihak Berkuasa Zon Bebas</text>
+  </g>
+  <!-- Tile 1: Perniagaan -->
+  <g transform="translate(40 120)">
+    <rect class="tile" width="210" height="175" rx="18"/>
+    <g transform="translate(60 24)">
+      <rect class="ink" x="8" y="20" width="74" height="52" rx="5"/>
+      <path class="ink" d="M26 20v-9h38v9M8 39h74M35 39v8h20v-8"/>
+      <path class="accent" d="M18 59h13M59 59h13"/>
+    </g><text class="label" x="105" y="132">Perniagaan</text><text class="sub" x="105" y="153">Business</text>
+  </g>
+  <!-- Tile 2: Fasilitasi -->
+  <g transform="translate(270 120)">
+    <rect class="tile" width="210" height="175" rx="18"/>
+    <g transform="translate(65 22)">
+      <circle class="ink" cx="40" cy="39" r="29"/>
+      <path class="accent" d="M25 39l10 10 21-23"/>
+      <path class="ink" d="M40 2v8M40 68v8M3 39h8M69 39h8"/>
+    </g><text class="label" x="105" y="132">Fasilitasi</text><text class="sub" x="105" y="153">Facilitation</text>
+  </g>
+  <!-- Tile 3: Zon Bebas -->
+  <g transform="translate(500 120)">
+    <rect class="tile" width="210" height="175" rx="18"/>
+    <g transform="translate(57 22)">
+      <path class="ink" d="M10 70V28L48 8l38 20v42M20 70V35h56v35M34 70V48h28v22"/>
+      <path class="accent" d="M2 70h92M27 35v8M48 35v8M69 35v8"/>
+    </g><text class="label" x="105" y="132">Zon Bebas</text><text class="sub" x="105" y="153">Free Zone</text>
+  </g>
+  <!-- Tile 4: Import/Eksport -->
+  <g transform="translate(730 120)">
+    <rect class="tile" width="210" height="175" rx="18"/>
+    <g transform="translate(56 24)">
+      <path class="ink" d="M8 25h70v45H8zM8 37h70M25 25v45M60 25v45"/>
+      <path class="accent" d="M4 10h32l-7-7M36 10l-7 7M82 84H50l7-7M50 84l7 7"/>
+    </g><text class="label" x="105" y="132">Import / Eksport</text><text class="sub" x="105" y="153">Import / Export</text>
+  </g>
+  <!-- Tile 5: Import -->
+  <g transform="translate(960 120)">
+    <rect class="tile" width="200" height="175" rx="18"/>
+    <g transform="translate(55 22)">
+      <path class="ink" d="M5 17h80v54H5zM5 30h80"/>
+      <path class="accent" d="M45 3v37M31 27l14 14 14-14"/>
+    </g><text class="label" x="100" y="132">Import</text><text class="sub" x="100" y="153">Import</text>
+  </g>
+  <!-- Tile 6: Eksport -->
+  <g transform="translate(40 325)">
+    <rect class="tile" width="210" height="175" rx="18"/>
+    <g transform="translate(58 22)">
+      <path class="ink" d="M5 17h80v54H5zM5 30h80"/>
+      <path class="accent" d="M45 51V14M31 28l14-14 14 14"/>
+    </g><text class="label" x="105" y="132">Eksport</text><text class="sub" x="105" y="153">Export</text>
+  </g>
+  <!-- Tile 7: Eksais -->
+  <g transform="translate(270 325)">
+    <rect class="tile" width="210" height="175" rx="18"/>
+    <g transform="translate(65 22)">
+      <path class="ink" d="M10 8h50l12 12v52H10zM60 8v14h12"/>
+      <path class="accent" d="M24 36h33M24 47h33M24 58h20"/>
+      <circle class="solid" cx="60" cy="60" r="13"/><path d="M54 60h12M60 54v12" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+    </g><text class="label" x="105" y="132">Eksais</text><text class="sub" x="105" y="153">Excise</text>
+  </g>
+  <!-- Tile 8: Levi -->
+  <g transform="translate(500 325)">
+    <rect class="tile" width="210" height="175" rx="18"/>
+    <g transform="translate(65 22)">
+      <rect class="ink" x="10" y="8" width="60" height="66" rx="5"/>
+      <path class="accent" d="M22 25h36M22 37h36M22 49h20"/>
+      <circle class="ink" cx="58" cy="59" r="13"/><path class="ink" d="M58 52v14M53 55h8M53 62h8"/>
+    </g><text class="label" x="105" y="132">Levi</text><text class="sub" x="105" y="153">Levy</text>
+  </g>
+  <!-- Tile 9: Ejen Kastam -->
+  <g transform="translate(730 325)">
+    <rect class="tile" width="210" height="175" rx="18"/>
+    <g transform="translate(58 20)">
+      <circle class="ink" cx="44" cy="22" r="13"/>
+      <path class="ink" d="M20 68c2-17 11-25 24-25s22 8 24 25M8 68h72"/>
+      <path class="accent" d="M66 13l7 7 12-14"/>
+    </g><text class="label" x="105" y="132">Ejen Kastam</text><text class="sub" x="105" y="153">Customs Agent</text>
+  </g>
+  <!-- Tile 10: Petroleum -->
+  <g transform="translate(960 325)">
+    <rect class="tile" width="200" height="175" rx="18"/>
+    <g transform="translate(57 19)">
+      <path class="ink" d="M28 12h30v16H28zM34 12V3h18v9M43 28v10M43 38c-13 13-17 19-17 27a17 17 0 0 0 34 0c0-8-4-14-17-27z"/>
+      <path class="accent" d="M43 51c-5 6-7 9-7 13a7 7 0 0 0 7 7"/>
+    </g><text class="label" x="100" y="132">Petroleum</text><text class="sub" x="100" y="153">Petroleum</text>
+  </g>
+  <text x="40" y="565" font-family="Arial,sans-serif" font-size="18" font-weight="700" fill="#123b5d">Panduan gaya</text>
+  <circle cx="52" cy="598" r="9" fill="#123b5d"/><text x="72" y="604" font-family="Arial,sans-serif" font-size="16" fill="#365363">Biru laut — autoriti, keselamatan, perdagangan</text>
+  <circle cx="52" cy="632" r="9" fill="#0e927e"/><text x="72" y="638" font-family="Arial,sans-serif" font-size="16" fill="#365363">Hijau teal — aliran, kelancaran, kemudahan</text>
+  <text x="40" y="700" font-family="Arial,sans-serif" font-size="14" fill="#607582">Ikon vektor tersuai • Boleh diskalakan • Sesuai untuk portal web dan menu navigasi</text>
+</svg>

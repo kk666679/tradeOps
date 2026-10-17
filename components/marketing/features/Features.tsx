@@ -1,6 +1,6 @@
 'use client';
 import * as React from 'react';
-import { FeatureGrid } from './FeatureGrid';
+import FeatureGrid from './FeatureGrid';
 
 const FEATURES = [
   { id: 'trade', title: 'Trade OPS', body: 'Declarations, HS classification, duty, permits, clearance, compliance.' },
@@ -11,6 +11,11 @@ const FEATURES = [
   { id: 'agents', title: 'Customs Agents', body: 'Filing, classification, valuation, screening, escalation.' },
 ];
 export function Features() {
+  const featureCards = FEATURES.map(({ body, ...feature }) => ({
+    ...feature,
+    description: body,
+  }));
+
   return (
     <section id="product" className="border-b">
       <div className="mx-auto max-w-7xl px-4 py-16">
@@ -18,7 +23,7 @@ export function Features() {
           <h2 className="text-3xl font-semibold">Everything you need to run a CFS in a Free Zone</h2>
           <p className="mt-2 text-muted-foreground">One platform for Trade OPS, bonded warehousing, orders, digital twin, and customs agents — with FIZ and FCZ semantics built in.</p>
         </header>
-        <FeatureGrid features={FEATURES} />
+        <FeatureGrid features={featureCards} />
       </div>
     </section>
   );

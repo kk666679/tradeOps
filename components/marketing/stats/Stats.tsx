@@ -1,6 +1,6 @@
 'use client';
 import * as React from 'react';
-import { StatsGrid } from './StatsGrid';
+import { StatsGrid, type StatsGridItem } from './StatsGrid';
 
 const STATS = [
   { label: 'Zones live', value: '40+' },
@@ -10,13 +10,15 @@ const STATS = [
   { label: 'Uptime', value: '99.98%' },
   { label: 'Integrations', value: '30+' },
 ];
-export function Stats() {
+
+export function Stats({ stats = STATS }: { stats?: StatsGridItem[] }) {
   return (
     <section className="border-b">
       <div className="mx-auto max-w-7xl px-4 py-12">
-        <StatsGrid items={STATS} />
+        <StatsGrid items={stats} />
       </div>
     </section>
   );
 }
+
 export default Stats;

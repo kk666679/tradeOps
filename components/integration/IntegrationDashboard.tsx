@@ -112,11 +112,11 @@ export function ERPIntegration() {
   }
 
   const handleConfigure = () => {
-    console.log('Configure ERP integration')
+    // console.log('Configure ERP integration')
   }
 
   const handleSync = () => {
-    console.log('Sync ERP data')
+    // console.log('Sync ERP data')
   }
 
   return (
@@ -140,11 +140,11 @@ export function TMSIntegration() {
   }
 
   const handleConfigure = () => {
-    console.log('Configure TMS integration')
+    // console.log('Configure TMS integration')
   }
 
   const handleSync = () => {
-    console.log('Sync TMS data')
+    // console.log('Sync TMS data')
   }
 
   return (
@@ -168,11 +168,11 @@ export function WMSIntegration() {
   }
 
   const handleConfigure = () => {
-    console.log('Configure WMS integration')
+    // console.log('Configure WMS integration')
   }
 
   const handleSync = () => {
-    console.log('Sync WMS data')
+    // console.log('Sync WMS data')
   }
 
   return (
