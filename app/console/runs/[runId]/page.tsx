@@ -49,7 +49,7 @@ export default function RunDetailPage({ params }: { params: Promise<{ runId: str
         <div className="ai-panel-title mb-3">Audit trail</div>
         <AuditTrace entries={(run?.events ?? []).map((e) => ({
           id: e.id, at: e.at, actor: e.agentId ? 'agent' as const : 'system' as const,
-          action: e.kind, target: runId, prevHash: null, hash: e.id,
+          action: e.kind, target: runId, hash: e.id,
         }))} />
       </aside>
     </div>

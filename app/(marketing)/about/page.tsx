@@ -1,23 +1,13 @@
-import * as React from 'react';
-import type { Metadata } from 'next';
-
-export const metadata: Metadata = { title: 'About' };
-
-export default function Page() {
+export default function AboutPage() {
   return (
-    <section className="mx-auto max-w-7xl px-4 py-16">
-      <h1 className="text-3xl font-semibold">About</h1>
-      <p className="mt-2 max-w-2xl text-muted-foreground">
-        TradeOps · FIZ/FCZ · Marketing page auto-scaffolded for <code className="rounded bg-muted px-1">/about</code>.
-      </p>
-      <div className="mt-8 grid gap-6 md:grid-cols-3">
-        {['FIZ', 'FCZ', 'Bonded'].map((z) => (
-          <div key={z} className="rounded-lg border bg-background p-6">
-            <div className="text-sm font-medium">{z} zone</div>
-            <p className="mt-1 text-xs text-muted-foreground">Duty-suspension aware · agent-in-the-loop · audit-ready.</p>
-          </div>
-        ))}
+    <div className="container mx-auto px-4 py-24 max-w-4xl">
+      <h1 className="text-4xl md:text-5xl font-extrabold mb-6">Redefining Trade Infrastructure.</h1>
+      <p className="text-xl text-slate-600 dark:text-slate-400 mb-12">We build the digital backbone for modern Free Zones and Container Freight Stations.</p>
+      <div className="prose prose-slate dark:prose-invert lg:prose-lg max-w-none">
+        <p>TradeOps was born out of a simple observation: global trade is incredibly complex, but the software managing it is stuck in the past. We set out to build a platform that treats compliance as a feature, not a bottleneck.</p>
+        <h2>Our Mission</h2>
+        <p>To empower zone operators with enterprise-grade, AI-driven tools that ensure regulatory accuracy, maximize operational efficiency, and provide absolute visibility into the supply chain.</p>
       </div>
-    </section>
+    </div>
   );
 }

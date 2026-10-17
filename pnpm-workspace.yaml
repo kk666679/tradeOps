@@ -1,9 +1,21 @@
 permissions:
+  '@prisma/engines':
+    build: false
   '@trpc/client':
     skills: true
   '@trpc/next':
     skills: true
   '@trpc/server':
     skills: true
+  core-js:
+    build: false
   dotenv:
     skills: true
+  msgpackr-extract:
+    build: false
+  prisma:
+    build: false
+  protobufjs:
+    build: false
+  sharp:
+    build: false

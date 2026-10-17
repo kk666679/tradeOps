@@ -91,6 +91,8 @@ model Tenant {
   complianceFindings ComplianceFinding[]
   permitsRegistry    PermitDefinition[]
   tradeDocuments     TradeDocument[]
+  documentExtractions DocumentExtraction[]
+  documentFields     DocumentExtractedField[]
   drawbackClaims     DrawbackClaim[]
   exemptions         ExemptionScheme[]
   exemptionClaims    ExemptionClaim[]
@@ -967,6 +969,85 @@ model TradeDocument {
 
   @@index([tenantId, kind])
   @@index([tenantId, embedded])
+  embedded       Boolean       @default(false)
+  embeddedAt     DateTime?
+  metadata       Json?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  extractions    DocumentExtraction[]
+
+  @@index([tenantId, kind])
+  @@index([tenantId, embedded])
+}
+
+// =============================================================================
+// DOCUMENT EXTRACTION (Module A — intelligence layer over TradeDocument)
+// =============================================================================
+// Forward-only addition. Extraction records are immutable revisions: a re-run
+// creates a new revision instead of mutating the previous one, so the audit
+// trail and confidence history survive.
+
+enum ExtractionStatus {
+  PENDING       // queued, not yet run
+  RUNNING       // in-flight
+  COMPLETED     // adapter produced a validated result
+  NEEDS_TEXT    // binary upload with no text layer and no OCR adapter configured
+  FAILED        // adapter error (never silently swallowed)
+}
+
+enum FieldReviewStatus {
+  PENDING       // awaiting human review (auto-accepted fields skip review)
+  ACCEPTED      // reviewer confirmed the extracted value
+  CORRECTED     // reviewer replaced the extracted value
+}
+
+model DocumentExtraction {
+  id              String            @id @default(cuid())
+  tenantId        String
+  tenant          Tenant            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  documentId      String
+  document        TradeDocument     @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  revision        Int
+  status          ExtractionStatus  @default(PENDING)
+  detectedKind    TradeDocKind?
+  adapter         String            // e.g. "rule@1" or "llm:openai@2026-10"
+  modelVersion    String?           // prompt/model version for provenance
+  lineItems       Json?             // validated line items (zod-shaped), invoice/packing list
+  warnings        Json?             // e.g. arithmetic discrepancy notes
+  injectionSuspect Boolean          @default(false) // instruction-like content detected in source
+  reviewedAt      DateTime?
+  createdAt       DateTime          @default(now())
+
+  fields          DocumentExtractedField[]
+
+  @@unique([tenantId, documentId, revision])
+  @@index([tenantId, status])
+  @@index([tenantId, documentId])
+}
+
+model DocumentExtractedField {
+  id             String              @id @default(cuid())
+  tenantId       String
+  extractionId   String
+  extraction     DocumentExtraction  @relation(fields: [extractionId], references: [id], onDelete: Cascade)
+  name           String
+  value          String?
+  confidence     Float               @default(0)
+  page           Int?
+  bbox           Json?               // { x, y, w, h } region on the source page, when known
+  sourceText     String?             // exact snippet the value was read from
+  reviewStatus   FieldReviewStatus   @default(PENDING)
+  correctedValue String?
+  reviewedBy     String?             // user id of the reviewer
+  reviewedAt     DateTime?
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+
+  @@index([tenantId, extractionId])
+  @@index([tenantId, reviewStatus])
+}
+
 }
 
 // =============================================================================

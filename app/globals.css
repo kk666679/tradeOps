@@ -692,4 +692,4 @@
     background: white;
     color: black;
   }
-}
+}@custom-variant dark (&:is(.dark *));

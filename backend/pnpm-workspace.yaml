@@ -38,6 +38,10 @@ skills:
 # decision is committed and reviewable (see CLAUDE.md rule 4: no agent
 # tool outside its declared scope).
 permissions:
+  '@parcel/watcher':
+    build: true
+  '@prisma/engines':
+    build: true
   '@tanstack/ai':
     skills: true
   '@trpc/client':
@@ -50,16 +54,18 @@ permissions:
 # ---------------------------------------------------------------------------
 # pnpm 10+ blocks postinstall scripts by default. Allow only the packages
 # that genuinely need to build native artifacts.
-onlyBuiltDependencies:
-  - '@prisma/client'
-  - '@prisma/engines'
-  - 'prisma'
-  - 'esbuild'
-  - 'sharp'
-  - 'bufferutil'
-  - 'utf-8-validate'
-  - '@nestjs/core'
-
+  esbuild:
+    build: true
+  msgpackr-extract:
+    build: true
+  prisma:
+    build: true
+  protobufjs:
+    build: true
+  sharp:
+    build: true
+  unrs-resolver:
+    build: true
 # ---------------------------------------------------------------------------
 # Peer dependency strictness
 # ---------------------------------------------------------------------------
