@@ -12,11 +12,10 @@ export class AuthService {
 
   async login(input: LoginInput) {
     const user = await this.prisma.user.findUnique({ where: { email: input.email } });
-    if (!user || user.status !== 'ACTIVE' || !(await verify(user.password, input.password))) {
+    if (!user || user.status !== 'ACTIVE' || !(await verify(user.passwordHash, input.password))) {
       throw new UnauthorizedException(GENERIC_AUTH_ERROR);
     }
 
-    await this.prisma.user.update({ where: { id: user.id }, data: { lastLoginAt: new Date() } });
     const access = await this.jwt.signAsync({ sub: user.id, email: user.email, tenantId: user.tenantId, role: user.role });
     return { ok: true, access };
   }
@@ -30,7 +29,7 @@ export class AuthService {
       data: { name: `${input.name}'s workspace`, slug: `workspace-${crypto.randomUUID()}` },
     });
     const user = await this.prisma.user.create({
-      data: { name: input.name, email: input.email, password, role: 'WAREHOUSE_STAFF', tenantId: tenant.id },
+      data: { name: input.name, email: input.email, passwordHash: password, role: 'WAREHOUSE_STAFF', tenantId: tenant.id },
     });
     const access = await this.jwt.signAsync({ sub: user.id, email: user.email, tenantId: user.tenantId, role: user.role });
     return { ok: true, access, userId: user.id };

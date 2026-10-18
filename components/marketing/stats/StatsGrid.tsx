@@ -6,7 +6,7 @@ export interface StatsGridItem { label: string; value: number | string; suffix?:
 export interface StatsGridProps { items: StatsGridItem[]; }
 export function StatsGrid({ items }: StatsGridProps) {
   return (
-    <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-6">
+    <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
       {items.map((i, k) => <StatsCard key={k} {...i} />)}
     </div>
   );

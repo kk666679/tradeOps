@@ -19,7 +19,7 @@ export const authOptions: NextAuthOptions = {
             select: { id: true, email: true, name: true, password: true, status: true, role: true, tenantId: true },
           });
           if (!user || user.status !== 'ACTIVE') return null;
-          const valid = await bcrypt.compare(credentials.password, user.password);
+          const valid = await bcrypt.compare(credentials.password, user.passwordHash);
           if (!valid) return null;
           return { id: user.id, email: user.email, name: user.name ?? undefined, role: user.role, tenantId: user.tenantId };
         } catch {

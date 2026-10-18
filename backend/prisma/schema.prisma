@@ -35,9 +35,9 @@ enum TenantPlan {
 }
 
 enum TenantIsolation {
-  POOL      // shared DB, tenantId-scoped
-  SILO      // dedicated schema
-  CELLULAR  // dedicated data plane
+  POOL // shared DB, tenantId-scoped
+  SILO // dedicated schema
+  CELLULAR // dedicated data plane
 }
 
 enum TenantStatus {
@@ -47,20 +47,20 @@ enum TenantStatus {
 }
 
 model Tenant {
-  id         String          @id @default(cuid())
-  name       String
-  slug       String          @unique
-  plan       TenantPlan      @default(STARTER)
-  isolation  TenantIsolation @default(POOL)
-  status     TenantStatus    @default(ACTIVE)
-  region     String          @default("ap-southeast")
-  locale     String          @default("en-MY")
-  currency   String          @default("MYR")
-  timezone   String          @default("Asia/Kuala_Lumpur")
+  id        String          @id @default(cuid())
+  name      String
+  slug      String          @unique
+  plan      TenantPlan      @default(STARTER)
+  isolation TenantIsolation @default(POOL)
+  status    TenantStatus    @default(ACTIVE)
+  region    String          @default("ap-southeast")
+  locale    String          @default("en-MY")
+  currency  String          @default("MYR")
+  timezone  String          @default("Asia/Kuala_Lumpur")
 
   // config + limits
-  config     Json?           // feature flags, quotas, defaults
-  quotas     Json?           // { dailyUsd, monthlyUsd, maxZones, maxAgents }
+  config Json? // feature flags, quotas, defaults
+  quotas Json? // { dailyUsd, monthlyUsd, maxZones, maxAgents }
 
   // billing
   stripeCustomerId String?
@@ -69,74 +69,74 @@ model Tenant {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  users              User[]
-  roles              Role[]
-  apiKeys            ApiKey[]
-  sessions           Session[]
-  invitations        Invitation[]
-  agents             Agent[]
-  agentRuns          AgentRun[]
-  agentMemories      AgentMemory[]
-  agentPolicies      AgentPolicy[]
-  agentApprovals     AgentApproval[]
-  agentEscalations   AgentEscalation[]
-  auditLogs          AuditLog[]
-  seedDatasets       SeedDataset[]
-  zones              Zone[]
-  zoneTenants        ZoneTenant[]
-  cargo              Cargo[]
-  declarations       Declaration[]
-  permits            Permit[]
-  clearanceRecords   ClearanceRecord[]
-  complianceFindings ComplianceFinding[]
-  permitsRegistry    PermitDefinition[]
-  tradeDocuments     TradeDocument[]
+  users               User[]
+  roles               Role[]
+  apiKeys             ApiKey[]
+  sessions            Session[]
+  invitations         Invitation[]
+  agents              Agent[]
+  agentRuns           AgentRun[]
+  agentMemories       AgentMemory[]
+  agentPolicies       AgentPolicy[]
+  agentApprovals      AgentApproval[]
+  agentEscalations    AgentEscalation[]
+  auditLogs           AuditLog[]
+  seedDatasets        SeedDataset[]
+  zones               Zone[]
+  zoneTenants         ZoneTenant[]
+  cargo               Cargo[]
+  declarations        Declaration[]
+  permits             Permit[]
+  clearanceRecords    ClearanceRecord[]
+  complianceFindings  ComplianceFinding[]
+  permitsRegistry     PermitDefinition[]
+  tradeDocuments      TradeDocument[]
   documentExtractions DocumentExtraction[]
-  documentFields     DocumentExtractedField[]
-  drawbackClaims     DrawbackClaim[]
-  exemptions         ExemptionScheme[]
-  exemptionClaims    ExemptionClaim[]
-  bondedLedger       BondedLedger[]
-  bondedStock        BondedStock[]
-  hsCodes            HsCode[]
-  hsCodeAliases      HsCodeAlias[]
-  hsCodeRulings      HsCodeRuling[]
-  hsCodeChangeLogs   HsCodeChangeLog[]
-  movements          Movement[]
-  gatePasses         GatePass[]
-  gateEvents         GateEvent[]
-  slots              Slot[]
-  slotAllocations    SlotAllocation[]
-  inventories        Inventory[]
-  inventoryMovements InventoryMovement[]
-  cycleCounts        CycleCount[]
-  holds              Hold[]
-  inboundReceipts    InboundReceipt[]
-  outboundOrders     OutboundOrder[]
-  purchaseOrders     PurchaseOrder[]
+  documentFields      DocumentExtractedField[]
+  drawbackClaims      DrawbackClaim[]
+  exemptions          ExemptionScheme[]
+  exemptionClaims     ExemptionClaim[]
+  bondedLedger        BondedLedger[]
+  bondedStock         BondedStock[]
+  hsCodes             HsCode[]
+  hsCodeAliases       HsCodeAlias[]
+  hsCodeRulings       HsCodeRuling[]
+  hsCodeChangeLogs    HsCodeChangeLog[]
+  movements           Movement[]
+  gatePasses          GatePass[]
+  gateEvents          GateEvent[]
+  slots               Slot[]
+  slotAllocations     SlotAllocation[]
+  inventories         Inventory[]
+  inventoryMovements  InventoryMovement[]
+  cycleCounts         CycleCount[]
+  holds               Hold[]
+  inboundReceipts     InboundReceipt[]
+  outboundOrders      OutboundOrder[]
+  purchaseOrders      PurchaseOrder[]
   manufacturingOrders ManufacturingOrder[]
-  tradingOrders      TradingOrder[]
-  transhipmentOrders TranshipmentOrder[]
-  fulfilmentOrders   FulfilmentOrder[]
-  orderApprovals     OrderApproval[]
-  twinScenarios      TwinScenario[]
-  twinRuns           TwinRun[]
-  integrations       Integration[]
-  integrationLogs    IntegrationLog[]
-  webhooks           Webhook[]
-  webhookDeliveries  WebhookDelivery[]
-  ediMappings        EdiMapping[]
-  syncJobs           SyncJob[]
-  domainsEvents      DomainEvent[]
-  jobs               Job[]
-  rulePacks          RulePack[]
-  rulePackVersions   RulePackVersion[]
-  guardrailHits      GuardrailHit[]
-  workflows          Workflow[]
-  workflowRuns       WorkflowRun[]
-  autoclawSnapshots  AutoclawSnapshot[]
-  serviceHealth      ServiceHealth[]
-  jkdmOperations     JkdmOperation[]
+  tradingOrders       TradingOrder[]
+  transhipmentOrders  TranshipmentOrder[]
+  fulfilmentOrders    FulfilmentOrder[]
+  orderApprovals      OrderApproval[]
+  twinScenarios       TwinScenario[]
+  twinRuns            TwinRun[]
+  integrations        Integration[]
+  integrationLogs     IntegrationLog[]
+  webhooks            Webhook[]
+  webhookDeliveries   WebhookDelivery[]
+  ediMappings         EdiMapping[]
+  syncJobs            SyncJob[]
+  domainsEvents       DomainEvent[]
+  jobs                Job[]
+  rulePacks           RulePack[]
+  rulePackVersions    RulePackVersion[]
+  guardrailHits       GuardrailHit[]
+  workflows           Workflow[]
+  workflowRuns        WorkflowRun[]
+  autoclawSnapshots   AutoclawSnapshot[]
+  serviceHealth       ServiceHealth[]
+  jkdmOperations      JkdmOperation[]
   jkdmManualResponses JkdmManualResponse[]
 
   @@index([slug])
@@ -165,38 +165,38 @@ enum GlobalRole {
 }
 
 model User {
-  id           String     @id @default(cuid())
-  tenantId     String
-  tenant       Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  email        String     @unique
+  id            String    @id @default(cuid())
+  tenantId      String
+  tenant        Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  email         String    @unique
   emailVerified DateTime?
-  password     String
-  name         String?
-  avatarUrl    String?
-  phone        String?
-  locale       String     @default("en-MY")
-  timezone     String     @default("Asia/Kuala_Lumpur")
+  password      String
+  name          String?
+  avatarUrl     String?
+  phone         String?
+  locale        String    @default("en-MY")
+  timezone      String    @default("Asia/Kuala_Lumpur")
 
-  role         GlobalRole @default(WAREHOUSE_STAFF)
-  status       UserStatus @default(ACTIVE)
+  role   GlobalRole @default(WAREHOUSE_STAFF)
+  status UserStatus @default(ACTIVE)
 
-  mfaEnabled   Boolean    @default(false)
-  mfaSecret    String?
-  lastLoginAt  DateTime?
-  lastLoginIp  String?
+  mfaEnabled  Boolean   @default(false)
+  mfaSecret   String?
+  lastLoginAt DateTime?
+  lastLoginIp String?
 
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  roles         UserRole[]
-  sessions      Session[]
-  passkeys      Passkey[]
-  apiKeys       ApiKey[]
-  sentInvites   Invitation[]  @relation("Inviter")
-  auditLogs     AuditLog[]
-  approvals     AgentApproval[] @relation("Approver")
-  orderApprovals OrderApproval[] @relation("Approver")
-  wmsMovements  InventoryMovement[] @relation("Actor")
+  roles              UserRole[]
+  sessions           Session[]
+  passkeys           Passkey[]
+  apiKeys            ApiKey[]
+  sentInvites        Invitation[]        @relation("Inviter")
+  auditLogs          AuditLog[]
+  approvals          AgentApproval[]     @relation("Approver")
+  orderApprovals     OrderApproval[]     @relation("Approver")
+  wmsMovements       InventoryMovement[] @relation("Actor")
   emailVerifications EmailVerification[]
 
   @@index([tenantId, status])
@@ -204,34 +204,34 @@ model User {
 }
 
 model Session {
-  id           String   @id @default(cuid())
+  id           String    @id @default(cuid())
   tenantId     String
-  tenant       Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenant       Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   userId       String
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  refreshToken String   @unique
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  refreshToken String    @unique
   userAgent    String?
   ip           String?
   expiresAt    DateTime
   revokedAt    DateTime?
-  createdAt    DateTime @default(now())
+  createdAt    DateTime  @default(now())
 
   @@index([userId])
   @@index([expiresAt])
 }
 
 model Passkey {
-  id           String   @id @default(cuid())
+  id           String    @id @default(cuid())
   userId       String
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  credentialId String   @unique
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  credentialId String    @unique
   publicKey    String
-  counter      Int      @default(0)
+  counter      Int       @default(0)
   transports   String[]
   aaguid       String?
   label        String?
   lastUsedAt   DateTime?
-  createdAt    DateTime @default(now())
+  createdAt    DateTime  @default(now())
 
   @@index([userId])
 }
@@ -257,39 +257,39 @@ model ApiKey {
 }
 
 model Invitation {
-  id         String    @id @default(cuid())
-  tenantId   String
-  tenant     Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  email      String
-  role       GlobalRole @default(WAREHOUSE_STAFF)
-  token      String    @unique
+  id          String     @id @default(cuid())
+  tenantId    String
+  tenant      Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  email       String
+  role        GlobalRole @default(WAREHOUSE_STAFF)
+  token       String     @unique
   invitedById String
-  invitedBy  User      @relation("Inviter", fields: [invitedById], references: [id], onDelete: Cascade)
-  expiresAt  DateTime
-  acceptedAt DateTime?
-  createdAt  DateTime  @default(now())
+  invitedBy   User       @relation("Inviter", fields: [invitedById], references: [id], onDelete: Cascade)
+  expiresAt   DateTime
+  acceptedAt  DateTime?
+  createdAt   DateTime   @default(now())
 
   @@unique([tenantId, email])
   @@index([token])
 }
 
 model PasswordReset {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   userId    String
-  token     String   @unique
+  token     String    @unique
   expiresAt DateTime
   usedAt    DateTime?
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
 }
 
 model EmailVerification {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  token     String   @unique
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String    @unique
   expiresAt DateTime
   usedAt    DateTime?
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
 }
 
 // ---- RBAC (custom roles + permissions per tenant) ----
@@ -300,7 +300,7 @@ model Role {
   tenant      Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   name        String
   description String?
-  system      Boolean  @default(false)  // system roles cannot be deleted
+  system      Boolean  @default(false) // system roles cannot be deleted
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -313,7 +313,7 @@ model Role {
 
 model Permission {
   id          String   @id @default(cuid())
-  action      String   @unique  // e.g. "declaration:file"
+  action      String   @unique // e.g. "declaration:file"
   description String?
   domain      String
   createdAt   DateTime @default(now())
@@ -334,9 +334,9 @@ model RolePermission {
 
 model UserRole {
   userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   roleId String
-  role   Role   @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  role   Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
   since  DateTime @default(now())
 
   @@id([userId, roleId])
@@ -347,11 +347,11 @@ model UserRole {
 // =============================================================================
 
 enum ZoneType {
-  FIZ      // Free Industrial Zone
-  FCZ      // Free Commercial Zone
-  BONDED   // Bonded warehouse
-  FTZ      // Free Trade Zone
-  SEZ      // Special Economic Zone
+  FIZ // Free Industrial Zone
+  FCZ // Free Commercial Zone
+  BONDED // Bonded warehouse
+  FTZ // Free Trade Zone
+  SEZ // Special Economic Zone
 }
 
 enum ZoneStatus {
@@ -361,34 +361,34 @@ enum ZoneStatus {
 }
 
 model Zone {
-  id          String      @id @default(cuid())
-  tenantId    String
-  tenant      Tenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  code        String
-  name        String
-  type        ZoneType
-  status      ZoneStatus  @default(ACTIVE)
-  country     String      @default("MY")
-  region      String?
-  address     String?
-  latitude    Float?
-  longitude   Float?
-  timezone    String      @default("Asia/Kuala_Lumpur")
+  id             String     @id @default(cuid())
+  tenantId       String
+  tenant         Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  code           String
+  name           String
+  type           ZoneType
+  status         ZoneStatus @default(ACTIVE)
+  country        String     @default("MY")
+  region         String?
+  address        String?
+  latitude       Float?
+  longitude      Float?
+  timezone       String     @default("Asia/Kuala_Lumpur")
   operatingHours Json?
-  config      Json?
+  config         Json?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  zoneTenants    ZoneTenant[]
-  cargo          Cargo[]
-  slots          Slot[]
+  zoneTenants     ZoneTenant[]
+  cargo           Cargo[]
+  slots           Slot[]
   inboundReceipts InboundReceipt[]
   outboundOrders  OutboundOrder[]
   bondedStock     BondedStock[]
   bondedLedger    BondedLedger[]
-  movementsFrom   Movement[]  @relation("MovementFrom")
-  movementsTo     Movement[]  @relation("MovementTo")
+  movementsFrom   Movement[]        @relation("MovementFrom")
+  movementsTo     Movement[]        @relation("MovementTo")
   gatePasses      GatePass[]
   gateEvents      GateEvent[]
   exemptions      ExemptionScheme[]
@@ -399,22 +399,22 @@ model Zone {
 }
 
 model ZoneTenant {
-  id           String    @id @default(cuid())
-  tenantId     String
-  tenant       Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  zoneId       String
-  zone         Zone      @relation(fields: [zoneId], references: [id], onDelete: Cascade)
-  legalName    String
+  id             String    @id @default(cuid())
+  tenantId       String
+  tenant         Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  zoneId         String
+  zone           Zone      @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+  legalName      String
   registrationNo String?
-  leaseFrom    DateTime?
-  leaseTo      DateTime?
-  areaSqm      Float?
-  status       String    @default("active")
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  leaseFrom      DateTime?
+  leaseTo        DateTime?
+  areaSqm        Float?
+  status         String    @default("active")
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
-  fizOperators   FizOperator[]
-  tradingHouses  TradingHouse[]
+  fizOperators  FizOperator[]
+  tradingHouses TradingHouse[]
 
   @@index([tenantId, zoneId])
 }
@@ -456,36 +456,36 @@ model Cargo {
   status      CargoStatus @default(RECEIVED)
   description String?
 
-  containerNo String?
-  sealNo      String?
-  blNo        String?
-  vessel      String?
-  voyage      String?
-  portOfLoading String?
+  containerNo     String?
+  sealNo          String?
+  blNo            String?
+  vessel          String?
+  voyage          String?
+  portOfLoading   String?
   portOfDischarge String?
-  incoterms   String?
+  incoterms       String?
 
-  weightKg    Float?
-  volumeM3    Float?
-  packages    Int?
-  uom         String?
+  weightKg Float?
+  volumeM3 Float?
+  packages Int?
+  uom      String?
 
-  hazmat      Boolean     @default(false)
+  hazmat      Boolean  @default(false)
   customerRef String?
   metadata    Json?
   tags        String[]
 
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  lines            CargoLine[]
-  hazmatProfile    HazmatProfile?
-  declarations     Declaration[]
-  inboundReceipts  InboundReceipt[]
-  outboundOrders   OutboundOrder[]
-  movements        Movement[]
-  gatePasses       GatePass[]
-  tradeDocuments   TradeDocument[]
+  lines           CargoLine[]
+  hazmatProfile   HazmatProfile?
+  declarations    Declaration[]
+  inboundReceipts InboundReceipt[]
+  outboundOrders  OutboundOrder[]
+  movements       Movement[]
+  gatePasses      GatePass[]
+  tradeDocuments  TradeDocument[]
 
   @@unique([tenantId, ref])
   @@index([tenantId, status])
@@ -544,18 +544,18 @@ enum ChannelType {
 }
 
 model Declaration {
-  id           String             @id @default(cuid())
-  tenantId     String
-  tenant       Tenant             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  ref          String
-  status       DeclarationStatus  @default(DRAFT)
-  zoneId       String?
-  cargoId      String?
-  cargo        Cargo?             @relation(fields: [cargoId], references: [id], onDelete: SetNull)
+  id       String            @id @default(cuid())
+  tenantId String
+  tenant   Tenant            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  ref      String
+  status   DeclarationStatus @default(DRAFT)
+  zoneId   String?
+  cargoId  String?
+  cargo    Cargo?            @relation(fields: [cargoId], references: [id], onDelete: SetNull)
 
-  declarationType String?         // IM, EX, TR, etc.
-  regime       String?            // FIZ, FCZ, BONDED, FTZ
-  channel      ChannelType?
+  declarationType String? // IM, EX, TR, etc.
+  regime          String? // FIZ, FCZ, BONDED, FTZ
+  channel         ChannelType?
 
   declarantName String?
   declarantId   String?
@@ -565,32 +565,32 @@ model Declaration {
   notifyName    String?
   notifyId      String?
 
-  origin       String?
-  destination  String?
-  currency     String  @default("MYR")
-  totalValue   Float   @default(0)
-  totalDuty    Float   @default(0)
-  totalTax     Float   @default(0)
+  origin      String?
+  destination String?
+  currency    String  @default("MYR")
+  totalValue  Float   @default(0)
+  totalDuty   Float   @default(0)
+  totalTax    Float   @default(0)
 
-  submittedAt  DateTime?
-  assessedAt   DateTime?
-  releasedAt   DateTime?
-  cancelledAt  DateTime?
+  submittedAt DateTime?
+  assessedAt  DateTime?
+  releasedAt  DateTime?
+  cancelledAt DateTime?
 
-  metadata     Json?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  metadata  Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  lines                DeclarationLine[]
-  dutyCalcs            DutyCalculation[]
-  clearance            ClearanceRecord?
-  findings             ComplianceFinding[]
-  originDetermination  OriginDetermination?
-  valuation            Valuation?
-  documents            TradeDocument[]
-  drawbackClaims       DrawbackClaim[]
-  jkdmOperations       JkdmOperation[]
-  jkdmManualResponses  JkdmManualResponse[]
+  lines               DeclarationLine[]
+  dutyCalcs           DutyCalculation[]
+  clearance           ClearanceRecord?
+  findings            ComplianceFinding[]
+  originDetermination OriginDetermination?
+  valuation           Valuation?
+  documents           TradeDocument[]
+  drawbackClaims      DrawbackClaim[]
+  jkdmOperations      JkdmOperation[]
+  jkdmManualResponses JkdmManualResponse[]
 
   @@unique([tenantId, ref])
   @@index([tenantId, status])
@@ -599,23 +599,23 @@ model Declaration {
 }
 
 model DeclarationLine {
-  id             String      @id @default(cuid())
-  declarationId  String
-  declaration    Declaration @relation(fields: [declarationId], references: [id], onDelete: Cascade)
-  lineNo         Int
-  hsCode         String
-  description    String
-  qty            Float
-  uom            String
-  unitValue      Float
-  value          Float
-  currency       String      @default("MYR")
-  origin         String?
-  netWeightKg    Float?
-  grossWeightKg  Float?
-  dutyRate       Float?
-  taxRate        Float?
-  metadata       Json?
+  id            String      @id @default(cuid())
+  declarationId String
+  declaration   Declaration @relation(fields: [declarationId], references: [id], onDelete: Cascade)
+  lineNo        Int
+  hsCode        String
+  description   String
+  qty           Float
+  uom           String
+  unitValue     Float
+  value         Float
+  currency      String      @default("MYR")
+  origin        String?
+  netWeightKg   Float?
+  grossWeightKg Float?
+  dutyRate      Float?
+  taxRate       Float?
+  metadata      Json?
 
   @@index([declarationId])
   @@index([hsCode])
@@ -638,36 +638,36 @@ enum HsCodeStatus {
 }
 
 model HsCode {
-  id           String        @id @default(cuid())
-  tenantId     String?
-  tenant       Tenant?       @relation(fields: [tenantId], references: [id], onDelete: SetNull)
-  code         String
-  parentId     String?
-  parent       HsCode?       @relation("HsParent", fields: [parentId], references: [id], onDelete: SetNull)
-  children     HsCode[]      @relation("HsParent")
-  parentCode   String?
-  description  String
-  chapter      String
-  heading      String
-  subheading   String?
-  kind         HsCodeKind    @default(PRODUCT)
-  status       HsCodeStatus  @default(ACTIVE)
-  dutyRate     Float         @default(0)
-  salesTaxRate Float         @default(0)
-  exciseRate   Float         @default(0)
+  id            String       @id @default(cuid())
+  tenantId      String?
+  tenant        Tenant?      @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  code          String
+  parentId      String?
+  parent        HsCode?      @relation("HsParent", fields: [parentId], references: [id], onDelete: SetNull)
+  children      HsCode[]     @relation("HsParent")
+  parentCode    String?
+  description   String
+  chapter       String
+  heading       String
+  subheading    String?
+  kind          HsCodeKind   @default(PRODUCT)
+  status        HsCodeStatus @default(ACTIVE)
+  dutyRate      Float        @default(0)
+  salesTaxRate  Float        @default(0)
+  exciseRate    Float        @default(0)
   stampDutyRate Float        @default(0)
-  importQuota  Boolean       @default(false)
-  controlled   Boolean       @default(false)
-  restricted   Boolean       @default(false)
-  hazardous    Boolean       @default(false)
-  uom          String?
-  metadata     Json?
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+  importQuota   Boolean      @default(false)
+  controlled    Boolean      @default(false)
+  restricted    Boolean      @default(false)
+  hazardous     Boolean      @default(false)
+  uom           String?
+  metadata      Json?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
 
-  aliases        HsCodeAlias[]
-  rulings        HsCodeRuling[]
-  changeLogs     HsCodeChangeLog[]
+  aliases    HsCodeAlias[]
+  rulings    HsCodeRuling[]
+  changeLogs HsCodeChangeLog[]
 
   @@unique([tenantId, code])
   @@index([tenantId, code])
@@ -678,17 +678,17 @@ model HsCode {
 }
 
 model HsCodeAlias {
-  id         String   @id @default(cuid())
-  tenantId   String?
-  tenant     Tenant?  @relation(fields: [tenantId], references: [id], onDelete: SetNull)
-  hsCodeId   String
-  hsCode     HsCode    @relation(fields: [hsCodeId], references: [id], onDelete: Cascade)
-  code       String
-  authority  String?  // e.g. MITI, Customs, WCO
-  note       String?
-  validFrom  DateTime?
-  validTo    DateTime?
-  createdAt  DateTime @default(now())
+  id        String    @id @default(cuid())
+  tenantId  String?
+  tenant    Tenant?   @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  hsCodeId  String
+  hsCode    HsCode    @relation(fields: [hsCodeId], references: [id], onDelete: Cascade)
+  code      String
+  authority String? // e.g. MITI, Customs, WCO
+  note      String?
+  validFrom DateTime?
+  validTo   DateTime?
+  createdAt DateTime  @default(now())
 
   @@index([tenantId, code])
   @@index([hsCodeId])
@@ -710,28 +710,28 @@ enum RulingStatus {
 }
 
 model HsCodeRuling {
-  id           String        @id @default(cuid())
-  tenantId     String?
-  tenant       Tenant?       @relation(fields: [tenantId], references: [id], onDelete: SetNull)
-  hsCodeId     String
-  hsCode       HsCode        @relation(fields: [hsCodeId], references: [id], onDelete: Cascade)
-  rulingRef    String
-  kind         RulingKind
-  authority    String
-  issuedAt     DateTime
-  validTo      DateTime?
-  status       RulingStatus @default(ACTIVE)
-  summary      String?
-  rationale    String?
-  evidence     Json?
-  metadata     Json?
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+  id        String       @id @default(cuid())
+  tenantId  String?
+  tenant    Tenant?      @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  hsCodeId  String
+  hsCode    HsCode       @relation(fields: [hsCodeId], references: [id], onDelete: Cascade)
+  rulingRef String
+  kind      RulingKind
+  authority String
+  issuedAt  DateTime
+  validTo   DateTime?
+  status    RulingStatus @default(ACTIVE)
+  summary   String?
+  rationale String?
+  evidence  Json?
+  metadata  Json?
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
 
+  @@unique([tenantId, rulingRef])
   @@index([tenantId, status])
   @@index([tenantId, authority])
   @@index([hsCodeId])
-  @@unique([tenantId, rulingRef])
 }
 
 enum HsChangeKind {
@@ -742,20 +742,20 @@ enum HsChangeKind {
 }
 
 model HsCodeChangeLog {
-  id            String        @id @default(cuid())
+  id            String       @id @default(cuid())
   tenantId      String?
-  tenant        Tenant?       @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  tenant        Tenant?      @relation(fields: [tenantId], references: [id], onDelete: SetNull)
   hsCodeId      String
-  hsCode        HsCode        @relation(fields: [hsCodeId], references: [id], onDelete: Cascade)
+  hsCode        HsCode       @relation(fields: [hsCodeId], references: [id], onDelete: Cascade)
   previousCode  String?
   newCode       String
   kind          HsChangeKind
   effectiveFrom DateTime
   announcedAt   DateTime?
-  source        String?       // WCO HS2022, MITI P.U., Customs circular
+  source        String? // WCO HS2022, MITI P.U., Customs circular
   reason        String?
   metadata      Json?
-  createdAt     DateTime      @default(now())
+  createdAt     DateTime     @default(now())
 
   @@index([tenantId, effectiveFrom])
   @@index([hsCodeId])
@@ -763,18 +763,18 @@ model HsCodeChangeLog {
 }
 
 model DutyCalculation {
-  id             String       @id @default(cuid())
-  declarationId  String
-  declaration    Declaration  @relation(fields: [declarationId], references: [id], onDelete: Cascade)
-  method         String       // transaction, CIF, FOB, fallback
+  id              String      @id @default(cuid())
+  declarationId   String
+  declaration     Declaration @relation(fields: [declarationId], references: [id], onDelete: Cascade)
+  method          String // transaction, CIF, FOB, fallback
   assessableValue Float
-  currency       String       @default("MYR")
-  duty           Float        @default(0)
-  salesTax       Float        @default(0)
-  excise         Float        @default(0)
-  total          Float        @default(0)
-  breakdown      Json?
-  createdAt      DateTime     @default(now())
+  currency        String      @default("MYR")
+  duty            Float       @default(0)
+  salesTax        Float       @default(0)
+  excise          Float       @default(0)
+  total           Float       @default(0)
+  breakdown       Json?
+  createdAt       DateTime    @default(now())
 
   @@index([declarationId])
 }
@@ -789,30 +789,30 @@ enum PermitStatus {
 }
 
 model PermitDefinition {
-  id          String   @id @default(cuid())
-  tenantId    String
-  tenant      Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  code        String
-  name        String
-  authority   String   // MITI, MIDA, Customs, MAQIS, SIRIM, etc.
-  description String?
+  id           String   @id @default(cuid())
+  tenantId     String
+  tenant       Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  code         String
+  name         String
+  authority    String // MITI, MIDA, Customs, MAQIS, SIRIM, etc.
+  description  String?
   leadTimeDays Int?
-  metadata    Json?
-  createdAt   DateTime @default(now())
+  metadata     Json?
+  createdAt    DateTime @default(now())
 
-  permits     Permit[]
+  permits Permit[]
 
   @@unique([tenantId, code])
 }
 
 model Permit {
-  id            String         @id @default(cuid())
+  id            String            @id @default(cuid())
   tenantId      String
-  tenant        Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenant        Tenant            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   definitionId  String?
   definition    PermitDefinition? @relation(fields: [definitionId], references: [id], onDelete: SetNull)
   ref           String
-  status        PermitStatus   @default(DRAFT)
+  status        PermitStatus      @default(DRAFT)
   authority     String
   validFrom     DateTime?
   validTo       DateTime?
@@ -820,8 +820,8 @@ model Permit {
   rejectedAt    DateTime?
   attachmentUrl String?
   metadata      Json?
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
 
   @@unique([tenantId, ref])
   @@index([tenantId, status])
@@ -829,11 +829,11 @@ model Permit {
 }
 
 model ClearanceRecord {
-  id            String        @id @default(cuid())
+  id            String      @id @default(cuid())
   tenantId      String
-  tenant        Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  declarationId String        @unique
-  declaration   Declaration   @relation(fields: [declarationId], references: [id], onDelete: Cascade)
+  tenant        Tenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  declarationId String      @unique
+  declaration   Declaration @relation(fields: [declarationId], references: [id], onDelete: Cascade)
   channel       ChannelType
   releasedAt    DateTime?
   detentionFrom DateTime?
@@ -841,8 +841,8 @@ model ClearanceRecord {
   inspectionAt  DateTime?
   officer       String?
   notes         String?
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 
   @@index([tenantId, channel])
   @@index([tenantId, releasedAt])
@@ -856,50 +856,50 @@ enum FindingSeverity {
 }
 
 model ComplianceFinding {
-  id             String          @id @default(cuid())
-  tenantId       String
-  tenant         Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  declarationId  String?
-  declaration    Declaration?    @relation(fields: [declarationId], references: [id], onDelete: SetNull)
-  severity       FindingSeverity
-  kind           String          // hs, valuation, origin, screening, bottleneck
-  message        String
-  evidence       Json?
-  resolvedAt     DateTime?
-  resolvedBy     String?
-  createdAt      DateTime        @default(now())
+  id            String          @id @default(cuid())
+  tenantId      String
+  tenant        Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  declarationId String?
+  declaration   Declaration?    @relation(fields: [declarationId], references: [id], onDelete: SetNull)
+  severity      FindingSeverity
+  kind          String // hs, valuation, origin, screening, bottleneck
+  message       String
+  evidence      Json?
+  resolvedAt    DateTime?
+  resolvedBy    String?
+  createdAt     DateTime        @default(now())
 
   @@index([tenantId, severity])
   @@index([tenantId, kind])
 }
 
 model OriginDetermination {
-  id             String      @id @default(cuid())
-  declarationId  String      @unique
-  declaration    Declaration @relation(fields: [declarationId], references: [id], onDelete: Cascade)
-  scheme         String      // ATIGA, RCEP, FTA, unilateral
-  originCountry  String
-  ruleApplied    String?
+  id              String      @id @default(cuid())
+  declarationId   String      @unique
+  declaration     Declaration @relation(fields: [declarationId], references: [id], onDelete: Cascade)
+  scheme          String // ATIGA, RCEP, FTA, unilateral
+  originCountry   String
+  ruleApplied     String?
   localContentPct Float?
-  rationale      String?
-  evidence       Json?
-  createdAt      DateTime    @default(now())
+  rationale       String?
+  evidence        Json?
+  createdAt       DateTime    @default(now())
 }
 
 model Valuation {
-  id             String      @id @default(cuid())
-  declarationId  String      @unique
-  declaration    Declaration @relation(fields: [declarationId], references: [id], onDelete: Cascade)
-  method         String
-  currency       String      @default("MYR")
-  invoiceValue   Float?
-  freight        Float?
-  insurance      Float?
-  royalties      Float?
-  adjustments    Json?
-  finalValue     Float
-  rationale      String?
-  createdAt      DateTime    @default(now())
+  id            String      @id @default(cuid())
+  declarationId String      @unique
+  declaration   Declaration @relation(fields: [declarationId], references: [id], onDelete: Cascade)
+  method        String
+  currency      String      @default("MYR")
+  invoiceValue  Float?
+  freight       Float?
+  insurance     Float?
+  royalties     Float?
+  adjustments   Json?
+  finalValue    Float
+  rationale     String?
+  createdAt     DateTime    @default(now())
 }
 
 enum DrawbackStatus {
@@ -911,20 +911,20 @@ enum DrawbackStatus {
 }
 
 model DrawbackClaim {
-  id            String          @id @default(cuid())
+  id            String         @id @default(cuid())
   tenantId      String
-  tenant        Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenant        Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   declarationId String?
-  declaration   Declaration?    @relation(fields: [declarationId], references: [id], onDelete: SetNull)
+  declaration   Declaration?   @relation(fields: [declarationId], references: [id], onDelete: SetNull)
   ref           String
-  status        DrawbackStatus  @default(DRAFT)
+  status        DrawbackStatus @default(DRAFT)
   amount        Float
-  currency      String          @default("MYR")
+  currency      String         @default("MYR")
   submittedAt   DateTime?
   decidedAt     DateTime?
   evidence      Json?
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 
   @@unique([tenantId, ref])
   @@index([tenantId, status])
@@ -947,35 +947,27 @@ enum TradeDocKind {
 }
 
 model TradeDocument {
-  id             String        @id @default(cuid())
-  tenantId       String
-  tenant         Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  kind           TradeDocKind
-  title          String
-  url            String?
-  content        String?
-  mimeType       String?
-  sizeBytes      Int?
-  sha256         String?
-  declarationId  String?
-  declaration    Declaration?  @relation(fields: [declarationId], references: [id], onDelete: SetNull)
-  cargoId        String?
-  cargo          Cargo?        @relation(fields: [cargoId], references: [id], onDelete: SetNull)
-  embedded       Boolean       @default(false)
-  embeddedAt     DateTime?
-  metadata       Json?
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
+  id            String       @id @default(cuid())
+  tenantId      String
+  tenant        Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  kind          TradeDocKind
+  title         String
+  url           String?
+  content       String?
+  mimeType      String?
+  sizeBytes     Int?
+  sha256        String?
+  declarationId String?
+  declaration   Declaration? @relation(fields: [declarationId], references: [id], onDelete: SetNull)
+  cargoId       String?
+  cargo         Cargo?       @relation(fields: [cargoId], references: [id], onDelete: SetNull)
+  embedded      Boolean      @default(false)
+  embeddedAt    DateTime?
+  metadata      Json?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
 
-  @@index([tenantId, kind])
-  @@index([tenantId, embedded])
-  embedded       Boolean       @default(false)
-  embeddedAt     DateTime?
-  metadata       Json?
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
-
-  extractions    DocumentExtraction[]
+  extractions DocumentExtraction[]
 
   @@index([tenantId, kind])
   @@index([tenantId, embedded])
@@ -989,37 +981,37 @@ model TradeDocument {
 // trail and confidence history survive.
 
 enum ExtractionStatus {
-  PENDING       // queued, not yet run
-  RUNNING       // in-flight
-  COMPLETED     // adapter produced a validated result
-  NEEDS_TEXT    // binary upload with no text layer and no OCR adapter configured
-  FAILED        // adapter error (never silently swallowed)
+  PENDING // queued, not yet run
+  RUNNING // in-flight
+  COMPLETED // adapter produced a validated result
+  NEEDS_TEXT // binary upload with no text layer and no OCR adapter configured
+  FAILED // adapter error (never silently swallowed)
 }
 
 enum FieldReviewStatus {
-  PENDING       // awaiting human review (auto-accepted fields skip review)
-  ACCEPTED      // reviewer confirmed the extracted value
-  CORRECTED     // reviewer replaced the extracted value
+  PENDING // awaiting human review (auto-accepted fields skip review)
+  ACCEPTED // reviewer confirmed the extracted value
+  CORRECTED // reviewer replaced the extracted value
 }
 
 model DocumentExtraction {
-  id              String            @id @default(cuid())
-  tenantId        String
-  tenant          Tenant            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  documentId      String
-  document        TradeDocument     @relation(fields: [documentId], references: [id], onDelete: Cascade)
-  revision        Int
-  status          ExtractionStatus  @default(PENDING)
-  detectedKind    TradeDocKind?
-  adapter         String            // e.g. "rule@1" or "llm:openai@2026-10"
-  modelVersion    String?           // prompt/model version for provenance
-  lineItems       Json?             // validated line items (zod-shaped), invoice/packing list
-  warnings        Json?             // e.g. arithmetic discrepancy notes
+  id               String           @id @default(cuid())
+  tenantId         String
+  tenant           Tenant           @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  documentId       String
+  document         TradeDocument    @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  revision         Int
+  status           ExtractionStatus @default(PENDING)
+  detectedKind     TradeDocKind?
+  adapter          String // e.g. "rule@1" or "llm:openai@2026-10"
+  modelVersion     String? // prompt/model version for provenance
+  lineItems        Json? // validated line items (zod-shaped), invoice/packing list
+  warnings         Json? // e.g. arithmetic discrepancy notes
   injectionSuspect Boolean          @default(false) // instruction-like content detected in source
-  reviewedAt      DateTime?
-  createdAt       DateTime          @default(now())
+  reviewedAt       DateTime?
+  createdAt        DateTime         @default(now())
 
-  fields          DocumentExtractedField[]
+  fields DocumentExtractedField[]
 
   @@unique([tenantId, documentId, revision])
   @@index([tenantId, status])
@@ -1027,27 +1019,26 @@ model DocumentExtraction {
 }
 
 model DocumentExtractedField {
-  id             String              @id @default(cuid())
+  id             String             @id @default(cuid())
   tenantId       String
+  tenant         Tenant             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   extractionId   String
-  extraction     DocumentExtraction  @relation(fields: [extractionId], references: [id], onDelete: Cascade)
+  extraction     DocumentExtraction @relation(fields: [extractionId], references: [id], onDelete: Cascade)
   name           String
   value          String?
-  confidence     Float               @default(0)
+  confidence     Float              @default(0)
   page           Int?
-  bbox           Json?               // { x, y, w, h } region on the source page, when known
-  sourceText     String?             // exact snippet the value was read from
-  reviewStatus   FieldReviewStatus   @default(PENDING)
+  bbox           Json? // { x, y, w, h } region on the source page, when known
+  sourceText     String? // exact snippet the value was read from
+  reviewStatus   FieldReviewStatus  @default(PENDING)
   correctedValue String?
-  reviewedBy     String?             // user id of the reviewer
+  reviewedBy     String? // user id of the reviewer
   reviewedAt     DateTime?
-  createdAt      DateTime            @default(now())
-  updatedAt      DateTime            @updatedAt
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
 
   @@index([tenantId, extractionId])
   @@index([tenantId, reviewStatus])
-}
-
 }
 
 // =============================================================================
@@ -1075,11 +1066,11 @@ model FizOperator {
   createdAt    DateTime          @default(now())
   updatedAt    DateTime          @updatedAt
 
-  rawMaterials   RawMaterial[]
-  machinery      Machinery[]
-  productionInputs ProductionInput[]
-  finishedGoods  FinishedGood[]
-  wastage        Wastage[]
+  rawMaterials      RawMaterial[]
+  machinery         Machinery[]
+  productionInputs  ProductionInput[]
+  finishedGoods     FinishedGood[]
+  wastage           Wastage[]
   subcontractOrders SubcontractOrder[]
 
   @@unique([tenantId, code])
@@ -1087,23 +1078,23 @@ model FizOperator {
 }
 
 model RawMaterial {
-  id           String      @id @default(cuid())
-  tenantId     String
-  operatorId   String
-  operator     FizOperator @relation(fields: [operatorId], references: [id], onDelete: Cascade)
-  ref          String
-  hsCode       String
-  description  String
-  qty          Float
-  uom          String
-  unitValue    Float?
-  currency     String      @default("MYR")
-  origin       String?
-  bonded       Boolean     @default(true)
-  receivedAt   DateTime?
-  metadata     Json?
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
+  id          String      @id @default(cuid())
+  tenantId    String
+  operatorId  String
+  operator    FizOperator @relation(fields: [operatorId], references: [id], onDelete: Cascade)
+  ref         String
+  hsCode      String
+  description String
+  qty         Float
+  uom         String
+  unitValue   Float?
+  currency    String      @default("MYR")
+  origin      String?
+  bonded      Boolean     @default(true)
+  receivedAt  DateTime?
+  metadata    Json?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
 
   @@unique([tenantId, ref])
   @@index([tenantId, operatorId])
@@ -1117,80 +1108,80 @@ enum MachineryStatus {
 }
 
 model Machinery {
-  id           String          @id @default(cuid())
-  tenantId     String
-  operatorId   String
-  operator     FizOperator     @relation(fields: [operatorId], references: [id], onDelete: Cascade)
-  ref          String
-  hsCode       String
-  description  String
-  serialNo     String?
-  value        Float?
-  currency     String          @default("MYR")
-  status       MachineryStatus @default(APPLIED)
-  installedAt  DateTime?
-  metadata     Json?
-  createdAt    DateTime        @default(now())
-  updatedAt    DateTime        @updatedAt
+  id          String          @id @default(cuid())
+  tenantId    String
+  operatorId  String
+  operator    FizOperator     @relation(fields: [operatorId], references: [id], onDelete: Cascade)
+  ref         String
+  hsCode      String
+  description String
+  serialNo    String?
+  value       Float?
+  currency    String          @default("MYR")
+  status      MachineryStatus @default(APPLIED)
+  installedAt DateTime?
+  metadata    Json?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
 
   @@unique([tenantId, ref])
 }
 
 model ProductionInput {
-  id           String      @id @default(cuid())
-  tenantId     String
-  operatorId   String
-  operator     FizOperator @relation(fields: [operatorId], references: [id], onDelete: Cascade)
-  ref          String
-  inputHs      String
-  inputQty     Float
-  inputUom     String
-  outputHs     String
-  outputQty    Float
-  outputUom    String
-  yieldPct     Float?
-  issuedAt     DateTime    @default(now())
-  issuedBy     String?
-  metadata     Json?
-  createdAt    DateTime    @default(now())
+  id         String      @id @default(cuid())
+  tenantId   String
+  operatorId String
+  operator   FizOperator @relation(fields: [operatorId], references: [id], onDelete: Cascade)
+  ref        String
+  inputHs    String
+  inputQty   Float
+  inputUom   String
+  outputHs   String
+  outputQty  Float
+  outputUom  String
+  yieldPct   Float?
+  issuedAt   DateTime    @default(now())
+  issuedBy   String?
+  metadata   Json?
+  createdAt  DateTime    @default(now())
 
   @@index([tenantId, operatorId])
 }
 
 model FinishedGood {
-  id           String      @id @default(cuid())
-  tenantId     String
-  operatorId   String
-  operator     FizOperator @relation(fields: [operatorId], references: [id], onDelete: Cascade)
-  ref          String
-  hsCode       String
-  description  String
-  qty          Float
-  uom          String
-  unitValue    Float?
-  currency     String      @default("MYR")
-  producedAt   DateTime?
-  metadata     Json?
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
+  id          String      @id @default(cuid())
+  tenantId    String
+  operatorId  String
+  operator    FizOperator @relation(fields: [operatorId], references: [id], onDelete: Cascade)
+  ref         String
+  hsCode      String
+  description String
+  qty         Float
+  uom         String
+  unitValue   Float?
+  currency    String      @default("MYR")
+  producedAt  DateTime?
+  metadata    Json?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
 
   @@unique([tenantId, ref])
 }
 
 model Wastage {
-  id           String      @id @default(cuid())
-  tenantId     String
-  operatorId   String
-  operator     FizOperator @relation(fields: [operatorId], references: [id], onDelete: Cascade)
-  ref          String
-  hsCode       String?
-  description  String
-  qty          Float
-  uom          String
-  reason       String
-  disposedAt   DateTime?
-  metadata     Json?
-  createdAt    DateTime    @default(now())
+  id          String      @id @default(cuid())
+  tenantId    String
+  operatorId  String
+  operator    FizOperator @relation(fields: [operatorId], references: [id], onDelete: Cascade)
+  ref         String
+  hsCode      String?
+  description String
+  qty         Float
+  uom         String
+  reason      String
+  disposedAt  DateTime?
+  metadata    Json?
+  createdAt   DateTime    @default(now())
 
   @@index([tenantId, operatorId])
 }
@@ -1249,12 +1240,12 @@ model TradingHouse {
   createdAt    DateTime           @default(now())
   updatedAt    DateTime           @updatedAt
 
-  transhipments Transhipment[]
-  reExports     ReExport[]
-  breakBulks    BreakBulk[]
-  repackings    Repacking[]
+  transhipments   Transhipment[]
+  reExports       ReExport[]
+  breakBulks      BreakBulk[]
+  repackings      Repacking[]
   entrepotMatches EntrepotMatch[]
-  valueAdds     ValueAdd[]
+  valueAdds       ValueAdd[]
 
   @@unique([tenantId, code])
 }
@@ -1269,104 +1260,104 @@ enum TranshipmentStatus {
 }
 
 model Transhipment {
-  id            String             @id @default(cuid())
-  tenantId      String
-  houseId       String?
-  house         TradingHouse?      @relation(fields: [houseId], references: [id], onDelete: SetNull)
-  ref           String
-  status        TranshipmentStatus @default(DRAFT)
-  fromCountry   String?
-  toCountry     String?
-  vesselIn      String?
-  vesselOut     String?
-  etaAt         DateTime?
-  etdAt         DateTime?
-  metadata      Json?
-  createdAt     DateTime           @default(now())
-  updatedAt     DateTime           @updatedAt
+  id          String             @id @default(cuid())
+  tenantId    String
+  houseId     String?
+  house       TradingHouse?      @relation(fields: [houseId], references: [id], onDelete: SetNull)
+  ref         String
+  status      TranshipmentStatus @default(DRAFT)
+  fromCountry String?
+  toCountry   String?
+  vesselIn    String?
+  vesselOut   String?
+  etaAt       DateTime?
+  etdAt       DateTime?
+  metadata    Json?
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
 
   @@unique([tenantId, ref])
   @@index([tenantId, status])
 }
 
 model ReExport {
-  id            String   @id @default(cuid())
+  id            String        @id @default(cuid())
   tenantId      String
   houseId       String?
   house         TradingHouse? @relation(fields: [houseId], references: [id], onDelete: SetNull)
   ref           String
-  status        String   @default("DRAFT")
+  status        String        @default("DRAFT")
   originCountry String?
   destCountry   String?
   value         Float?
-  currency      String   @default("MYR")
+  currency      String        @default("MYR")
   metadata      Json?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 
   @@unique([tenantId, ref])
 }
 
 model BreakBulk {
-  id            String   @id @default(cuid())
-  tenantId      String
-  houseId       String?
-  house         TradingHouse? @relation(fields: [houseId], references: [id], onDelete: SetNull)
-  ref           String
-  status        String   @default("DRAFT")
+  id             String        @id @default(cuid())
+  tenantId       String
+  houseId        String?
+  house          TradingHouse? @relation(fields: [houseId], references: [id], onDelete: SetNull)
+  ref            String
+  status         String        @default("DRAFT")
   parentCargoRef String?
   childCargoRefs String[]
-  metadata      Json?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  metadata       Json?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
 
   @@unique([tenantId, ref])
 }
 
 model Repacking {
-  id            String   @id @default(cuid())
-  tenantId      String
-  houseId       String?
-  house         TradingHouse? @relation(fields: [houseId], references: [id], onDelete: SetNull)
-  ref           String
-  status        String   @default("DRAFT")
-  inputQty      Float?
-  outputQty     Float?
-  uom           String?
-  metadata      Json?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id        String        @id @default(cuid())
+  tenantId  String
+  houseId   String?
+  house     TradingHouse? @relation(fields: [houseId], references: [id], onDelete: SetNull)
+  ref       String
+  status    String        @default("DRAFT")
+  inputQty  Float?
+  outputQty Float?
+  uom       String?
+  metadata  Json?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
 
   @@unique([tenantId, ref])
 }
 
 model EntrepotMatch {
-  id            String   @id @default(cuid())
-  tenantId      String
-  houseId       String?
-  house         TradingHouse? @relation(fields: [houseId], references: [id], onDelete: SetNull)
-  importRef     String
-  exportRef     String
-  matchedValue  Float?
-  currency      String   @default("MYR")
-  confidence    Float?
-  metadata      Json?
-  createdAt     DateTime @default(now())
+  id           String        @id @default(cuid())
+  tenantId     String
+  houseId      String?
+  house        TradingHouse? @relation(fields: [houseId], references: [id], onDelete: SetNull)
+  importRef    String
+  exportRef    String
+  matchedValue Float?
+  currency     String        @default("MYR")
+  confidence   Float?
+  metadata     Json?
+  createdAt    DateTime      @default(now())
 
   @@index([tenantId, houseId])
 }
 
 model ValueAdd {
-  id            String   @id @default(cuid())
-  tenantId      String
-  houseId       String?
-  house         TradingHouse? @relation(fields: [houseId], references: [id], onDelete: SetNull)
-  ref           String
-  kind          String   // repackaging, labelling, kitting, assembly
-  valueAdded    Float?
-  currency      String   @default("MYR")
-  metadata      Json?
-  createdAt     DateTime @default(now())
+  id         String        @id @default(cuid())
+  tenantId   String
+  houseId    String?
+  house      TradingHouse? @relation(fields: [houseId], references: [id], onDelete: SetNull)
+  ref        String
+  kind       String // repackaging, labelling, kitting, assembly
+  valueAdded Float?
+  currency   String        @default("MYR")
+  metadata   Json?
+  createdAt  DateTime      @default(now())
 
   @@index([tenantId, houseId])
 }
@@ -1387,23 +1378,23 @@ enum InboundStatus {
 }
 
 model InboundReceipt {
-  id            String        @id @default(cuid())
-  tenantId      String
-  tenant        Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  zoneId        String?
-  zone          Zone?         @relation(fields: [zoneId], references: [id], onDelete: SetNull)
-  cargoId       String?
-  cargo         Cargo?        @relation(fields: [cargoId], references: [id], onDelete: SetNull)
-  ref           String
-  status        InboundStatus @default(DRAFT)
-  asnRef        String?
-  etaAt         DateTime?
-  arrivedAt     DateTime?
-  qcAt          DateTime?
-  putawayAt     DateTime?
-  metadata      Json?
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  id        String        @id @default(cuid())
+  tenantId  String
+  tenant    Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  zoneId    String?
+  zone      Zone?         @relation(fields: [zoneId], references: [id], onDelete: SetNull)
+  cargoId   String?
+  cargo     Cargo?        @relation(fields: [cargoId], references: [id], onDelete: SetNull)
+  ref       String
+  status    InboundStatus @default(DRAFT)
+  asnRef    String?
+  etaAt     DateTime?
+  arrivedAt DateTime?
+  qcAt      DateTime?
+  putawayAt DateTime?
+  metadata  Json?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
 
   @@unique([tenantId, ref])
   @@index([tenantId, status])
@@ -1419,21 +1410,21 @@ enum OutboundStatus {
 }
 
 model OutboundOrder {
-  id            String         @id @default(cuid())
-  tenantId      String
-  tenant        Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  zoneId        String?
-  zone          Zone?          @relation(fields: [zoneId], references: [id], onDelete: SetNull)
-  cargoId       String?
-  cargo         Cargo?         @relation(fields: [cargoId], references: [id], onDelete: SetNull)
-  ref           String
-  status        OutboundStatus @default(DRAFT)
-  customerRef   String?
-  shipTo        String?
-  dispatchedAt  DateTime?
-  metadata      Json?
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  id           String         @id @default(cuid())
+  tenantId     String
+  tenant       Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  zoneId       String?
+  zone         Zone?          @relation(fields: [zoneId], references: [id], onDelete: SetNull)
+  cargoId      String?
+  cargo        Cargo?         @relation(fields: [cargoId], references: [id], onDelete: SetNull)
+  ref          String
+  status       OutboundStatus @default(DRAFT)
+  customerRef  String?
+  shipTo       String?
+  dispatchedAt DateTime?
+  metadata     Json?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
 
   @@unique([tenantId, ref])
   @@index([tenantId, status])
@@ -1448,71 +1439,71 @@ enum SlotStatus {
 }
 
 model Slot {
-  id           String     @id @default(cuid())
-  tenantId     String
-  tenant       Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  zoneId       String
-  zone         Zone       @relation(fields: [zoneId], references: [id], onDelete: Cascade)
-  code         String
-  aisle        String?
-  rack         String?
-  level        String?
-  bin          String?
-  slotType     String?
-  capacityKg   Float?
-  capacityM3   Float?
-  usedKg       Float      @default(0)
-  usedM3       Float      @default(0)
-  status       SlotStatus @default(AVAILABLE)
-  hazmatOk     Boolean    @default(false)
-  metadata     Json?
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  id         String     @id @default(cuid())
+  tenantId   String
+  tenant     Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  zoneId     String
+  zone       Zone       @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+  code       String
+  aisle      String?
+  rack       String?
+  level      String?
+  bin        String?
+  slotType   String?
+  capacityKg Float?
+  capacityM3 Float?
+  usedKg     Float      @default(0)
+  usedM3     Float      @default(0)
+  status     SlotStatus @default(AVAILABLE)
+  hazmatOk   Boolean    @default(false)
+  metadata   Json?
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
 
-  allocations  SlotAllocation[]
-  inventories  Inventory[]
+  allocations SlotAllocation[]
+  inventories Inventory[]
 
   @@unique([tenantId, code])
   @@index([tenantId, zoneId, status])
 }
 
 model SlotAllocation {
-  id           String   @id @default(cuid())
-  tenantId     String
-  tenant       Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  slotId       String
-  slot         Slot     @relation(fields: [slotId], references: [id], onDelete: Cascade)
-  cargoId      String?
-  sku          String?
-  qty          Float?
-  allocatedAt  DateTime @default(now())
-  releasedAt   DateTime?
-  metadata     Json?
+  id          String    @id @default(cuid())
+  tenantId    String
+  tenant      Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  slotId      String
+  slot        Slot      @relation(fields: [slotId], references: [id], onDelete: Cascade)
+  cargoId     String?
+  sku         String?
+  qty         Float?
+  allocatedAt DateTime  @default(now())
+  releasedAt  DateTime?
+  metadata    Json?
 
   @@index([tenantId, slotId])
 }
 
 model Inventory {
-  id           String   @id @default(cuid())
-  tenantId     String
-  tenant       Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  zoneId       String?
-  slotId       String?
-  slot         Slot?    @relation(fields: [slotId], references: [id], onDelete: SetNull)
-  sku          String
-  hsCode       String?
-  description  String?
-  qty          Float    @default(0)
-  uom          String   @default("EA")
-  unitValue    Float?
-  currency     String   @default("MYR")
-  bonded       Boolean  @default(false)
-  status       String   @default("AVAILABLE")  // AVAILABLE, HELD, RESERVED, DAMAGED
-  metadata     Json?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id          String   @id @default(cuid())
+  tenantId    String
+  tenant      Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  zoneId      String?
+  slotId      String?
+  slot        Slot?    @relation(fields: [slotId], references: [id], onDelete: SetNull)
+  sku         String
+  hsCode      String?
+  description String?
+  qty         Float    @default(0)
+  uom         String   @default("EA")
+  unitValue   Float?
+  currency    String   @default("MYR")
+  bonded      Boolean  @default(false)
+  status      String   @default("AVAILABLE") // AVAILABLE, HELD, RESERVED, DAMAGED
+  metadata    Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  movements    InventoryMovement[]
+  movements InventoryMovement[]
 
   @@unique([tenantId, zoneId, sku, bonded])
   @@index([tenantId, sku])
@@ -1534,51 +1525,51 @@ enum MovementKind {
 }
 
 model InventoryMovement {
-  id           String       @id @default(cuid())
-  tenantId     String
-  tenant       Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  inventoryId  String
-  inventory    Inventory    @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
-  kind         MovementKind
-  qty          Float
-  fromSlotId   String?
-  toSlotId     String?
-  actorId      String?
-  actor        User?        @relation("Actor", fields: [actorId], references: [id], onDelete: SetNull)
-  reason       String?
-  metadata     Json?
-  at           DateTime     @default(now())
+  id          String       @id @default(cuid())
+  tenantId    String
+  tenant      Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  inventoryId String
+  inventory   Inventory    @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
+  kind        MovementKind
+  qty         Float
+  fromSlotId  String?
+  toSlotId    String?
+  actorId     String?
+  actor       User?        @relation("Actor", fields: [actorId], references: [id], onDelete: SetNull)
+  reason      String?
+  metadata    Json?
+  at          DateTime     @default(now())
 
   @@index([tenantId, at])
   @@index([inventoryId])
 }
 
 model CycleCount {
-  id           String   @id @default(cuid())
-  tenantId     String
-  tenant       Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  zoneId       String?
-  ref          String
-  status       String   @default("OPEN")  // OPEN, COUNTED, RECONCILED
-  startedAt    DateTime @default(now())
-  completedAt  DateTime?
-  lines        Json?
-  metadata     Json?
+  id          String    @id @default(cuid())
+  tenantId    String
+  tenant      Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  zoneId      String?
+  ref         String
+  status      String    @default("OPEN") // OPEN, COUNTED, RECONCILED
+  startedAt   DateTime  @default(now())
+  completedAt DateTime?
+  lines       Json?
+  metadata    Json?
 
   @@unique([tenantId, ref])
 }
 
 model Hold {
-  id           String   @id @default(cuid())
-  tenantId     String
-  tenant       Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  inventoryId  String?
-  cargoId      String?
-  reason       String
-  kind         String   // CUSTOMS, QUALITY, PAYMENT, COMPLIANCE
-  placedAt     DateTime @default(now())
-  releasedAt   DateTime?
-  metadata     Json?
+  id          String    @id @default(cuid())
+  tenantId    String
+  tenant      Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  inventoryId String?
+  cargoId     String?
+  reason      String
+  kind        String // CUSTOMS, QUALITY, PAYMENT, COMPLIANCE
+  placedAt    DateTime  @default(now())
+  releasedAt  DateTime?
+  metadata    Json?
 
   @@index([tenantId, kind])
 }
@@ -1596,25 +1587,25 @@ enum GatePassStatus {
 }
 
 model GatePass {
-  id           String         @id @default(cuid())
-  tenantId     String
-  tenant       Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  zoneId       String
-  zone         Zone           @relation(fields: [zoneId], references: [id], onDelete: Cascade)
-  cargoId      String?
-  cargo        Cargo?         @relation(fields: [cargoId], references: [id], onDelete: SetNull)
-  ref          String
-  direction    GateDirection
-  status       GatePassStatus @default(ISSUED)
-  plateNo      String?
-  driverName   String?
-  driverId     String?
-  sealNo       String?
-  issuedAt     DateTime       @default(now())
-  expiresAt    DateTime?
-  usedAt       DateTime?
-  issuedById   String?
-  metadata     Json?
+  id         String         @id @default(cuid())
+  tenantId   String
+  tenant     Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  zoneId     String
+  zone       Zone           @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+  cargoId    String?
+  cargo      Cargo?         @relation(fields: [cargoId], references: [id], onDelete: SetNull)
+  ref        String
+  direction  GateDirection
+  status     GatePassStatus @default(ISSUED)
+  plateNo    String?
+  driverName String?
+  driverId   String?
+  sealNo     String?
+  issuedAt   DateTime       @default(now())
+  expiresAt  DateTime?
+  usedAt     DateTime?
+  issuedById String?
+  metadata   Json?
 
   @@unique([tenantId, ref])
   @@index([tenantId, direction, status])
@@ -1622,19 +1613,19 @@ model GatePass {
 }
 
 model GateEvent {
-  id           String        @id @default(cuid())
-  tenantId     String
-  tenant       Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  zoneId       String
-  zone         Zone          @relation(fields: [zoneId], references: [id], onDelete: Cascade)
-  direction    GateDirection
-  lane         String?
-  plateNo      String?
-  sealNo       String?
-  weightKg     Float?
-  kind         String        // ANPR, WEIGHBRIDGE, SEAL, SCAN, EXCEPTION
-  payload      Json?
-  at           DateTime      @default(now())
+  id        String        @id @default(cuid())
+  tenantId  String
+  tenant    Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  zoneId    String
+  zone      Zone          @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+  direction GateDirection
+  lane      String?
+  plateNo   String?
+  sealNo    String?
+  weightKg  Float?
+  kind      String // ANPR, WEIGHBRIDGE, SEAL, SCAN, EXCEPTION
+  payload   Json?
+  at        DateTime      @default(now())
 
   @@index([tenantId, at])
   @@index([tenantId, kind])
@@ -1649,40 +1640,40 @@ enum BondedKind {
 }
 
 model BondedStock {
-  id           String   @id @default(cuid())
-  tenantId     String
-  tenant       Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  zoneId       String
-  zone         Zone     @relation(fields: [zoneId], references: [id], onDelete: Cascade)
-  hsCode       String
-  description  String?
-  qty          Float
-  uom          String   @default("EA")
-  value        Float?
-  currency     String   @default("MYR")
-  enteredAt    DateTime @default(now())
-  metadata     Json?
+  id          String   @id @default(cuid())
+  tenantId    String
+  tenant      Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  zoneId      String
+  zone        Zone     @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+  hsCode      String
+  description String?
+  qty         Float
+  uom         String   @default("EA")
+  value       Float?
+  currency    String   @default("MYR")
+  enteredAt   DateTime @default(now())
+  metadata    Json?
 
   @@index([tenantId, zoneId, hsCode])
 }
 
 model BondedLedger {
-  id           String      @id @default(cuid())
-  tenantId     String
-  tenant       Tenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  zoneId       String
-  zone         Zone        @relation(fields: [zoneId], references: [id], onDelete: Cascade)
-  kind         BondedKind
-  ref          String
-  hsCode       String?
-  qty          Float
-  value        Float
-  currency     String      @default("MYR")
-  prevBalance  Float?
-  newBalance   Float?
-  actorId      String?
-  metadata     Json?
-  at           DateTime    @default(now())
+  id          String     @id @default(cuid())
+  tenantId    String
+  tenant      Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  zoneId      String
+  zone        Zone       @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+  kind        BondedKind
+  ref         String
+  hsCode      String?
+  qty         Float
+  value       Float
+  currency    String     @default("MYR")
+  prevBalance Float?
+  newBalance  Float?
+  actorId     String?
+  metadata    Json?
+  at          DateTime   @default(now())
 
   @@index([tenantId, zoneId, at])
 }
@@ -1694,24 +1685,24 @@ enum ExemptionSchemeStatus {
 }
 
 model ExemptionScheme {
-  id           String                @id @default(cuid())
-  tenantId     String
-  tenant       Tenant                @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  zoneId       String
-  zone         Zone                  @relation(fields: [zoneId], references: [id], onDelete: Cascade)
-  code         String
-  name         String
-  description  String?
-  dutyRate     Float                 @default(0)
-  taxRate      Float                 @default(0)
-  validFrom    DateTime?
-  validTo      DateTime?
-  status       ExemptionSchemeStatus @default(ACTIVE)
-  metadata     Json?
-  createdAt    DateTime              @default(now())
-  updatedAt    DateTime              @updatedAt
+  id          String                @id @default(cuid())
+  tenantId    String
+  tenant      Tenant                @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  zoneId      String
+  zone        Zone                  @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+  code        String
+  name        String
+  description String?
+  dutyRate    Float                 @default(0)
+  taxRate     Float                 @default(0)
+  validFrom   DateTime?
+  validTo     DateTime?
+  status      ExemptionSchemeStatus @default(ACTIVE)
+  metadata    Json?
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
 
-  claims       ExemptionClaim[]
+  claims ExemptionClaim[]
 
   @@unique([tenantId, code])
 }
@@ -1725,20 +1716,20 @@ enum ExemptionClaimStatus {
 }
 
 model ExemptionClaim {
-  id           String                @id @default(cuid())
-  tenantId     String
-  tenant       Tenant                @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  schemeId     String
-  scheme       ExemptionScheme       @relation(fields: [schemeId], references: [id], onDelete: Cascade)
-  ref          String
-  amount       Float
-  currency     String                @default("MYR")
-  status       ExemptionClaimStatus  @default(CLAIMED)
-  claimedAt    DateTime              @default(now())
-  decidedAt    DateTime?
-  clawbackAt   DateTime?
-  evidence     Json?
-  metadata     Json?
+  id         String               @id @default(cuid())
+  tenantId   String
+  tenant     Tenant               @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  schemeId   String
+  scheme     ExemptionScheme      @relation(fields: [schemeId], references: [id], onDelete: Cascade)
+  ref        String
+  amount     Float
+  currency   String               @default("MYR")
+  status     ExemptionClaimStatus @default(CLAIMED)
+  claimedAt  DateTime             @default(now())
+  decidedAt  DateTime?
+  clawbackAt DateTime?
+  evidence   Json?
+  metadata   Json?
 
   @@unique([tenantId, ref])
   @@index([tenantId, status])
@@ -1754,24 +1745,24 @@ enum MovementStatus {
 }
 
 model Movement {
-  id           String         @id @default(cuid())
-  tenantId     String
-  tenant       Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  fromZoneId   String?
-  fromZone     Zone?          @relation("MovementFrom", fields: [fromZoneId], references: [id], onDelete: SetNull)
-  toZoneId     String?
-  toZone      Zone?          @relation("MovementTo", fields: [toZoneId], references: [id], onDelete: SetNull)
-  cargoId      String?
-  cargo        Cargo?         @relation(fields: [cargoId], references: [id], onDelete: SetNull)
-  ref          String
-  status       MovementStatus @default(PENDING)
-  carrier      String?
-  vehicleNo    String?
-  departedAt   DateTime?
-  arrivedAt    DateTime?
-  metadata     Json?
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
+  id         String         @id @default(cuid())
+  tenantId   String
+  tenant     Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  fromZoneId String?
+  fromZone   Zone?          @relation("MovementFrom", fields: [fromZoneId], references: [id], onDelete: SetNull)
+  toZoneId   String?
+  toZone     Zone?          @relation("MovementTo", fields: [toZoneId], references: [id], onDelete: SetNull)
+  cargoId    String?
+  cargo      Cargo?         @relation(fields: [cargoId], references: [id], onDelete: SetNull)
+  ref        String
+  status     MovementStatus @default(PENDING)
+  carrier    String?
+  vehicleNo  String?
+  departedAt DateTime?
+  arrivedAt  DateTime?
+  metadata   Json?
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
 
   @@unique([tenantId, ref])
   @@index([tenantId, status])
@@ -1792,38 +1783,38 @@ enum PurchaseOrderStatus {
 }
 
 model PurchaseOrder {
-  id           String              @id @default(cuid())
-  tenantId     String
-  tenant       Tenant              @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  ref          String
-  status       PurchaseOrderStatus @default(DRAFT)
-  vendorId     String?
-  vendor       Vendor?             @relation(fields: [vendorId], references: [id], onDelete: SetNull)
-  currency     String              @default("MYR")
-  total        Float               @default(0)
-  dutySuspended Boolean            @default(false)
-  approvedAt   DateTime?
-  metadata     Json?
-  createdAt    DateTime            @default(now())
-  updatedAt    DateTime            @updatedAt
+  id            String              @id @default(cuid())
+  tenantId      String
+  tenant        Tenant              @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  ref           String
+  status        PurchaseOrderStatus @default(DRAFT)
+  vendorId      String?
+  vendor        Vendor?             @relation(fields: [vendorId], references: [id], onDelete: SetNull)
+  currency      String              @default("MYR")
+  total         Float               @default(0)
+  dutySuspended Boolean             @default(false)
+  approvedAt    DateTime?
+  metadata      Json?
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
 
-  lines        PurchaseOrderLine[]
+  lines PurchaseOrderLine[]
 
   @@unique([tenantId, ref])
   @@index([tenantId, status])
 }
 
 model PurchaseOrderLine {
-  id           String        @id @default(cuid())
-  orderId      String
-  order        PurchaseOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  lineNo       Int
-  hsCode       String?
-  description  String
-  qty          Float
-  uom          String
-  unitPrice    Float
-  currency     String        @default("MYR")
+  id          String        @id @default(cuid())
+  orderId     String
+  order       PurchaseOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  lineNo      Int
+  hsCode      String?
+  description String
+  qty         Float
+  uom         String
+  unitPrice   Float
+  currency    String        @default("MYR")
 
   @@index([orderId])
 }
@@ -1837,56 +1828,56 @@ enum ManufacturingStatus {
 }
 
 model ManufacturingOrder {
-  id           String              @id @default(cuid())
-  tenantId     String
-  tenant       Tenant              @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  ref          String
-  status       ManufacturingStatus @default(DRAFT)
-  operatorId   String?
-  bomId        String?
-  bom          Bom?                @relation(fields: [bomId], references: [id], onDelete: SetNull)
-  outputHs     String?
-  outputQty    Float?
-  releasedAt   DateTime?
-  completedAt  DateTime?
-  metadata     Json?
-  createdAt    DateTime            @default(now())
-  updatedAt    DateTime            @updatedAt
+  id          String              @id @default(cuid())
+  tenantId    String
+  tenant      Tenant              @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  ref         String
+  status      ManufacturingStatus @default(DRAFT)
+  operatorId  String?
+  bomId       String?
+  bom         Bom?                @relation(fields: [bomId], references: [id], onDelete: SetNull)
+  outputHs    String?
+  outputQty   Float?
+  releasedAt  DateTime?
+  completedAt DateTime?
+  metadata    Json?
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
 
-  components   BomComponent[]
+  components BomComponent[]
 
   @@unique([tenantId, ref])
   @@index([tenantId, status])
 }
 
 model Bom {
-  id           String         @id @default(cuid())
-  tenantId     String
-  ref          String
-  outputHs     String
-  outputQty    Float
-  outputUom    String
-  metadata     Json?
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
+  id        String   @id @default(cuid())
+  tenantId  String
+  ref       String
+  outputHs  String
+  outputQty Float
+  outputUom String
+  metadata  Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  components   BomComponent[]
-  mos          ManufacturingOrder[]
+  components BomComponent[]
+  mos        ManufacturingOrder[]
 
   @@unique([tenantId, ref])
 }
 
 model BomComponent {
-  id           String  @id @default(cuid())
-  bomId        String
-  bom          Bom     @relation(fields: [bomId], references: [id], onDelete: Cascade)
+  id                   String              @id @default(cuid())
+  bomId                String
+  bom                  Bom                 @relation(fields: [bomId], references: [id], onDelete: Cascade)
   manufacturingOrderId String?
-  manufacturingOrder ManufacturingOrder? @relation(fields: [manufacturingOrderId], references: [id], onDelete: SetNull)
-  hsCode       String
-  description  String
-  qtyPer       Float
-  uom          String
-  dutyRate     Float?
+  manufacturingOrder   ManufacturingOrder? @relation(fields: [manufacturingOrderId], references: [id], onDelete: SetNull)
+  hsCode               String
+  description          String
+  qtyPer               Float
+  uom                  String
+  dutyRate             Float?
 
   @@index([bomId])
 }
@@ -1900,19 +1891,19 @@ enum TradingOrderStatus {
 }
 
 model TradingOrder {
-  id           String             @id @default(cuid())
-  tenantId     String
-  tenant       Tenant             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  ref          String
-  status       TradingOrderStatus @default(DRAFT)
-  houseId      String?
-  buyPrice     Float?
-  sellPrice    Float?
-  currency     String             @default("MYR")
-  settledAt    DateTime?
-  metadata     Json?
-  createdAt    DateTime           @default(now())
-  updatedAt    DateTime           @updatedAt
+  id        String             @id @default(cuid())
+  tenantId  String
+  tenant    Tenant             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  ref       String
+  status    TradingOrderStatus @default(DRAFT)
+  houseId   String?
+  buyPrice  Float?
+  sellPrice Float?
+  currency  String             @default("MYR")
+  settledAt DateTime?
+  metadata  Json?
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
 
   @@unique([tenantId, ref])
   @@index([tenantId, status])
@@ -1930,19 +1921,19 @@ enum TranshipmentOrderStatus {
 }
 
 model TranshipmentOrder {
-  id           String                  @id @default(cuid())
-  tenantId     String
-  tenant       Tenant                  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  ref          String
-  status       TranshipmentOrderStatus @default(DRAFT)
-  houseId      String?
-  origin       String?
-  destination  String?
-  etaAt        DateTime?
-  etdAt        DateTime?
-  metadata     Json?
-  createdAt    DateTime                @default(now())
-  updatedAt    DateTime                @updatedAt
+  id          String                  @id @default(cuid())
+  tenantId    String
+  tenant      Tenant                  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  ref         String
+  status      TranshipmentOrderStatus @default(DRAFT)
+  houseId     String?
+  origin      String?
+  destination String?
+  etaAt       DateTime?
+  etdAt       DateTime?
+  metadata    Json?
+  createdAt   DateTime                @default(now())
+  updatedAt   DateTime                @updatedAt
 
   @@unique([tenantId, ref])
   @@index([tenantId, status])
@@ -1960,16 +1951,16 @@ enum FulfilmentStatus {
 }
 
 model FulfilmentOrder {
-  id           String           @id @default(cuid())
-  tenantId     String
-  tenant       Tenant           @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  ref          String
-  status       FulfilmentStatus @default(DRAFT)
-  zoneRouting  Json?            // { fromZones, toZone, reason }
-  dutyImpact   Float?
-  metadata     Json?
-  createdAt    DateTime         @default(now())
-  updatedAt    DateTime         @updatedAt
+  id          String           @id @default(cuid())
+  tenantId    String
+  tenant      Tenant           @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  ref         String
+  status      FulfilmentStatus @default(DRAFT)
+  zoneRouting Json? // { fromZones, toZone, reason }
+  dutyImpact  Float?
+  metadata    Json?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
 
   @@unique([tenantId, ref])
   @@index([tenantId, status])
@@ -1994,21 +1985,21 @@ enum ApprovalStatus {
 }
 
 model OrderApproval {
-  id           String         @id @default(cuid())
-  tenantId     String
-  tenant       Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  kind         ApprovalKind
-  status       ApprovalStatus @default(PENDING)
-  ref          String
-  subject      String?
-  amount       Float?
-  currency     String         @default("MYR")
-  approverId   String?
-  approver     User?          @relation("Approver", fields: [approverId], references: [id], onDelete: SetNull)
-  decidedAt    DateTime?
-  reason       String?
-  metadata     Json?
-  createdAt    DateTime       @default(now())
+  id         String         @id @default(cuid())
+  tenantId   String
+  tenant     Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  kind       ApprovalKind
+  status     ApprovalStatus @default(PENDING)
+  ref        String
+  subject    String?
+  amount     Float?
+  currency   String         @default("MYR")
+  approverId String?
+  approver   User?          @relation("Approver", fields: [approverId], references: [id], onDelete: SetNull)
+  decidedAt  DateTime?
+  reason     String?
+  metadata   Json?
+  createdAt  DateTime       @default(now())
 
   @@index([tenantId, status])
   @@index([tenantId, kind])
@@ -2019,18 +2010,18 @@ model OrderApproval {
 // =============================================================================
 
 model Vendor {
-  id           String   @id @default(cuid())
-  tenantId     String
-  name         String
+  id             String   @id @default(cuid())
+  tenantId       String
+  name           String
   registrationNo String?
-  country      String?
-  email        String?
-  phone        String?
-  score        Float    @default(0)
-  active       Boolean  @default(true)
-  metadata     Json?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  country        String?
+  email          String?
+  phone          String?
+  score          Float    @default(0)
+  active         Boolean  @default(true)
+  metadata       Json?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   purchaseOrders PurchaseOrder[]
 
@@ -2050,77 +2041,77 @@ enum TwinRunStatus {
 }
 
 model TwinScenario {
-  id           String   @id @default(cuid())
-  tenantId     String
-  tenant       Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  name         String
-  description  String?
-  inputs       Json
-  assertions   Json?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id          String   @id @default(cuid())
+  tenantId    String
+  tenant      Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  inputs      Json
+  assertions  Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  runs         TwinRun[]
+  runs TwinRun[]
 
   @@index([tenantId])
 }
 
 model TwinRun {
-  id           String        @id @default(cuid())
-  tenantId     String
-  tenant       Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  scenarioId   String
-  scenario     TwinScenario  @relation(fields: [scenarioId], references: [id], onDelete: Cascade)
-  status       TwinRunStatus @default(QUEUED)
-  startedAt    DateTime      @default(now())
-  endedAt      DateTime?
-  horizonDays  Int           @default(30)
-  result       Json?
-  error        String?
+  id          String        @id @default(cuid())
+  tenantId    String
+  tenant      Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  scenarioId  String
+  scenario    TwinScenario  @relation(fields: [scenarioId], references: [id], onDelete: Cascade)
+  status      TwinRunStatus @default(QUEUED)
+  startedAt   DateTime      @default(now())
+  endedAt     DateTime?
+  horizonDays Int           @default(30)
+  result      Json?
+  error       String?
 
-  metrics      TwinMetric[]
+  metrics TwinMetric[]
 
   @@index([tenantId, status])
 }
 
 model TwinNode {
-  id           String   @id @default(cuid())
-  zoneId       String
-  zone         Zone     @relation(fields: [zoneId], references: [id], onDelete: Cascade)
-  label        String
-  kind         String   // zone, gate, dock, slot, agent, task
-  x            Float?
-  y            Float?
-  metadata     Json?
+  id       String @id @default(cuid())
+  zoneId   String
+  zone     Zone   @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+  label    String
+  kind     String // zone, gate, dock, slot, agent, task
+  x        Float?
+  y        Float?
+  metadata Json?
 
-  edgesFrom    TwinEdge[] @relation("TwinFrom")
-  edgesTo      TwinEdge[] @relation("TwinTo")
+  edgesFrom TwinEdge[] @relation("TwinFrom")
+  edgesTo   TwinEdge[] @relation("TwinTo")
 
   @@index([zoneId])
 }
 
 model TwinEdge {
-  id           String   @id @default(cuid())
-  fromId       String
-  from         TwinNode @relation("TwinFrom", fields: [fromId], references: [id], onDelete: Cascade)
-  toId         String
-  to           TwinNode @relation("TwinTo", fields: [toId], references: [id], onDelete: Cascade)
-  kind         String   // flow, handoff, movement
-  weight       Float?
-  metadata     Json?
+  id       String   @id @default(cuid())
+  fromId   String
+  from     TwinNode @relation("TwinFrom", fields: [fromId], references: [id], onDelete: Cascade)
+  toId     String
+  to       TwinNode @relation("TwinTo", fields: [toId], references: [id], onDelete: Cascade)
+  kind     String // flow, handoff, movement
+  weight   Float?
+  metadata Json?
 
   @@index([fromId])
   @@index([toId])
 }
 
 model TwinMetric {
-  id           String   @id @default(cuid())
-  runId        String
-  run          TwinRun  @relation(fields: [runId], references: [id], onDelete: Cascade)
-  name         String
-  value        Float
-  unit         String?
-  at           DateTime @default(now())
+  id    String   @id @default(cuid())
+  runId String
+  run   TwinRun  @relation(fields: [runId], references: [id], onDelete: Cascade)
+  name  String
+  value Float
+  unit  String?
+  at    DateTime @default(now())
 
   @@index([runId, name])
 }
@@ -2149,86 +2140,86 @@ enum IntegrationStatus {
 }
 
 model Integration {
-  id           String            @id @default(cuid())
-  tenantId     String
-  tenant       Tenant            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  kind         IntegrationKind
-  name         String
-  endpoint     String?
-  status       IntegrationStatus @default(ACTIVE)
-  config       Json?
-  secretRef    String?
-  createdAt    DateTime          @default(now())
-  updatedAt    DateTime          @updatedAt
+  id        String            @id @default(cuid())
+  tenantId  String
+  tenant    Tenant            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  kind      IntegrationKind
+  name      String
+  endpoint  String?
+  status    IntegrationStatus @default(ACTIVE)
+  config    Json?
+  secretRef String?
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
 
-  logs         IntegrationLog[]
+  logs IntegrationLog[]
 
   @@index([tenantId, kind, status])
 }
 
 model IntegrationLog {
-  id            String      @id @default(cuid())
+  id            String       @id @default(cuid())
   tenantId      String
-  tenant        Tenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenant        Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   integrationId String?
   integration   Integration? @relation(fields: [integrationId], references: [id], onDelete: SetNull)
-  direction     String      // IN | OUT
+  direction     String // IN | OUT
   status        Int
   latencyMs     Int?
   request       Json?
   response      Json?
   error         String?
-  at            DateTime    @default(now())
+  at            DateTime     @default(now())
 
   @@index([tenantId, at])
   @@index([integrationId, at])
 }
 
 model Webhook {
-  id           String   @id @default(cuid())
-  tenantId     String
-  tenant       Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  url          String
-  events       String[]
-  secret       String
-  active       Boolean  @default(true)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id        String   @id @default(cuid())
+  tenantId  String
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  url       String
+  events    String[]
+  secret    String
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  deliveries   WebhookDelivery[]
+  deliveries WebhookDelivery[]
 
   @@index([tenantId, active])
 }
 
 model WebhookDelivery {
-  id           String   @id @default(cuid())
-  tenantId     String
-  tenant       Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  webhookId    String
-  webhook      Webhook  @relation(fields: [webhookId], references: [id], onDelete: Cascade)
-  event        String
-  status       Int
-  attempt      Int      @default(1)
-  request      Json
-  response     Json?
-  error        String?
-  at           DateTime @default(now())
+  id        String   @id @default(cuid())
+  tenantId  String
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  webhookId String
+  webhook   Webhook  @relation(fields: [webhookId], references: [id], onDelete: Cascade)
+  event     String
+  status    Int
+  attempt   Int      @default(1)
+  request   Json
+  response  Json?
+  error     String?
+  at        DateTime @default(now())
 
   @@index([webhookId, at])
 }
 
 model EdiMapping {
-  id           String   @id @default(cuid())
-  tenantId     String
-  tenant       Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  name         String
-  version      String
-  spec         String   // EDIFACT, X12, ASYCUDA, custom
-  inbound      Json?
-  outbound     Json?
-  active       Boolean  @default(true)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id        String   @id @default(cuid())
+  tenantId  String
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  name      String
+  version   String
+  spec      String // EDIFACT, X12, ASYCUDA, custom
+  inbound   Json?
+  outbound  Json?
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([tenantId, name, version])
 }
@@ -2241,18 +2232,18 @@ enum SyncJobStatus {
 }
 
 model SyncJob {
-  id           String        @id @default(cuid())
-  tenantId     String
-  tenant       Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  kind         String
-  target       String
-  status       SyncJobStatus @default(QUEUED)
-  startedAt    DateTime      @default(now())
-  endedAt      DateTime?
-  cursor       String?
-  processed    Int           @default(0)
-  error        String?
-  metadata     Json?
+  id        String        @id @default(cuid())
+  tenantId  String
+  tenant    Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  kind      String
+  target    String
+  status    SyncJobStatus @default(QUEUED)
+  startedAt DateTime      @default(now())
+  endedAt   DateTime?
+  cursor    String?
+  processed Int           @default(0)
+  error     String?
+  metadata  Json?
 
   @@index([tenantId, status])
 }
@@ -2299,66 +2290,66 @@ model Agent {
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
 
-  versions     AgentVersion[]
-  runs         AgentRun[]
-  memories     AgentMemory[]
-  policies     AgentPolicy[]
-  approvals    AgentApproval[]
-  escalations  AgentEscalation[]
-  evals        AgentEval[]
+  versions    AgentVersion[]
+  runs        AgentRun[]
+  memories    AgentMemory[]
+  policies    AgentPolicy[]
+  approvals   AgentApproval[]
+  escalations AgentEscalation[]
+  evals       AgentEval[]
 
   @@unique([tenantId, slug])
   @@index([tenantId, kind, status])
 }
 
 model AgentVersion {
-  id           String   @id @default(cuid())
-  agentId      String
-  agent        Agent    @relation(fields: [agentId], references: [id], onDelete: Cascade)
-  version      String
-  definition   Json
-  changelog    String?
-  publishedAt  DateTime?
-  createdAt    DateTime @default(now())
+  id          String    @id @default(cuid())
+  agentId     String
+  agent       Agent     @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  version     String
+  definition  Json
+  changelog   String?
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
 
   @@unique([agentId, version])
 }
 
 model AgentSkill {
-  id           String   @id @default(cuid())
-  agentId      String?
-  skillId      String
-  name         String
-  domain       String
-  version      String   @default("1.0.0")
-  definition   Json
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id         String   @id @default(cuid())
+  agentId    String?
+  skillId    String
+  name       String
+  domain     String
+  version    String   @default("1.0.0")
+  definition Json
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   @@unique([agentId, skillId])
   @@index([domain])
 }
 
 model AgentTool {
-  id           String   @id @default(cuid())
-  agentId      String?
-  toolId       String
-  kind         String   // http, sql, customs, zone, doc, llm, vector
-  config       Json
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id        String   @id @default(cuid())
+  agentId   String?
+  toolId    String
+  kind      String // http, sql, customs, zone, doc, llm, vector
+  config    Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([agentId])
 }
 
 model AgentGuardrail {
-  id           String   @id @default(cuid())
-  guardrailId  String   @unique
-  scope        String   // global, tenant, jurisdiction, spend, data-access
-  mode         String   @default("fail-closed")
-  definition   Json
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id          String   @id @default(cuid())
+  guardrailId String   @unique
+  scope       String // global, tenant, jurisdiction, spend, data-access
+  mode        String   @default("fail-closed")
+  definition  Json
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 enum AgentRunStatus {
@@ -2371,30 +2362,30 @@ enum AgentRunStatus {
 }
 
 model AgentRun {
-  id           String         @id @default(cuid())
-  tenantId     String
-  tenant       Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  agentId      String
-  agent        Agent          @relation(fields: [agentId], references: [id], onDelete: Cascade)
-  parentRunId  String?
-  parentRun    AgentRun?      @relation("RunTree", fields: [parentRunId], references: [id], onDelete: SetNull)
-  children     AgentRun[]     @relation("RunTree")
-  status       AgentRunStatus @default(QUEUED)
-  trigger      String?        // user, schedule, webhook, handoff
-  input        Json?
-  output       Json?
-  error        String?
-  costUsd      Float          @default(0)
-  tokensIn     Int            @default(0)
-  tokensOut    Int            @default(0)
-  latencyMs    Int?
-  startedAt    DateTime       @default(now())
-  endedAt      DateTime?
+  id          String         @id @default(cuid())
+  tenantId    String
+  tenant      Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  agentId     String
+  agent       Agent          @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  parentRunId String?
+  parentRun   AgentRun?      @relation("RunTree", fields: [parentRunId], references: [id], onDelete: SetNull)
+  children    AgentRun[]     @relation("RunTree")
+  status      AgentRunStatus @default(QUEUED)
+  trigger     String? // user, schedule, webhook, handoff
+  input       Json?
+  output      Json?
+  error       String?
+  costUsd     Float          @default(0)
+  tokensIn    Int            @default(0)
+  tokensOut   Int            @default(0)
+  latencyMs   Int?
+  startedAt   DateTime       @default(now())
+  endedAt     DateTime?
 
-  steps        AgentStep[]
-  handoffsOut  AgentHandoff[] @relation("HandoffFrom")
-  handoffsIn   AgentHandoff[] @relation("HandoffTo")
-  approvals    AgentApproval[]
+  steps       AgentStep[]
+  handoffsOut AgentHandoff[]  @relation("HandoffFrom")
+  handoffsIn  AgentHandoff[]  @relation("HandoffTo")
+  approvals   AgentApproval[]
 
   @@index([tenantId, status])
   @@index([tenantId, agentId, startedAt])
@@ -2412,50 +2403,50 @@ enum AgentStepKind {
 }
 
 model AgentStep {
-  id           String         @id @default(cuid())
-  runId        String
-  run          AgentRun       @relation(fields: [runId], references: [id], onDelete: Cascade)
-  kind         AgentStepKind
-  seq          Int
-  payload      Json?
-  costUsd      Float          @default(0)
-  tokensIn     Int            @default(0)
-  tokensOut    Int            @default(0)
-  latencyMs    Int?
-  at           DateTime       @default(now())
+  id        String        @id @default(cuid())
+  runId     String
+  run       AgentRun      @relation(fields: [runId], references: [id], onDelete: Cascade)
+  kind      AgentStepKind
+  seq       Int
+  payload   Json?
+  costUsd   Float         @default(0)
+  tokensIn  Int           @default(0)
+  tokensOut Int           @default(0)
+  latencyMs Int?
+  at        DateTime      @default(now())
 
   @@index([runId, seq])
 }
 
 model AgentHandoff {
-  id           String   @id @default(cuid())
-  fromRunId    String
-  fromRun      AgentRun @relation("HandoffFrom", fields: [fromRunId], references: [id], onDelete: Cascade)
-  toRunId      String?
-  toRun        AgentRun? @relation("HandoffTo", fields: [toRunId], references: [id], onDelete: SetNull)
-  toAgentId    String
-  reason       String?
-  status       String   @default("pending")
-  acceptedAt   DateTime?
-  rejectedAt   DateTime?
-  at           DateTime @default(now())
+  id         String    @id @default(cuid())
+  fromRunId  String
+  fromRun    AgentRun  @relation("HandoffFrom", fields: [fromRunId], references: [id], onDelete: Cascade)
+  toRunId    String?
+  toRun      AgentRun? @relation("HandoffTo", fields: [toRunId], references: [id], onDelete: SetNull)
+  toAgentId  String
+  reason     String?
+  status     String    @default("pending")
+  acceptedAt DateTime?
+  rejectedAt DateTime?
+  at         DateTime  @default(now())
 
   @@index([fromRunId])
 }
 
 model AgentMemory {
-  id           String   @id @default(cuid())
-  tenantId     String
-  tenant       Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  agentId      String
-  agent        Agent    @relation(fields: [agentId], references: [id], onDelete: Cascade)
-  runId        String?
-  kind         String   // short-term, long-term, episodic
-  key          String
-  value        Json
-  ttlSec       Int?
-  createdAt    DateTime @default(now())
-  expiresAt    DateTime?
+  id        String    @id @default(cuid())
+  tenantId  String
+  tenant    Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  agentId   String
+  agent     Agent     @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  runId     String?
+  kind      String // short-term, long-term, episodic
+  key       String
+  value     Json
+  ttlSec    Int?
+  createdAt DateTime  @default(now())
+  expiresAt DateTime?
 
   @@index([tenantId, agentId, kind])
   @@index([expiresAt])
@@ -2469,23 +2460,23 @@ enum ApprovalDecision {
 }
 
 model AgentApproval {
-  id           String           @id @default(cuid())
-  tenantId     String
-  tenant       Tenant           @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  agentId      String
-  agent        Agent            @relation(fields: [agentId], references: [id], onDelete: Cascade)
-  runId        String
-  run          AgentRun         @relation(fields: [runId], references: [id], onDelete: Cascade)
-  reason       String
-  severity     FindingSeverity  @default(MEDIUM)
-  amountUsd    Float?
-  decision     ApprovalDecision @default(PENDING)
-  approverId   String?
-  approver     User?            @relation("Approver", fields: [approverId], references: [id], onDelete: SetNull)
-  decidedAt    DateTime?
-  deadline     DateTime?
-  metadata     Json?
-  createdAt    DateTime         @default(now())
+  id         String           @id @default(cuid())
+  tenantId   String
+  tenant     Tenant           @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  agentId    String
+  agent      Agent            @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  runId      String
+  run        AgentRun         @relation(fields: [runId], references: [id], onDelete: Cascade)
+  reason     String
+  severity   FindingSeverity  @default(MEDIUM)
+  amountUsd  Float?
+  decision   ApprovalDecision @default(PENDING)
+  approverId String?
+  approver   User?            @relation("Approver", fields: [approverId], references: [id], onDelete: SetNull)
+  decidedAt  DateTime?
+  deadline   DateTime?
+  metadata   Json?
+  createdAt  DateTime         @default(now())
 
   @@index([tenantId, decision])
   @@index([agentId])
@@ -2493,34 +2484,34 @@ model AgentApproval {
 }
 
 model AgentEscalation {
-  tenant       Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  id           String          @id @default(cuid())
-  tenantId     String
-  agentId      String
-  agent        Agent           @relation(fields: [agentId], references: [id], onDelete: Cascade)
-  runId        String?
-  reason       String
-  severity     FindingSeverity @default(MEDIUM)
-  acknowledged Boolean         @default(false)
+  tenant         Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  id             String          @id @default(cuid())
+  tenantId       String
+  agentId        String
+  agent          Agent           @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  runId          String?
+  reason         String
+  severity       FindingSeverity @default(MEDIUM)
+  acknowledged   Boolean         @default(false)
   acknowledgedAt DateTime?
-  metadata     Json?
-  createdAt    DateTime        @default(now())
+  metadata       Json?
+  createdAt      DateTime        @default(now())
 
   @@index([tenantId, acknowledged])
 }
 
 model AgentPolicy {
-  id           String   @id @default(cuid())
-  tenantId     String
-  tenant       Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  agentId      String
-  agent        Agent    @relation(fields: [agentId], references: [id], onDelete: Cascade)
-  scope        String
-  name         String
-  rules        Json
-  active       Boolean  @default(true)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id        String   @id @default(cuid())
+  tenantId  String
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  agentId   String
+  agent     Agent    @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  scope     String
+  name      String
+  rules     Json
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([tenantId, active])
 }
@@ -2533,52 +2524,52 @@ enum EvalStatus {
 }
 
 model AgentEval {
-  id           String     @id @default(cuid())
-  agentId      String
-  agent        Agent      @relation(fields: [agentId], references: [id], onDelete: Cascade)
-  suite        String
-  status       EvalStatus @default(QUEUED)
-  passRate     Float?
-  precision    Float?
-  recall       Float?
-  costUsd      Float?
-  startedAt    DateTime   @default(now())
-  endedAt      DateTime?
-  report       Json?
+  id        String     @id @default(cuid())
+  agentId   String
+  agent     Agent      @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  suite     String
+  status    EvalStatus @default(QUEUED)
+  passRate  Float?
+  precision Float?
+  recall    Float?
+  costUsd   Float?
+  startedAt DateTime   @default(now())
+  endedAt   DateTime?
+  report    Json?
 
-  cases        AgentEvalCase[]
+  cases AgentEvalCase[]
 
   @@index([agentId, suite])
 }
 
 model AgentEvalCase {
-  id           String    @id @default(cuid())
-  evalId       String
-  eval         AgentEval @relation(fields: [evalId], references: [id], onDelete: Cascade)
-  input        Json
-  expected     Json?
-  actual       Json?
-  passed       Boolean?
-  score        Float?
-  latencyMs    Int?
-  createdAt    DateTime  @default(now())
+  id        String    @id @default(cuid())
+  evalId    String
+  eval      AgentEval @relation(fields: [evalId], references: [id], onDelete: Cascade)
+  input     Json
+  expected  Json?
+  actual    Json?
+  passed    Boolean?
+  score     Float?
+  latencyMs Int?
+  createdAt DateTime  @default(now())
 
   @@index([evalId])
 }
 
 model AgentAuditEntry {
-  id           String   @id @default(cuid())
-  tenantId     String
-  runId        String?
-  agentId      String?
-  actor        String   // agent | human | system
-  action       String
-  target       String?
-  payload      Json?
-  evidence     Json?
-  prevHash     String?
-  hash         String
-  at           DateTime @default(now())
+  id       String   @id @default(cuid())
+  tenantId String
+  runId    String?
+  agentId  String?
+  actor    String // agent | human | system
+  action   String
+  target   String?
+  payload  Json?
+  evidence Json?
+  prevHash String?
+  hash     String
+  at       DateTime @default(now())
 
   @@index([tenantId, at])
   @@index([runId])
@@ -2589,33 +2580,33 @@ model AgentAuditEntry {
 // =============================================================================
 
 model AutoclawSnapshot {
-  id           String   @id @default(cuid())
-  tenantId     String
-  tenant       Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  version      String
-  configYaml   String
-  agentsYaml   String?
+  id             String   @id @default(cuid())
+  tenantId       String
+  tenant         Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  version        String
+  configYaml     String
+  agentsYaml     String?
   guardrailsYaml String?
   workflowsYaml  String?
-  promptHash   String?
-  createdAt    DateTime @default(now())
+  promptHash     String?
+  createdAt      DateTime @default(now())
 
   @@index([tenantId, version])
 }
 
 model Workflow {
-  id           String   @id @default(cuid())
-  tenantId     String
-  tenant       Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  workflowId   String
-  name         String
-  version      String   @default("1.0.0")
-  definition   Json
-  active       Boolean  @default(true)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id         String   @id @default(cuid())
+  tenantId   String
+  tenant     Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  workflowId String
+  name       String
+  version    String   @default("1.0.0")
+  definition Json
+  active     Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-  runs         WorkflowRun[]
+  runs WorkflowRun[]
 
   @@unique([tenantId, workflowId, version])
 }
@@ -2631,29 +2622,29 @@ enum WorkflowRunStatus {
 }
 
 model WorkflowRun {
-  id              String            @id @default(cuid())
-  tenantId        String
-  tenant          Tenant            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  workflowId      String
-  workflow        Workflow          @relation(fields: [workflowId], references: [id], onDelete: Cascade)
-  status          WorkflowRunStatus @default(QUEUED)
-  input           Json?
-  output          Json?
-  error           String?
-  startedAt       DateTime          @default(now())
-  endedAt         DateTime?
-  steps           Json?
+  id               String            @id @default(cuid())
+  tenantId         String
+  tenant           Tenant            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  workflowId       String
+  workflow         Workflow          @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  status           WorkflowRunStatus @default(QUEUED)
+  input            Json?
+  output           Json?
+  error            String?
+  startedAt        DateTime          @default(now())
+  endedAt          DateTime?
+  steps            Json?
   // Seed-loop fields
-  seedDatasetId   String?
-  seedDataset     SeedDataset?      @relation(fields: [seedDatasetId], references: [id], onDelete: SetNull)
-  loopConfig      Json?             // { strategy, batchSize, continueOnError, maxRetries, backoffMs }
-  idempotencyKey  String?           @unique
-  totalIterations Int               @default(0)
-  doneIterations  Int               @default(0)
-  failedIterations Int              @default(0)
+  seedDatasetId    String?
+  seedDataset      SeedDataset?      @relation(fields: [seedDatasetId], references: [id], onDelete: SetNull)
+  loopConfig       Json? // { strategy, batchSize, continueOnError, maxRetries, backoffMs }
+  idempotencyKey   String?           @unique
+  totalIterations  Int               @default(0)
+  doneIterations   Int               @default(0)
+  failedIterations Int               @default(0)
 
-  iterations      LoopIteration[]
-  logs            ExecutionLog[]
+  iterations LoopIteration[]
+  logs       ExecutionLog[]
 
   @@index([tenantId, status])
   @@index([tenantId, seedDatasetId])
@@ -2664,18 +2655,18 @@ model WorkflowRun {
 // =============================================================================
 
 model SeedDataset {
-  id          String        @id @default(cuid())
+  id          String   @id @default(cuid())
   tenantId    String
-  tenant      Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenant      Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   name        String
   description String?
-  schema      Json?         // JSON Schema for record validation
-  recordCount Int           @default(0)
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  schema      Json? // JSON Schema for record validation
+  recordCount Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  records     SeedRecord[]
-  runs        WorkflowRun[]
+  records SeedRecord[]
+  runs    WorkflowRun[]
 
   @@index([tenantId])
 }
@@ -2687,16 +2678,16 @@ enum SeedRecordStatus {
 }
 
 model SeedRecord {
-  id          String           @id @default(cuid())
-  datasetId   String
-  dataset     SeedDataset      @relation(fields: [datasetId], references: [id], onDelete: Cascade)
-  recordId    String           // stable, user-visible ID (e.g. row number or external key)
-  payload     Json
-  status      SeedRecordStatus @default(PENDING)
-  validationErrors Json?       // array of { field, message }
-  createdAt   DateTime         @default(now())
+  id               String           @id @default(cuid())
+  datasetId        String
+  dataset          SeedDataset      @relation(fields: [datasetId], references: [id], onDelete: Cascade)
+  recordId         String // stable, user-visible ID (e.g. row number or external key)
+  payload          Json
+  status           SeedRecordStatus @default(PENDING)
+  validationErrors Json? // array of { field, message }
+  createdAt        DateTime         @default(now())
 
-  iterations  LoopIteration[]
+  iterations LoopIteration[]
 
   @@unique([datasetId, recordId])
   @@index([datasetId, status])
@@ -2712,21 +2703,21 @@ enum IterationStatus {
 }
 
 model LoopIteration {
-  id          String          @id @default(cuid())
-  runId       String
-  run         WorkflowRun     @relation(fields: [runId], references: [id], onDelete: Cascade)
-  recordId    String
-  record      SeedRecord      @relation(fields: [recordId], references: [id], onDelete: Cascade)
-  status      IterationStatus @default(PENDING)
-  attempt     Int             @default(1)
-  input       Json?
-  output      Json?
-  error       String?
-  startedAt   DateTime?
-  endedAt     DateTime?
-  durationMs  Int?
+  id         String          @id @default(cuid())
+  runId      String
+  run        WorkflowRun     @relation(fields: [runId], references: [id], onDelete: Cascade)
+  recordId   String
+  record     SeedRecord      @relation(fields: [recordId], references: [id], onDelete: Cascade)
+  status     IterationStatus @default(PENDING)
+  attempt    Int             @default(1)
+  input      Json?
+  output     Json?
+  error      String?
+  startedAt  DateTime?
+  endedAt    DateTime?
+  durationMs Int?
 
-  logs        ExecutionLog[]
+  logs ExecutionLog[]
 
   @@unique([runId, recordId])
   @@index([runId, status])
@@ -2741,17 +2732,17 @@ enum LogLevel {
 }
 
 model ExecutionLog {
-  id            String      @id @default(cuid())
-  tenantId      String
-  runId         String
-  run           WorkflowRun @relation(fields: [runId], references: [id], onDelete: Cascade)
-  iterationId   String?
-  iteration     LoopIteration? @relation(fields: [iterationId], references: [id], onDelete: SetNull)
-  level         LogLevel    @default(INFO)
-  message       String
-  nodeId        String?
-  payload       Json?
-  at            DateTime    @default(now())
+  id          String         @id @default(cuid())
+  tenantId    String
+  runId       String
+  run         WorkflowRun    @relation(fields: [runId], references: [id], onDelete: Cascade)
+  iterationId String?
+  iteration   LoopIteration? @relation(fields: [iterationId], references: [id], onDelete: SetNull)
+  level       LogLevel       @default(INFO)
+  message     String
+  nodeId      String?
+  payload     Json?
+  at          DateTime       @default(now())
 
   @@index([runId, at])
   @@index([iterationId, at])
@@ -2759,16 +2750,16 @@ model ExecutionLog {
 }
 
 model GuardrailHit {
-  id           String          @id @default(cuid())
-  tenantId     String
-  tenant       Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  guardrailId  String
-  scope        String
-  severity     FindingSeverity @default(MEDIUM)
-  action       String          // block, warn, escalate, redact
-  subject      String?
-  payload      Json?
-  at           DateTime        @default(now())
+  id          String          @id @default(cuid())
+  tenantId    String
+  tenant      Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  guardrailId String
+  scope       String
+  severity    FindingSeverity @default(MEDIUM)
+  action      String // block, warn, escalate, redact
+  subject     String?
+  payload     Json?
+  at          DateTime        @default(now())
 
   @@index([tenantId, at])
   @@index([tenantId, guardrailId])
@@ -2789,21 +2780,21 @@ model RulePack {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  versions     RulePackVersion[]
+  versions RulePackVersion[]
 
   @@unique([tenantId, packId])
 }
 
 model RulePackVersion {
-  id           String   @id @default(cuid())
-  rulePackId   String
-  rulePack     RulePack @relation(fields: [rulePackId], references: [id], onDelete: Cascade)
-  tenantId     String?
-  tenant       Tenant?  @relation(fields: [tenantId], references: [id], onDelete: SetNull)
-  version      String
-  definition   Json
-  publishedAt  DateTime?
-  createdAt    DateTime @default(now())
+  id          String    @id @default(cuid())
+  rulePackId  String
+  rulePack    RulePack  @relation(fields: [rulePackId], references: [id], onDelete: Cascade)
+  tenantId    String?
+  tenant      Tenant?   @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  version     String
+  definition  Json
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
 
   @@unique([rulePackId, version])
 }
@@ -2813,18 +2804,18 @@ model RulePackVersion {
 // =============================================================================
 
 model AuditLog {
-  id           String   @id @default(cuid())
-  tenantId     String
-  tenant       Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  userId       String?
-  user         User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
-  actor        String   @default("human")  // human, agent, system
-  action       String
-  target       String?
-  meta         Json?
-  prevHash     String?
-  hash         String
-  at           DateTime @default(now())
+  id       String   @id @default(cuid())
+  tenantId String
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  userId   String?
+  user     User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  actor    String   @default("human") // human, agent, system
+  action   String
+  target   String?
+  meta     Json?
+  prevHash String?
+  hash     String
+  at       DateTime @default(now())
 
   @@index([tenantId, at])
   @@index([tenantId, action])
@@ -2832,15 +2823,15 @@ model AuditLog {
 }
 
 model DomainEvent {
-  id           String   @id @default(cuid())
-  tenantId     String
-  tenant       Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  topic        String
-  payload      Json
-  delivered    Boolean  @default(false)
-  retries      Int      @default(0)
-  at           DateTime @default(now())
-  processedAt  DateTime?
+  id          String    @id @default(cuid())
+  tenantId    String
+  tenant      Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  topic       String
+  payload     Json
+  delivered   Boolean   @default(false)
+  retries     Int       @default(0)
+  at          DateTime  @default(now())
+  processedAt DateTime?
 
   @@index([tenantId, topic, delivered])
 }
@@ -2854,35 +2845,35 @@ enum JobStatus {
 }
 
 model Job {
-  id           String    @id @default(cuid())
-  tenantId     String?
-  tenant       Tenant?   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  queue        String
-  name         String
-  status       JobStatus @default(QUEUED)
-  payload      Json?
-  result       Json?
-  error        String?
-  attempts     Int       @default(0)
-  maxAttempts  Int       @default(3)
-  scheduledAt  DateTime?
-  startedAt    DateTime?
-  endedAt      DateTime?
-  at           DateTime  @default(now())
+  id          String    @id @default(cuid())
+  tenantId    String?
+  tenant      Tenant?   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  queue       String
+  name        String
+  status      JobStatus @default(QUEUED)
+  payload     Json?
+  result      Json?
+  error       String?
+  attempts    Int       @default(0)
+  maxAttempts Int       @default(3)
+  scheduledAt DateTime?
+  startedAt   DateTime?
+  endedAt     DateTime?
+  at          DateTime  @default(now())
 
   @@index([queue, status])
   @@index([tenantId, status])
 }
 
 model ServiceHealth {
-  id           String   @id @default(cuid())
-  tenantId     String?
-  tenant       Tenant?  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  service      String
-  status       String
-  latencyMs    Int?
-  detail       Json?
-  at           DateTime @default(now())
+  id        String   @id @default(cuid())
+  tenantId  String?
+  tenant    Tenant?  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  service   String
+  status    String
+  latencyMs Int?
+  detail    Json?
+  at        DateTime @default(now())
 
   @@index([service, at])
 }
@@ -2890,7 +2881,6 @@ model ServiceHealth {
 // =============================================================================
 // END
 // =============================================================================
-
 
 // =============================================================================
 // JKDM customs integration (Royal Malaysian Customs Department)
@@ -2974,33 +2964,32 @@ enum JkdmReviewStatus {
 /// evidence (or a documented exception) and stays pending_review until a second
 /// user confirms it.
 model JkdmManualResponse {
-  id                    String            @id @default(cuid())
-  tenantId              String
-  tenant                Tenant            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  draftRef              String
-  declarationId         String?
-  declaration           Declaration?      @relation(fields: [declarationId], references: [id], onDelete: SetNull)
-  outcome               JkdmManualOutcome
-  externalRef           String?
+  id                     String            @id @default(cuid())
+  tenantId               String
+  tenant                 Tenant            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  draftRef               String
+  declarationId          String?
+  declaration            Declaration?      @relation(fields: [declarationId], references: [id], onDelete: SetNull)
+  outcome                JkdmManualOutcome
+  externalRef            String?
   /// Required unless externalRef is present. Explains why a reference is missing.
-  exceptionReason       String?
-  officerName           String?
-  officerId             String?
-  notes                 String?
-  observedAt            DateTime
+  exceptionReason        String?
+  officerName            String?
+  officerId              String?
+  notes                  String?
+  observedAt             DateTime
   /// Evidence pointer. Required unless an exception is recorded. A filename or
   /// arbitrary upload is NOT verified evidence without the review process.
-  evidenceRef           String?
-  additionalEvidenceRefs String[]         @default([])
-  recordedBy            String
-  recordedAt            DateTime          @default(now())
-  reviewStatus          JkdmReviewStatus  @default(pending_review)
-  reviewedBy            String?
-  reviewedAt            DateTime?
+  evidenceRef            String?
+  additionalEvidenceRefs String[]          @default([])
+  recordedBy             String
+  recordedAt             DateTime          @default(now())
+  reviewStatus           JkdmReviewStatus  @default(pending_review)
+  reviewedBy             String?
+  reviewedAt             DateTime?
 
   @@index([tenantId, draftRef])
   @@index([tenantId, declarationId])
   @@index([tenantId, reviewStatus])
   @@index([tenantId, recordedAt])
 }
-

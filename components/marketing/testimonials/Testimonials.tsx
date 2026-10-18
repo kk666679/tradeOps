@@ -26,7 +26,7 @@ export function Testimonials({
     <section className="border-b">
       <div className="mx-auto max-w-7xl px-4 py-16">
         <header className="mb-8 max-w-2xl">
-          <h2 className="text-3xl font-semibold">{title}</h2>
+          <h2 className="text-2xl sm:text-3xl font-semibold">{title}</h2>
           {subtitle ? <p className="mt-2 text-muted-foreground">{subtitle}</p> : null}
         </header>
         <TestimonialCarousel items={items} />

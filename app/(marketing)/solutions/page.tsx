@@ -33,19 +33,19 @@ export default function SolutionsHubPage() {
     <div className="min-h-screen bg-[#050505] text-white py-24 px-4">
       <div className="container mx-auto max-w-6xl">
         <div className="text-center mb-16">
-          <h1 className="text-5xl md:text-7xl font-black tracking-tighter mb-6">
+          <h1 className="text-4xl sm:text-5xl md:text-7xl font-black tracking-tighter mb-6">
             Built for <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">Every Entity</span>
           </h1>
-          <p className="text-xl text-slate-400 max-w-2xl mx-auto font-light">
+          <p className="text-lg sm:text-xl text-slate-400 max-w-2xl mx-auto font-light">
             Whether you are clearing goods, moving them across oceans, or manufacturing them, TradeOps is the operating system for your operations.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
           {solutions.map((sol, i) => {
             const Icon = sol.icon;
             return (
-              <Link key={i} href={sol.href} className="group relative rounded-3xl bg-[#0A0A0A] border border-white/5 p-8 hover:border-white/20 hover:-translate-y-2 transition-all duration-300">
+              <Link key={i} href={sol.href} className="group relative rounded-3xl bg-[#0A0A0A] border border-white/5 p-6 sm:p-8 hover:border-white/20 hover:-translate-y-2 transition-all duration-300">
                 <div className={`inline-flex h-14 w-14 items-center justify-center rounded-2xl ${sol.bg} ${sol.color} mb-6 group-hover:scale-110 transition-transform`}>
                   <Icon className="h-7 w-7" />
                 </div>

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 const sections = [
   { href: '/console/dashboard', label: 'Overview' },
@@ -19,7 +20,12 @@ export default function AppShell({ children }: { children: ReactNode }) {
           ))}
         </nav>
       </aside>
-      <main className="min-w-0 flex-1">{children}</main>
+      <main className="min-w-0 flex-1">
+        <div className="flex items-center justify-end border-b px-4 py-2">
+          <ThemeToggle />
+        </div>
+        {children}
+      </main>
     </div>
   );
 }

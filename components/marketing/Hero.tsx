@@ -1,4 +1,3 @@
-// DEPRECATED — re-exports the canonical subfolder version.
-// Original preserved at components/marketing/Hero.tsx.bak
+// Re-export the canonical hero module from components/marketing/hero/.
 export * from './hero/Hero';
 export { default } from './hero/Hero';

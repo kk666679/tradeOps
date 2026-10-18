@@ -8,16 +8,17 @@ import CTA from "@/components/marketing/cta/CTA";
 import AnalyticsDashboard from "@/components/marketing/features/AnalyticsDashboard";
 import { WalletInfoWrapper } from "@/components/web3/WalletInfoWrapper";
 import { TrustBanner } from "@/components/marketing/TrustBanner";
-import { AIPersona } from "@/components/ai-elements/AIPersona";
+import { AIChatWidget } from "@/components/marketing/AIChatWidget";
 import { DynamicIcon } from "@/components/ui/DynamicIcon";
+import Footer from "@/components/marketing/shell/Footer";
 
 import { solutionsData, featuresData, statsData, aiLogsData } from "@/lib/data";
 
 export default function MarketingHomePage() {
   return (
     <div className="flex flex-col w-full bg-[#050505] text-white">
-      {/* AI Persona (悬浮在右下角) */}
-      <AIPersona />
+      {/* AI Chat Widget */}
+      <AIChatWidget />
 
       {/* 1. Hero 区域 */}
       <section className="w-full">
@@ -32,7 +33,7 @@ export default function MarketingHomePage() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-emerald-500/10 blur-[100px] rounded-full pointer-events-none"></div>
         <div className="container mx-auto px-4 max-w-6xl relative z-10">
           <div className="text-center mb-8">
-            <h2 className="text-xl md:text-2xl font-bold text-slate-300">Built for Malaysian Free Zones</h2>
+            <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-slate-300">Built for Malaysian Free Zones</h2>
             <p className="text-sm text-slate-500 mt-2">Comprehensive modules tailored for Zon Bebas operations.</p>
           </div>
           <div className="relative group w-full">
@@ -46,7 +47,7 @@ export default function MarketingHomePage() {
       <section className="w-full py-24 bg-[#050505]">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-bold mb-4">Enterprise Modules Wired</h2>
+            <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold mb-4">Enterprise Modules Wired</h2>
           </div>
           <FeatureGrid features={featuresData} />
         </div>
@@ -63,7 +64,7 @@ export default function MarketingHomePage() {
       <section className="w-full py-24 bg-black">
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Solutions for Every Entity</h2>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">Solutions for Every Entity</h2>
           </div>
           
           <div className="grid md:grid-cols-3 gap-6">
@@ -91,7 +92,7 @@ export default function MarketingHomePage() {
       {/* 8. Web3 连接区 */}
       <section className="w-full py-24 bg-black flex justify-center border-t border-white/5">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-8">Connect to the Trust Layer</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold mb-8">Connect to the Trust Layer</h2>
           <div className="flex justify-center">
             <WalletInfoWrapper />
           </div>
@@ -107,6 +108,8 @@ export default function MarketingHomePage() {
       <section className="w-full">
         <CTA />
       </section>
+
+      <Footer />
     </div>
   );
 }

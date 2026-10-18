@@ -1,10 +1,8 @@
 import { NextResponse } from 'next/server';
-import { writeFile, mkdir } from 'node:fs/promises';
-import { join } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { db } from '@/lib/db';
+import { saveUpload } from '@/lib/upload/storage';
 
-const UPLOAD_DIR = process.env.UPLOAD_DIR ?? join(process.cwd(), 'uploads', 'documents');
 const MAX_BYTES = 20 * 1024 * 1024; // 20 MB
 const ALLOWED_MIME = new Set([
   'application/pdf',
@@ -37,20 +35,15 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: `File type ${file.type} is not permitted.` }, { status: 415 });
   }
 
-  const ext = file.name.split('.').pop() ?? 'bin';
-  const id = randomUUID();
-  const filename = `${id}.${ext}`;
-
+  let url: string;
   try {
-    await mkdir(UPLOAD_DIR, { recursive: true });
-    const bytes = await file.arrayBuffer();
-    await writeFile(/*turbopackIgnore: true*/ join(UPLOAD_DIR, filename), Buffer.from(bytes));
+    url = await saveUpload(file, 'documents');
   } catch (err) {
     console.error('[upload/document] write failed', err);
     return NextResponse.json({ ok: false, error: 'Storage error. Please try again.' }, { status: 500 });
   }
 
-  const url = `/uploads/documents/${filename}`;
+  const filename = url.split('/').pop() ?? '';
 
   // Persist metadata if a tenantId is available (from auth header or form field)
   const tenantId = form.get('tenantId') as string | null;

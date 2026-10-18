@@ -61,7 +61,7 @@ export default function AnalyticsDashboard({ logs = [
         <div className="lg:col-span-2 space-y-6">
           
           {/* KPI 卡片区 */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-blue-500/30 transition-colors">
               <div className="flex justify-between items-start mb-2">
                 <Box className="w-4 h-4 text-blue-400" />

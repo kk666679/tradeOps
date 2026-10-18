@@ -1,25 +1,49 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { getToken } from 'next-auth/jwt'
 
-export function middleware(request: NextRequest) {
-  // 你的中间件逻辑（比如检查 Session）
-  // const session = await getToken({ req: request });
-  // if (!session && request.nextUrl.pathname.startsWith('/dashboard')) {
-  //   return NextResponse.redirect(new URL('/login', request.url));
-  // }
-  
+const PROTECTED_PREFIXES = [
+  '/dashboard',
+  '/console',
+  '/wms',
+  '/trade-ops',
+]
+
+const AUTH_PAGES = ['/login', '/register', '/forgot-password', '/reset-password']
+
+export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl
+
+  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET })
+  const isAuthenticated = !!token
+
+  const isProtected = PROTECTED_PREFIXES.some((prefix) => pathname.startsWith(prefix))
+  const isAuthPage = AUTH_PAGES.includes(pathname)
+
+  // Redirect unauthenticated users away from protected routes
+  if (isProtected && !isAuthenticated) {
+    const loginUrl = new URL('/login', request.url)
+    loginUrl.searchParams.set('callbackUrl', pathname)
+    return NextResponse.redirect(loginUrl)
+  }
+
+  // Redirect authenticated users away from auth pages
+  if (isAuthPage && isAuthenticated) {
+    return NextResponse.redirect(new URL('/dashboard', request.url))
+  }
+
   return NextResponse.next()
 }
 
-// ✅ 核心修复：必须使用静态字符串数组！
 export const config = {
-  // 匹配你需要保护的路由，同时排除 api/auth 和静态资源
   matcher: [
     '/dashboard/:path*',
     '/console/:path*',
     '/wms/:path*',
     '/trade-ops/:path*',
-    // 如果上面无法满足，可以使用正则表达式排除法（匹配所有，除了静态资源和API）
-    // '/((?!api/auth|_next/static|_next/image|favicon.ico).*)'
+    '/login',
+    '/register',
+    '/forgot-password',
+    '/reset-password',
   ],
 }
