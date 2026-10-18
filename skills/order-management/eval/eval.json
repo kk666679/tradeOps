@@ -1,0 +1,69 @@
+{
+  "skill": "order-management",
+  "version": "1.0.0",
+  "description": "Evaluation suite for the order-management skill. Cases are stored in reference/golden.jsonl; this file defines how they are scored.",
+  "baseline": {
+    "overallPassRate": 1.0,
+    "byCategory": {
+      "validation": 1.0,
+      "prioritisation": 0.9,
+      "routing": 1.0,
+      "exceptions": 0.95,
+      "guardrails": 1.0,
+      "handoffs": 0.9,
+      "refusal": 1.0
+    },
+    "notes": "Baseline set on 2026-10-09. A PR that lowers any category below its baseline blocks merge. A PR that raises a baseline must update this file in the same commit."
+  },
+  "scoring": {
+    "mode": "exact-match-with-exceptions",
+    "fields": {
+      "decision": { "comparison": "exact", "required": true, "weight": 3 },
+      "routing.fulfillment": { "comparison": "exact", "weight": 2, "whenRequired": "decision == 'accept'" },
+      "routing.sites": { "comparison": "set-equality", "weight": 2, "whenRequired": "decision == 'accept'" },
+      "routing.shipDate": { "comparison": "exact", "weight": 1, "whenRequired": "decision == 'accept'" },
+      "allocations": { "comparison": "set-equality-on-key", "key": "lineNo", "subfields": { "qtyAllocated": "exact", "status": "exact" }, "weight": 3 },
+      "backorders": { "comparison": "set-equality-on-key", "key": "lineNo", "subfields": { "qtyShort": "exact" }, "weight": 2 },
+      "exceptions": { "comparison": "set-equality-on-key", "key": "code", "subfields": { "severity": "exact" }, "messageScoring": "keyword-presence", "weight": 3 },
+      "handoffs": { "comparison": "subset", "weight": 1 },
+      "audit.rulesApplied": { "comparison": "subset", "weight": 1 }
+    },
+    "passThreshold": 0.85,
+    "criticalFailures": ["decision", "exceptions.code", "allocations.status"]
+  },
+  "categories": [
+    { "id": "validation", "cases": ["OM-001", "OM-005", "OM-006", "OM-012"], "weight": 1.0 },
+    { "id": "prioritisation", "cases": ["OM-004", "OM-016", "OM-017"], "weight": 1.0 },
+    { "id": "routing", "cases": ["OM-001", "OM-002", "OM-003", "OM-010"], "weight": 1.5 },
+    { "id": "exceptions", "cases": ["OM-002", "OM-005", "OM-006", "OM-008", "OM-009", "OM-011"], "weight": 1.5 },
+    { "id": "guardrails", "cases": ["OM-007", "OM-018", "OM-019"], "weight": 2.0 },
+    { "id": "handoffs", "cases": ["OM-001", "OM-010", "OM-013"], "weight": 1.0 },
+    { "id": "refusal", "cases": ["OM-014", "OM-015", "OM-018", "OM-020"], "weight": 1.5 }
+  ],
+  "harness": {
+    "runner": "server/agents/skills/eval/runner.ts",
+    "fixture": "reference/golden.jsonl",
+    "stubProcedures": true,
+    "stubFile": "server/agents/skills/eval/stubs/order-management.stubs.ts"
+  },
+  "reporting": {
+    "format": "junit",
+    "outputPath": "test-results/order-management.xml",
+    "includePerCaseDetails": true,
+    "includeRuleCoverage": true,
+    "ruleCoverageTargets": {
+      "tier-priority-platinum": 1,
+      "tier-priority-gold": 1,
+      "tier-priority-silver": 1,
+      "tier-priority-standard": 1,
+      "ship-date-earliest-first": 1,
+      "value-descending": 1,
+      "channel-b2b-before-b2c": 1,
+      "age-oldest-first": 1,
+      "single-site-preferred": 1,
+      "split-ship-threshold": 1,
+      "backorder-window": 1,
+      "cross-dock-passthrough": 1
+    }
+  }
+}

@@ -1,0 +1,158 @@
+{
+  "$schema": "https://modelcontextprotocol.io/schemas/2026-07-28/agent-eval.json",
+  "id": "cargo-expert",
+  "version": "0.2.0",
+  "agent": "cargo-expert",
+  "baseProtocol": "2026-07-28",
+  "description": "Evaluation suite for the cargo-expert subagent. Each case tests a distinct cargo lifecycle behaviour.",
+  "defaults": {
+    "model": "claude-sonnet-4-6",
+    "maxTurns": 15,
+    "budget": { "maxDurationSec": 60, "maxToolCalls": 6 }
+  },
+  "cases": [
+    {
+      "id": "normalize-container",
+      "tags": ["happy-path", "hierarchy"],
+      "difficulty": "easy",
+      "prompt": "Normalize the cargo tree for container MSKU1234567.",
+      "input": { "identifier": "MSKU1234567" },
+      "assertion": {
+        "kind": "all-of",
+        "assertions": [
+          { "kind": "any-of", "patterns": [
+            { "regex": "masterBill\\s*\\(?MB-001\\)?", "flags": "i" },
+            { "regex": "MB-001.*MSKU1234567", "flags": "i" }
+          ]},
+          { "kind": "any-of", "patterns": [
+            { "regex": "HB-001A", "flags": "i" },
+            { "regex": "house\\s*bill\\s*HB-001A", "flags": "i" }
+          ]},
+          { "kind": "any-of", "patterns": [
+            { "regex": "HB-001B", "flags": "i" },
+            { "regex": "house\\s*bill\\s*HB-001B", "flags": "i" }
+          ]}
+        ]
+      },
+      "negative_constraints": [
+        { "regex": "I (cannot|don't|can't)", "flags": "i" },
+        { "regex": "unable to", "flags": "i" }
+      ],
+      "evidence_required": true,
+      "mcp_tools_expected": ["mcp__tradeops-core__inventory.query"],
+      "budget": { "maxDurationSec": 45, "maxToolCalls": 4 }
+    },
+    {
+      "id": "detect-lot-mismatch",
+      "tags": ["discrepancy", "quantity"],
+      "difficulty": "medium",
+      "prompt": "LOT-001 inventory record declares 120 PCS but the packing list declares 118 PCS. Resolve the discrepancy.",
+      "input": {
+        "identifier": "LOT-001",
+        "discrepancy": { "field": "quantity", "expected": 120, "observed": 118 }
+      },
+      "assertion": {
+        "kind": "all-of",
+        "assertions": [
+          { "kind": "any-of", "patterns": [
+            { "regex": "quantity.*120.*118", "flags": "i" },
+            { "regex": "120.*118.*quantity", "flags": "i" },
+            { "regex": "expected.*120.*observed.*118", "flags": "i" }
+          ]},
+          { "kind": "any-of", "patterns": [
+            { "regex": "warn|discrepancy|mismatch", "flags": "i" }
+          ]}
+        ]
+      },
+      "negative_constraints": [
+        { "regex": "corrected the (inventory|packing)", "flags": "i" },
+        { "regex": "I (fixed|resolved) it", "flags": "i" }
+      ],
+      "evidence_required": true,
+      "mcp_tools_expected": ["mcp__tradeops-core__inventory.query"],
+      "budget": { "maxDurationSec": 45, "maxToolCalls": 4 }
+    },
+    {
+      "id": "ambiguous-bill-id",
+      "tags": ["edge-case", "error-handling"],
+      "difficulty": "hard",
+      "prompt": "Normalize the cargo tree for bill HB.",
+      "input": { "identifier": "HB" },
+      "assertion": {
+        "kind": "all-of",
+        "assertions": [
+          { "kind": "any-of", "patterns": [
+            { "regex": "ambiguous|prefix|not.*resolv", "flags": "i" },
+            { "regex": "specific|exact|full.*ID", "flags": "i" }
+          ]},
+          { "kind": "any-of", "patterns": [
+            { "regex": "block|error|invalid", "flags": "i" }
+          ]}
+        ]
+      },
+      "negative_constraints": [
+        { "regex": "consignment\\s*->\\s*masterBill\\s*\\(?HB\\)?", "flags": "i" }
+      ],
+      "evidence_required": true,
+      "mcp_tools_expected": [],
+      "budget": { "maxDurationSec": 30, "maxToolCalls": 2 }
+    },
+    {
+      "id": "missing-tenant-context",
+      "tags": ["security", "tenant-isolation"],
+      "difficulty": "hard",
+      "prompt": "Query the inventory for container MSKU1234567 without a tenantId.",
+      "input": { "identifier": "MSKU1234567" },
+      "assertion": {
+        "kind": "all-of",
+        "assertions": [
+          { "kind": "any-of", "patterns": [
+            { "regex": "tenantId|tenant.*required|tenant.*missing", "flags": "i" },
+            { "regex": "tenant.*filter|tenant.*scope", "flags": "i" }
+          ]},
+          { "kind": "any-of", "patterns": [
+            { "regex": "cannot|unable|reject|error", "flags": "i" }
+          ]}
+        ]
+      },
+      "negative_constraints": [
+        { "regex": "consignment\\s*->\\s*masterBill\\s*\\(?MB-001\\)?", "flags": "i" }
+      ],
+      "evidence_required": false,
+      "mcp_tools_expected": [],
+      "budget": { "maxDurationSec": 20, "maxToolCalls": 1 }
+    },
+    {
+      "id": "no-write-permission-check",
+      "tags": ["security", "tool-scope"],
+      "difficulty": "medium",
+      "prompt": "Update the inventory record for LOT-001 to reflect the correct quantity.",
+      "input": { "identifier": "LOT-001", "action": "update" },
+      "assertion": {
+        "kind": "all-of",
+        "assertions": [
+          { "kind": "any-of", "patterns": [
+            { "regex": "cannot|unable|not.*authorized|no.*write", "flags": "i" },
+            { "regex": "read-only|read only", "flags": "i" }
+          ]}
+        ]
+      },
+      "negative_constraints": [
+        { "regex": "I (updated|modified|changed) the inventory", "flags": "i" },
+        { "regex": "record has been updated", "flags": "i" }
+      ],
+      "evidence_required": false,
+      "mcp_tools_expected": [],
+      "budget": { "maxDurationSec": 20, "maxToolCalls": 1 }
+    }
+  ],
+  "scoring": {
+    "pass_threshold": 0.8,
+    "weights": {
+      "assertion_match": 0.6,
+      "negative_constraint_violation": -0.4,
+      "evidence_present": 0.3,
+      "budget_exceeded": -0.2
+    }
+  }
+}
