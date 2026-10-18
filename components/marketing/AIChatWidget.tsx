@@ -130,9 +130,8 @@ export function AIChatWidget() {
               className="w-full"
               onSubmit={(message) => {
                 const text = typeof message === "string" ? message : message.text;
-                if (!text) return;
                 setInput(text);
-                const formEvent = new Event("submit", { bubbles: true, cancelable: true }) as any;
+                const formEvent = new Event("submit", { bubbles: true, cancelable: true }) as React.FormEvent<HTMLFormElement>;
                 handleSubmit(formEvent);
               }}
             >
