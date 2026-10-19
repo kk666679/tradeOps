@@ -10,6 +10,7 @@ import { ThemeToggle } from '@/components/ThemeToggle';
 const LINKS: [string, string][] = [
   ['Product', '/#product'],
   ['Workflow', MARKETING_ROUTES.workflow],
+  ['Solutions', '/solutions'],
   ['FIZ', '/solutions/fiz'],
   ['FCZ', '/solutions/fcz'],
   ['Studio', '/brokerage/workflow-studio'],
