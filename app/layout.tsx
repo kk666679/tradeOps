@@ -7,6 +7,7 @@ import { Web3Provider } from "@/lib/web3/Web3Provider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://kurnia-kadir.xyz"),
   title: "TradeOps | Enterprise Web3 Trade Infrastructure",
   description: "The multi-tenant warehouse and customs platform.",
 };
