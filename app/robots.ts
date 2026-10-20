@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://kurnia-kadir.xyz").replace(/\/$/, "");
+const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.kurnia-kadir.xyz").replace(/\/$/, "");
 
 export default function robots(): MetadataRoute.Robots {
   return {
