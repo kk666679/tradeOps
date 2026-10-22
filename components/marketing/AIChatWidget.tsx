@@ -69,7 +69,8 @@ export function AIChatWidget() {
         "I can assist with trade documentation, BOM analysis, compliance checks, and supply chain visibility. Tell me more about your use case.",
         "Our platform integrates with customs systems, ERP solutions, and digital trade corridors. Which integration are you looking to implement?",
       ];
-      const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+      const randomResponse = responses[Math.floor(Math.random() * responses.length)]
+        ?? "I don't have a response available right now.";
 
       addMessage(randomResponse, "assistant");
       setIsLoading(false);
@@ -144,7 +145,8 @@ export function AIChatWidget() {
                     "I can assist with trade documentation, BOM analysis, compliance checks, and supply chain visibility. Tell me more about your use case.",
                     "Our platform integrates with customs systems, ERP solutions, and digital trade corridors. Which integration are you looking to implement?",
                   ];
-                  const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                  const randomResponse = responses[Math.floor(Math.random() * responses.length)]
+                    ?? "I don't have a response available right now.";
                   addMessage(randomResponse, "assistant");
                   setIsLoading(false);
                 }, 1000);

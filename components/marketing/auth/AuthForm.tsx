@@ -45,43 +45,83 @@ const registerSchema = z.object({
 
 type RegisterForm = z.infer<typeof registerSchema>;
 
+function createAuthSchema(isRegister: boolean) {
+  return z.object({
+    name: z.string().optional(),
+    email: loginSchema.shape.email,
+    password: z.string().min(1, 'Enter your password.'),
+    passwordConfirmation: z.string().optional(),
+    rememberMe: z.boolean().optional(),
+  }).superRefine((values, context) => {
+    if (!isRegister) return;
+    const result = registerSchema.safeParse(values);
+    if (result.success) return;
+    for (const issue of result.error.issues) {
+      context.addIssue({ code: 'custom', path: issue.path, message: issue.message });
+    }
+  });
+}
+
+type AuthFormValues = z.infer<ReturnType<typeof createAuthSchema>>;
+
 export function AuthForm({ mode }: { mode: AuthMode }) {
   const isRegister = mode === 'register';
   const router = useRouter();
   const [showPassword, setShowPassword] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
+  const formSchema = createAuthSchema(isRegister);
 
   const login = trpc.auth.login.useMutation();
   const register = trpc.auth.register.useMutation();
   const pending = login.isPending || register.isPending;
 
-  const methods = useForm<RegisterForm & LoginForm>({
-    resolver: zodResolver(isRegister ? registerSchema : loginSchema),
+  const methods = useForm<AuthFormValues>({
+    resolver: zodResolver(formSchema),
     defaultValues: isRegister
       ? { name: '', email: '', password: '', passwordConfirmation: '' }
       : { email: '', password: '', rememberMe: false },
   });
 
-  async function submit(values: RegisterForm & LoginForm) {
+  async function submit(values: AuthFormValues) {
     setError(null);
 
     try {
       if (isRegister) {
+        const parsed = registerSchema.safeParse(values);
+        if (!parsed.success) {
+          for (const issue of parsed.error.issues) {
+            const field = issue.path[0];
+            if (field === 'name' || field === 'email' || field === 'password' || field === 'passwordConfirmation') {
+              methods.setError(field, { type: 'validate', message: issue.message });
+            }
+          }
+          return;
+        }
         const result = await register.mutateAsync({
-          name: values.name.trim(),
-          email: values.email.trim().toLowerCase(),
-          password: values.password,
-          passwordConfirmation: values.passwordConfirmation,
+          name: parsed.data.name.trim(),
+          email: parsed.data.email.trim().toLowerCase(),
+          password: parsed.data.password,
+          passwordConfirmation: parsed.data.passwordConfirmation,
         });
         setAuthToken(result.access);
         await router.push('/dashboard');
       } else {
+        const parsed = loginSchema.safeParse(values);
+        if (!parsed.success) {
+          for (const issue of parsed.error.issues) {
+            const field = issue.path[0];
+            if (field === 'email' || field === 'password' || field === 'rememberMe') {
+              methods.setError(field, { type: 'validate', message: issue.message });
+            }
+          }
+          return;
+        }
         const result = await login.mutateAsync({
-          email: values.email.trim().toLowerCase(),
-          password: values.password,
+          email: parsed.data.email.trim().toLowerCase(),
+          password: parsed.data.password,
         });
         setAuthToken(result.access);
-        if (values.rememberMe) {
+        if (parsed.data.rememberMe) {
           // Persist preference for long-lived session; token remains in memory/localStorage
           localStorage.setItem('cfs.remember_me', '1');
         }

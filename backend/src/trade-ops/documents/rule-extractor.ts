@@ -184,13 +184,13 @@ export function arithmeticWarnings(
     const sum = amounts.reduce((a, b) => a + b, 0);
     if (declared !== null && Math.abs(declared - sum) > Math.max(tolerance, Math.abs(declared) * 0.005)) {
       warnings.push(
-        `Line-item sum ${sum.toFixed(2} does not match declared total ${declared.toFixed(2)} — verify before use.",,
+        `Line-item sum ${sum.toFixed(2)} does not match declared total ${declared.toFixed(2)} — verify before use.`,
       );
     }
   }
   const missingAmounts = items.length - amounts.length;
   if (missingAmounts > 0) {
-    warnings.push(`${missingAmounts} line item(s) have no parsed amount — table may be partially unread.`);
+    warnings.push(missingAmounts + " line item(s) have no parsed amount — table may be partially unread.");
   }
   return warnings;
 }
@@ -216,5 +216,4 @@ export class RuleBasedAdapter implements ExtractionAdapter {
 }
 
 export const ruleAdapter = new RuleBasedAdapter();
-
 

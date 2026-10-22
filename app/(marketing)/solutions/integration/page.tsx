@@ -912,7 +912,7 @@ function SolutionModal({ sol, onClose }: { sol: Solution; onClose: () => void })
         <div className="modal-head">
           <div className="modal-icon" style={{ background: iconBg(sol.id), color: iconColor(sol.id) }}>{sol.icon}</div>
           <div className="modal-head-body">
-            <div className="modal-eyebrow">Solution pod · {sol.metrics[0].v} {sol.metrics[0].l.toLowerCase()}</div>
+            <div className="modal-eyebrow">Solution pod · {sol.metrics[0]?.v} {sol.metrics[0]?.l.toLowerCase()}</div>
             <h2 className="modal-title">{sol.title}</h2>
             <p className="modal-sub">{sol.tagline}</p>
           </div>
@@ -1159,6 +1159,7 @@ function LiveTicker() {
 
   const push = useCallback(() => {
     const ev = TICKER_EVENTS[idxRef.current % TICKER_EVENTS.length];
+    if (!ev) return;
     idxRef.current += 1;
     setLines(prev => [
       { time: new Date().toLocaleTimeString('en-GB'), src: ev.src, msg: ev.msg, cls: ev.cls },
