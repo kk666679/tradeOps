@@ -130,9 +130,24 @@ export function AIChatWidget() {
               className="w-full"
               onSubmit={(message) => {
                 const text = typeof message === "string" ? message : message.text;
-                setInput(text);
-                const formEvent = new Event("submit", { bubbles: true, cancelable: true }) as React.FormEvent<HTMLFormElement>;
-                handleSubmit(formEvent);
+                if (!text) return;
+                addMessage(text, "user");
+                setInput("");
+                setIsLoading(true);
+
+                // Simulate AI response
+                setTimeout(() => {
+                  const responses = [
+                    "I can help you look up HS codes, check free zone eligibility, or generate customs documentation. What specific trade operation are you working with?",
+                    "For Malaysian Free Zones (FCZ, FIZ), I can help you navigate the regulations, licensing requirements, and customs procedures. What zone are you interested in?",
+                    "Let me explain how TradeOps can streamline your brokerage workflows. Would you like to schedule a demo or explore specific modules?",
+                    "I can assist with trade documentation, BOM analysis, compliance checks, and supply chain visibility. Tell me more about your use case.",
+                    "Our platform integrates with customs systems, ERP solutions, and digital trade corridors. Which integration are you looking to implement?",
+                  ];
+                  const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                  addMessage(randomResponse, "assistant");
+                  setIsLoading(false);
+                }, 1000);
               }}
             >
               <PromptInputBody>

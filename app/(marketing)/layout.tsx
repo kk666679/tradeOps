@@ -1,5 +1,4 @@
 import Navbar from "@/components/marketing/shell/Navbar";
-import { MarketingFooter } from "@/components/marketing/layout/MarketingFooter";
 
 export default function MarketingLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -8,7 +7,6 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
       <main className="flex-1">
         {children}
       </main>
-      <MarketingFooter />
     </div>
   );
 }
