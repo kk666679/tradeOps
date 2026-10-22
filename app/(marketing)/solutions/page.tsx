@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 /* ══════════════════════════════════════════════════════════
@@ -945,7 +947,7 @@ function SolutionModal({ sol, onClose }: { sol: Solution; onClose: () => void })
         <div className="modal-head">
           <div className="modal-icon" style={{ background: iconBg(sol.id), color: iconColor(sol.id) }}>{sol.icon}</div>
           <div className="modal-head-body">
-            <div className="modal-eyebrow">Solution pod · {sol.metrics[0].v} {sol.metrics[0].l.toLowerCase()}</div>
+            <div className="modal-eyebrow">Solution pod · {sol.metrics[0]?.v} {sol.metrics[0]?.l.toLowerCase()}</div>
             <h2 className="modal-title">{sol.title}</h2>
             <p className="modal-sub">{sol.tagline}</p>
           </div>
@@ -1112,6 +1114,7 @@ function LiveTicker() {
   const idxRef = useRef(0);
   const push = useCallback(() => {
     const ev = TICKER_EVENTS[idxRef.current % TICKER_EVENTS.length];
+    if (!ev) return;
     idxRef.current++;
     const time = new Date().toLocaleTimeString('en-GB');
     setLines(prev => [{ time, src: ev.src, msg: ev.msg, cls: ev.cls }, ...prev].slice(0, 4));
